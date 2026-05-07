@@ -1,6 +1,6 @@
-# 🐾 VetVission — Frontend
+# 🐾 PetVission — Frontend
 
-Interfaz web del sistema VetVission, desarrollada con HTML5, CSS3, Bootstrap 5 y JavaScript.
+Interfaz web del sistema PetVission, desarrollada con HTML5, CSS3, Bootstrap 5 y JavaScript.
 
 ---
 
@@ -9,7 +9,7 @@ Interfaz web del sistema VetVission, desarrollada con HTML5, CSS3, Bootstrap 5 y
 No requiere instalación ni servidor.
 
 1. Clonar el repositorio
-   git clone https://github.com/DiegoPenaG/vetvission-frontend
+   git clone https://github.com/DiegoPenaG/petvission-frontend
 
 2. Abrir index.html en el navegador
    — O usar la extensión Live Server en VS Code (recomendado)
@@ -18,7 +18,7 @@ No requiere instalación ni servidor.
 
 ## 📁 Estructura del proyecto
 ```
-vetvission-frontend/
+petvission-frontend/
 ├── index.html                  ← Landing page pública
 ├── assets/
 │   ├── css/
@@ -68,7 +68,7 @@ vetvission-frontend/
 
 ## 🔗 Backend
 API REST disponible en `http://localhost:8080/api`  
-Repositorio: [vetvission-backend](#)
+Repositorio: [petvission-backend](#)
 
 ---
 
