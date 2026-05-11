@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetVission | Clínica Veterinaria & Petshop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="assets/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <img src="assets/img/logo.png" alt="PetVission" height="40" onerror="this.style.display='none'">
+        <span class="fw-bold text-teal fs-4">PetVission</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center gap-2">
+          <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tienda">Tienda</a></li>
+          <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+          <li class="nav-item">
+            <a class="btn btn-outline-teal btn-sm px-3" href="pages/auth/login.html">Iniciar sesión</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-teal btn-sm px-3 text-white" href="pages/auth/register.html">Registrarse</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-section d-flex align-items-center">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <span class="badge bg-teal-light text-teal mb-3 px-3 py-2 rounded-pill">
+            🐾 Clínica Veterinaria + Petshop Online
+          </span>
+          <h1 class="display-4 fw-bold lh-sm mb-4">
+            El cuidado que tu mascota <span class="text-teal">merece</span>, en un solo lugar
+          </h1>
+          <p class="lead text-muted mb-5">
+            Agenda citas veterinarias, accede al historial clínico de tu mascota y compra
+            productos de calidad — todo desde una plataforma moderna y centralizada.
+          </p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="pages/auth/register.html" class="btn btn-teal btn-lg text-white px-4">
+              <i class="bi bi-calendar-check me-2"></i>Agendar cita
+            </a>
+            <a href="#tienda" class="btn btn-outline-teal btn-lg px-4">
+              <i class="bi bi-shop me-2"></i>Ver tienda
+            </a>
+          </div>
+          <!-- Stats -->
+          <div class="row mt-5 g-3">
+            <div class="col-4 text-center">
+              <h3 class="fw-bold text-teal mb-0">500+</h3>
+              <small class="text-muted">Mascotas atendidas</small>
+            </div>
+            <div class="col-4 text-center border-start border-end">
+              <h3 class="fw-bold text-teal mb-0">4</h3>
+              <small class="text-muted">Veterinarios especializados</small>
+            </div>
+            <div class="col-4 text-center">
+              <h3 class="fw-bold text-teal mb-0">200+</h3>
+              <small class="text-muted">Productos disponibles</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 text-center">
+          <div class="hero-img-wrapper">
+            <img src="assets/img/hero.png"
+                 onerror="this.src='https://placehold.co/520x420/e8f5f0/2a9d8f?text=PetVission'"
+                 alt="Mascota feliz" class="img-fluid rounded-4 shadow-lg">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section id="servicios" class="py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Nuestros <span class="text-teal">Servicios</span></h2>
+        <p class="text-muted">Todo lo que necesitas para el bienestar de tu mascota</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 text-center p-4 card-hover">
+            <div class="icon-circle bg-teal-light mx-auto mb-3">
+              <i class="bi bi-calendar2-heart text-teal fs-3"></i>
+            </div>
+            <h5 class="fw-semibold">Agenda Online</h5>
+            <p class="text-muted small">Reserva citas veterinarias en segundos, sin llamadas ni esperas.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 text-center p-4 card-hover">
+            <div class="icon-circle bg-teal-light mx-auto mb-3">
+              <i class="bi bi-file-medical text-teal fs-3"></i>
+            </div>
+            <h5 class="fw-semibold">Historial Clínico</h5>
+            <p class="text-muted small">Accede al historial médico digital de tu mascota en cualquier momento.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 text-center p-4 card-hover">
+            <div class="icon-circle bg-teal-light mx-auto mb-3">
+              <i class="bi bi-bag-heart text-teal fs-3"></i>
+            </div>
+            <h5 class="fw-semibold">Tienda Online</h5>
+            <p class="text-muted small">Productos veterinarios, alimentos y accesorios con envío a domicilio.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 text-center p-4 card-hover">
+            <div class="icon-circle bg-teal-light mx-auto mb-3">
+              <i class="bi bi-shield-check text-teal fs-3"></i>
+            </div>
+            <h5 class="fw-semibold">Control de Vacunas</h5>
+            <p class="text-muted small">Registro y recordatorios automáticos del calendario de vacunación.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CÓMO FUNCIONA -->
+  <section class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">¿Cómo <span class="text-teal">funciona</span>?</h2>
+        <p class="text-muted">Tres pasos para empezar</p>
+      </div>
+      <div class="row g-4 text-center">
+        <div class="col-md-4">
+          <div class="step-number bg-teal text-white mx-auto mb-3">1</div>
+          <h5 class="fw-semibold">Crea tu cuenta</h5>
+          <p class="text-muted small">Regístrate gratis y agrega el perfil de tus mascotas en minutos.</p>
+        </div>
+        <div class="col-md-4">
+          <div class="step-number bg-teal text-white mx-auto mb-3">2</div>
+          <h5 class="fw-semibold">Agenda o compra</h5>
+          <p class="text-muted small">Reserva una cita con el veterinario o explora nuestra tienda online.</p>
+        </div>
+        <div class="col-md-4">
+          <div class="step-number bg-teal text-white mx-auto mb-3">3</div>
+          <h5 class="fw-semibold">Gestiona todo</h5>
+          <p class="text-muted small">Accede al historial clínico, tus pedidos y próximas citas desde tu panel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIENDA PREVIEW -->
+  <section id="tienda" class="py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Nuestra <span class="text-teal">Tienda</span></h2>
+        <p class="text-muted">Productos seleccionados para el bienestar de tu mascota</p>
+      </div>
+      <div class="row g-4">
+        <!-- Producto 1 -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 card-hover">
+            <img src="https://placehold.co/300x200/e8f5f0/2a9d8f?text=Alimento+Premium"
+                 class="card-img-top" alt="Producto" style="height:180px;object-fit:cover;">
+            <div class="card-body">
+              <span class="badge bg-teal-light text-teal mb-2">Alimentación</span>
+              <h6 class="fw-semibold">Alimento Premium Perro</h6>
+              <p class="text-muted small">Fórmula balanceada para adultos</p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-bold text-teal">$18.990</span>
+                <button class="btn btn-teal btn-sm text-white">
+                  <i class="bi bi-cart-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 2 -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 card-hover">
+            <img src="https://placehold.co/300x200/e8f5f0/2a9d8f?text=Antiparasitario"
+                 class="card-img-top" alt="Producto" style="height:180px;object-fit:cover;">
+            <div class="card-body">
+              <span class="badge bg-teal-light text-teal mb-2">Salud</span>
+              <h6 class="fw-semibold">Antiparasitario Pipeta</h6>
+              <p class="text-muted small">Protección completa contra pulgas</p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-bold text-teal">$9.490</span>
+                <button class="btn btn-teal btn-sm text-white">
+                  <i class="bi bi-cart-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 3 -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 card-hover">
+            <img src="https://placehold.co/300x200/e8f5f0/2a9d8f?text=Juguete"
+                 class="card-img-top" alt="Producto" style="height:180px;object-fit:cover;">
+            <div class="card-body">
+              <span class="badge bg-teal-light text-teal mb-2">Accesorios</span>
+              <h6 class="fw-semibold">Set Juguetes Interactivos</h6>
+              <p class="text-muted small">Estimulación mental y física</p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-bold text-teal">$12.990</span>
+                <button class="btn btn-teal btn-sm text-white">
+                  <i class="bi bi-cart-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Producto 4 -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 card-hover">
+            <img src="https://placehold.co/300x200/e8f5f0/2a9d8f?text=Shampoo"
+                 class="card-img-top" alt="Producto" style="height:180px;object-fit:cover;">
+            <div class="card-body">
+              <span class="badge bg-teal-light text-teal mb-2">Higiene</span>
+              <h6 class="fw-semibold">Shampoo Veterinario</h6>
+              <p class="text-muted small">Fórmula suave para piel sensible</p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-bold text-teal">$7.490</span>
+                <button class="btn btn-teal btn-sm text-white">
+                  <i class="bi bi-cart-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <a href="pages/shop/catalogo.html" class="btn btn-outline-teal btn-lg px-5">
+          Ver todos los productos <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOSOTROS -->
+  <section id="nosotros" class="py-5">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <img src="https://placehold.co/520x380/e8f5f0/2a9d8f?text=Equipo+PetVission"
+               alt="Nosotros" class="img-fluid rounded-4 shadow">
+        </div>
+        <div class="col-lg-6">
+          <h2 class="fw-bold mb-4">¿Por qué elegir <span class="text-teal">PetVission</span>?</h2>
+          <div class="d-flex gap-3 mb-4">
+            <div class="flex-shrink-0">
+              <div class="icon-circle bg-teal-light">
+                <i class="bi bi-check-circle-fill text-teal"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="fw-semibold">Todo centralizado</h6>
+              <p class="text-muted small mb-0">Clínica, historial clínico y tienda en una sola plataforma.</p>
+            </div>
+          </div>
+          <div class="d-flex gap-3 mb-4">
+            <div class="flex-shrink-0">
+              <div class="icon-circle bg-teal-light">
+                <i class="bi bi-clock-fill text-teal"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="fw-semibold">Disponible 24/7</h6>
+              <p class="text-muted small mb-0">Agenda citas o compra productos en cualquier momento del día.</p>
+            </div>
+          </div>
+          <div class="d-flex gap-3 mb-4">
+            <div class="flex-shrink-0">
+              <div class="icon-circle bg-teal-light">
+                <i class="bi bi-lock-fill text-teal"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="fw-semibold">Seguro y confiable</h6>
+              <p class="text-muted small mb-0">Sistema protegido con autenticación JWT y control de roles.</p>
+            </div>
+          </div>
+          <a href="pages/auth/register.html" class="btn btn-teal text-white px-4 mt-2">
+            Comenzar gratis <i class="bi bi-arrow-right ms-2"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-5 bg-teal text-white text-center">
+    <div class="container py-3">
+      <h2 class="fw-bold mb-3">¿Listo para cuidar mejor a tu mascota?</h2>
+      <p class="lead mb-4 opacity-75">Únete a cientos de dueños que ya confían en PetVission</p>
+      <a href="pages/auth/register.html" class="btn btn-light btn-lg text-teal fw-semibold px-5">
+        Crear cuenta gratis
+      </a>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" class="py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Contacto</h2>
+        <p class="text-muted">¿Tienes dudas? Escríbenos</p>
+      </div>
+      <div class="row justify-content-center g-4">
+        <div class="col-md-4 text-center">
+          <i class="bi bi-geo-alt-fill text-teal fs-2 mb-3"></i>
+          <h6 class="fw-semibold">Dirección</h6>
+          <p class="text-muted small">Av. Veterinaria 123, Santiago, Chile</p>
+        </div>
+        <div class="col-md-4 text-center">
+          <i class="bi bi-telephone-fill text-teal fs-2 mb-3"></i>
+          <h6 class="fw-semibold">Teléfono</h6>
+          <p class="text-muted small">+56 9 1234 5678</p>
+        </div>
+        <div class="col-md-4 text-center">
+          <i class="bi bi-envelope-fill text-teal fs-2 mb-3"></i>
+          <h6 class="fw-semibold">Email</h6>
+          <p class="text-muted small">contacto@PetVission.cl</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start">
+          <span class="fw-bold text-teal">PetVission</span>
+          <span class="text-muted ms-2 small">© 2025 — Todos los derechos reservados</span>
+        </div>
+        <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+          <span class="text-muted small">Desarrollado por Escuadrón Alpha Mango — Java Generation</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

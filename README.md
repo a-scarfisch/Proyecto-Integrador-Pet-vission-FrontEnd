@@ -9,7 +9,7 @@ Interfaz web del sistema PetVission, desarrollada con HTML5, CSS3, Bootstrap 5 y
 No requiere instalación ni servidor.
 
 1. Clonar el repositorio
-   git clone https://github.com/DiegoPenaG/PetVission-frontend
+   git clone https://github.com/DiegoPenaG/petvission-frontend
 
 2. Abrir index.html en el navegador
    — O usar la extensión Live Server en VS Code (recomendado)
@@ -18,7 +18,7 @@ No requiere instalación ni servidor.
 
 ## 📁 Estructura del proyecto
 ```
-PetVission-frontend/
+petvission-frontend/
 ├── index.html                  ← Landing page pública
 ├── assets/
 │   ├── css/
@@ -68,7 +68,7 @@ PetVission-frontend/
 
 ## 🔗 Backend
 API REST disponible en `http://localhost:8080/api`  
-Repositorio: [PetVission-backend](https://github.com/DiegoPenaG/Proyecto-Integrador-Pet-vission-BackEnd)
+Repositorio: [petvission-backend](#)
 
 ---
 
