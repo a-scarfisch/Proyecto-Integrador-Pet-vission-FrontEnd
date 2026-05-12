@@ -20,9 +20,9 @@
         </div>
         <h2 class="fw-bold mb-3">Tu mascota merece lo mejor</h2>
         <p class="opacity-75 mb-5">
-          Únete a cientos de dueños que ya gestionan el cuidado de sus mascotas con PetVission.
+          Únete a cientos de dueños que ya gestionan el cuidado
+          de sus mascotas con PetVission.
         </p>
-        <!-- Pasos -->
         <div class="steps">
           <div class="step-item">
             <div class="step-badge">1</div>
@@ -41,7 +41,7 @@
           <div class="step-item">
             <div class="step-badge">3</div>
             <div>
-              <div class="fw-semibold">Agenda y compra</div>
+              <div class="fw-semibold">Agenda tu cita</div>
               <small class="opacity-75">Todo desde un solo lugar</small>
             </div>
           </div>
@@ -53,7 +53,6 @@
     <div class="auth-form-panel">
       <div class="auth-form-wrapper">
 
-        <!-- Logo mobile -->
         <div class="text-center d-lg-none mb-4">
           <span class="brand-mobile">
             <i class="bi bi-heart-pulse-fill me-2"></i>PetVission
@@ -63,18 +62,36 @@
         <h3 class="fw-bold mb-1">Crear cuenta</h3>
         <p class="text-muted mb-4">Empieza a cuidar mejor a tu mascota</p>
 
-        <form>
+        <form id="registerForm" novalidate>
+
           <!-- Nombre -->
           <div class="mb-3">
-            <label class="form-label fw-medium">Nombre completo</label>
+            <label class="form-label fw-medium">Nombre</label>
             <div class="input-group input-group-lg">
               <span class="input-group-text bg-white border-end-0">
                 <i class="bi bi-person text-muted"></i>
               </span>
               <input type="text"
+                     id="nombre"
                      class="form-control border-start-0 ps-0"
-                     placeholder="Juan Pérez" />
+                     placeholder="Juan" />
             </div>
+            <div class="text-danger small mt-1" id="error-nombre"></div>
+          </div>
+
+          <!-- Apellido -->
+          <div class="mb-3">
+            <label class="form-label fw-medium">Apellido</label>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-white border-end-0">
+                <i class="bi bi-person text-muted"></i>
+              </span>
+              <input type="text"
+                     id="apellidos"
+                     class="form-control border-start-0 ps-0"
+                     placeholder="Pérez" />
+            </div>
+            <div class="text-danger small mt-1" id="error-apellidos"></div>
           </div>
 
           <!-- Email -->
@@ -85,9 +102,11 @@
                 <i class="bi bi-envelope text-muted"></i>
               </span>
               <input type="email"
+                     id="email"
                      class="form-control border-start-0 ps-0"
                      placeholder="tu@email.com" />
             </div>
+            <div class="text-danger small mt-1" id="error-email"></div>
           </div>
 
           <!-- Contraseña -->
@@ -100,18 +119,17 @@
               <input type="password"
                      id="password"
                      class="form-control border-start-0 border-end-0 ps-0"
-                     placeholder="Mínimo 8 caracteres"
-                     oninput="checkStrength(this.value)" />
+                     placeholder="Mínimo 8 caracteres" />
               <span class="input-group-text bg-white border-start-0 toggle-pw"
                     onclick="togglePassword('password', this)">
                 <i class="bi bi-eye text-muted"></i>
               </span>
             </div>
-            <!-- Barra de fortaleza -->
             <div class="password-strength mt-2">
               <div class="strength-bar" id="strengthBar"></div>
             </div>
-            <small class="text-muted" id="strengthText"></small>
+            <small id="strengthText"></small>
+            <div class="text-danger small mt-1" id="error-password"></div>
           </div>
 
           <!-- Confirmar contraseña -->
@@ -130,21 +148,24 @@
                 <i class="bi bi-eye text-muted"></i>
               </span>
             </div>
+            <div class="text-danger small mt-1" id="error-confirm"></div>
           </div>
 
           <!-- Términos -->
-          <div class="form-check mb-4">
+          <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" id="terms" />
             <label class="form-check-label small text-muted" for="terms">
-              Acepto los <a href="#" class="text-teal text-decoration-none">Términos de uso</a>
-              y la <a href="#" class="text-teal text-decoration-none">Política de privacidad</a>
+              Acepto los
+              <a href="#" class="text-teal text-decoration-none">Términos de uso</a>
+              y la
+              <a href="#" class="text-teal text-decoration-none">Política de privacidad</a>
             </label>
           </div>
+          <div class="text-danger small mb-3" id="error-terms"></div>
 
           <!-- Botón -->
           <button type="submit"
-                  class="btn btn-teal btn-lg w-100 text-white fw-semibold mb-3"
-                  onclick="window.location.href='../client/dashboard.html'; return false;">
+                  class="btn btn-teal btn-lg w-100 text-white fw-semibold mb-3">
             Crear cuenta
             <i class="bi bi-arrow-right ms-2"></i>
           </button>
@@ -155,48 +176,20 @@
               Iniciar sesión
             </a>
           </p>
-        </form>
 
+          <!-- TEMPORAL: quitar antes de producción -->
+          <div class="text-center mt-2">
+            <a href="../client/dashboard.html" class="text-muted small">
+              Ir al dashboard sin validar →
+            </a>
+          </div>
+
+        </form>
       </div>
     </div>
-
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    function togglePassword(id, el) {
-      const input = document.getElementById(id);
-      const icon = el.querySelector('i');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'bi bi-eye-slash text-muted';
-      } else {
-        input.type = 'password';
-        icon.className = 'bi bi-eye text-muted';
-      }
-    }
-
-    function checkStrength(val) {
-      const bar = document.getElementById('strengthBar');
-      const text = document.getElementById('strengthText');
-      if (!val) { bar.style.width = '0%'; text.textContent = ''; return; }
-      let strength = 0;
-      if (val.length >= 8) strength++;
-      if (/[A-Z]/.test(val)) strength++;
-      if (/[0-9]/.test(val)) strength++;
-      if (/[^A-Za-z0-9]/.test(val)) strength++;
-      const levels = [
-        { w: '25%', color: '#e63946', label: 'Muy débil' },
-        { w: '50%', color: '#f4a261', label: 'Débil' },
-        { w: '75%', color: '#2a9d8f', label: 'Buena' },
-        { w: '100%', color: '#198754', label: 'Excelente' },
-      ];
-      const level = levels[strength - 1] || levels[0];
-      bar.style.width = level.w;
-      bar.style.backgroundColor = level.color;
-      text.textContent = level.label;
-      text.style.color = level.color;
-    }
-  </script>
+  <script src="../../assets/js/register.js"></script>
 </body>
 </html>

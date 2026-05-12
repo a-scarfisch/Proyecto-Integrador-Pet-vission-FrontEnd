@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetVission — Panel Administrador</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="../../assets/css/admin.css" rel="stylesheet" />
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+
+    <div class="admin-sidebar-brand">
+      <div class="d-flex align-items-center gap-2">
+        <div class="brand-icon">
+          <i class="bi bi-heart-pulse-fill"></i>
+        </div>
+        <div>
+          <div class="fw-bold">PetVission</div>
+          <div style="font-size:0.72rem;opacity:0.7;">Panel Administrador</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+
+      <div class="admin-nav-label">Principal</div>
+      <a href="dashboard.html" class="admin-nav-link active">
+        <i class="bi bi-grid-fill"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="admin-nav-label mt-3">Gestión</div>
+      <a href="usuarios.html" class="admin-nav-link">
+        <i class="bi bi-people-fill"></i>
+        <span>Usuarios</span>
+      </a>
+      <a href="veterinarios.html" class="admin-nav-link">
+        <i class="bi bi-heart-pulse-fill"></i>
+        <span>Veterinarios</span>
+      </a>
+      <a href="mascotas.html" class="admin-nav-link">
+        <i class="bi bi-paw-fill" ></i>
+        <span>Mascotas</span>
+      </a>
+      <a href="citas.html" class="admin-nav-link">
+        <i class="bi bi-calendar3"></i>
+        <span>Citas</span>
+      </a>
+
+      <div class="admin-nav-label mt-3">Sistema</div>
+      <a href="reportes.html" class="admin-nav-link">
+        <i class="bi bi-bar-chart-fill"></i>
+        <span>Reportes</span>
+      </a>
+      <a href="configuracion.html" class="admin-nav-link">
+        <i class="bi bi-gear-fill"></i>
+        <span>Configuración</span>
+      </a>
+
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="admin-avatar">AD</div>
+        <div>
+          <div class="fw-semibold small">Administrador</div>
+          <div style="font-size:0.72rem;opacity:0.7;">admin@petvission.cl</div>
+        </div>
+      </div>
+      <a href="../../index.html" class="admin-nav-link px-0">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Cerrar Sesión</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <div class="admin-sidebar-overlay" id="adminOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="admin-main">
+
+    <!-- TOPBAR -->
+    <div class="admin-topbar">
+      <button class="btn btn-sm border-0 d-lg-none me-2" onclick="toggleSidebar()">
+        <i class="bi bi-list fs-4"></i>
+      </button>
+      <div>
+        <h5 class="fw-bold mb-0">Dashboard</h5>
+        <small class="text-muted" id="fechaHoy"></small>
+      </div>
+      <div class="admin-search d-none d-md-block">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Buscar..." />
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-light rounded-circle position-relative p-2">
+          <i class="bi bi-bell fs-5"></i>
+          <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger"
+                style="font-size:0.6rem;">5</span>
+        </button>
+        <div class="admin-avatar-sm">AD</div>
+      </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="admin-content">
+
+      <!-- KPIs -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="admin-kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="admin-kpi-label">Total Usuarios</div>
+                <div class="admin-kpi-number">324</div>
+                <div class="admin-kpi-sub text-success">
+                  <i class="bi bi-arrow-up-short"></i>12 este mes
+                </div>
+              </div>
+              <div class="admin-kpi-icon" style="background:#eff6ff;">
+                <i class="bi bi-people-fill" style="color:#3b82f6;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="admin-kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="admin-kpi-label">Citas Hoy</div>
+                <div class="admin-kpi-number">48</div>
+                <div class="admin-kpi-sub text-success">
+                  <i class="bi bi-arrow-up-short"></i>8 vs ayer
+                </div>
+              </div>
+              <div class="admin-kpi-icon" style="background:#f0fdf4;">
+                <i class="bi bi-calendar-check-fill" style="color:#22c55e;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="admin-kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="admin-kpi-label">Mascotas</div>
+                <div class="admin-kpi-number">248</div>
+                <div class="admin-kpi-sub text-success">
+                  <i class="bi bi-arrow-up-short"></i>5 nuevas
+                </div>
+              </div>
+              <div class="admin-kpi-icon" style="background:#fff7ed;">
+                <i class="bi bi-heart-fill" style="color:#f97316;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="admin-kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="admin-kpi-label">Ingresos Mes</div>
+                <div class="admin-kpi-number">$4.8M</div>
+                <div class="admin-kpi-sub text-success">
+                  <i class="bi bi-arrow-up-short"></i>+18%
+                </div>
+              </div>
+              <div class="admin-kpi-icon" style="background:#fdf4ff;">
+                <i class="bi bi-currency-dollar" style="color:#a855f7;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+
+        <!-- Últimos usuarios -->
+        <div class="col-lg-7">
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h6 class="fw-bold mb-0">Últimos usuarios registrados</h6>
+              <a href="usuarios.html"
+                 class="btn btn-sm btn-outline-secondary">
+                Ver todos
+              </a>
+            </div>
+            <div class="admin-card-body p-0">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Usuario</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="patient-avatar"
+                             style="background:#3b82f6;width:34px;height:34px;font-size:0.8rem;">
+                          MG
+                        </div>
+                        <div>
+                          <div class="fw-semibold small">María García</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-muted small">maria@email.com</td>
+                    <td>
+                      <span class="role-badge role-cliente">Cliente</span>
+                    </td>
+                    <td>
+                      <span class="estado-badge estado-activo">Activo</span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="patient-avatar"
+                             style="background:#0f766e;width:34px;height:34px;font-size:0.8rem;">
+                          DV
+                        </div>
+                        <div>
+                          <div class="fw-semibold small">Dr. Veterinario</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-muted small">vet@petvission.cl</td>
+                    <td>
+                      <span class="role-badge role-vet">Veterinario</span>
+                    </td>
+                    <td>
+                      <span class="estado-badge estado-activo">Activo</span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="patient-avatar"
+                             style="background:#7e22ce;width:34px;height:34px;font-size:0.8rem;">
+                          CR
+                        </div>
+                        <div>
+                          <div class="fw-semibold small">Carlos Ruiz</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-muted small">carlos@email.com</td>
+                    <td>
+                      <span class="role-badge role-cliente">Cliente</span>
+                    </td>
+                    <td>
+                      <span class="estado-badge estado-activo">Activo</span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="patient-avatar"
+                             style="background:#dc2626;width:34px;height:34px;font-size:0.8rem;">
+                          AT
+                        </div>
+                        <div>
+                          <div class="fw-semibold small">Ana Torres</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-muted small">ana@email.com</td>
+                    <td>
+                      <span class="role-badge role-cliente">Cliente</span>
+                    </td>
+                    <td>
+                      <span class="estado-badge estado-inactivo">Inactivo</span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen de citas -->
+        <div class="col-lg-5">
+          <div class="admin-card h-100">
+            <div class="admin-card-header">
+              <h6 class="fw-bold mb-0">Citas por estado — Hoy</h6>
+            </div>
+            <div class="admin-card-body">
+              <div class="d-flex flex-column gap-3">
+
+                <div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="small fw-medium">Confirmadas</span>
+                    <span class="small fw-bold text-success">32</span>
+                  </div>
+                  <div class="progress" style="height:8px;border-radius:8px;">
+                    <div class="progress-bar bg-success"
+                         style="width:67%;border-radius:8px;"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="small fw-medium">Pendientes</span>
+                    <span class="small fw-bold text-warning">10</span>
+                  </div>
+                  <div class="progress" style="height:8px;border-radius:8px;">
+                    <div class="progress-bar bg-warning"
+                         style="width:21%;border-radius:8px;"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span class="small fw-medium">Canceladas</span>
+                    <span class="small fw-bold text-danger">6</span>
+                  </div>
+                  <div class="progress" style="height:8px;border-radius:8px;">
+                    <div class="progress-bar bg-danger"
+                         style="width:12%;border-radius:8px;"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Veterinarios activos -->
+              <div class="mt-4">
+                <div class="small fw-semibold text-muted mb-3">
+                  VETERINARIOS ACTIVOS HOY
+                </div>
+                <div class="d-flex flex-column gap-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="patient-avatar"
+                         style="background:#0f766e;width:34px;height:34px;font-size:0.8rem;">
+                      DV
+                    </div>
+                    <div class="flex-grow-1">
+                      <div class="small fw-semibold">Dr. Veterinario</div>
+                      <div class="text-muted" style="font-size:0.72rem;">
+                        12 citas asignadas
+                      </div>
+                    </div>
+                    <span class="estado-badge estado-activo">Online</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="patient-avatar"
+                         style="background:#1e3a5f;width:34px;height:34px;font-size:0.8rem;">
+                      DR
+                    </div>
+                    <div class="flex-grow-1">
+                      <div class="small fw-semibold">Dra. Rodríguez</div>
+                      <div class="text-muted" style="font-size:0.72rem;">
+                        8 citas asignadas
+                      </div>
+                    </div>
+                    <span class="estado-badge estado-activo">Online</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Actividad reciente -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h6 class="fw-bold mb-0">Actividad reciente del sistema</h6>
+          <span class="text-muted small">Últimas 24 horas</span>
+        </div>
+        <div class="admin-card-body p-0">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Evento</th>
+                <th>Usuario</th>
+                <th>Módulo</th>
+                <th>Hora</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="small">Registro nuevo usuario</td>
+                <td class="small text-muted">María García</td>
+                <td><span class="modulo-badge">Auth</span></td>
+                <td class="small text-muted">09:15</td>
+                <td><span class="estado-badge estado-activo">OK</span></td>
+              </tr>
+              <tr>
+                <td class="small">Cita agendada</td>
+                <td class="small text-muted">Carlos Ruiz</td>
+                <td><span class="modulo-badge">Citas</span></td>
+                <td class="small text-muted">09:32</td>
+                <td><span class="estado-badge estado-activo">OK</span></td>
+              </tr>
+              <tr>
+                <td class="small">Historial clínico actualizado</td>
+                <td class="small text-muted">Dr. Veterinario</td>
+                <td><span class="modulo-badge">Clínico</span></td>
+                <td class="small text-muted">10:05</td>
+                <td><span class="estado-badge estado-activo">OK</span></td>
+              </tr>
+              <tr>
+                <td class="small">Cita cancelada</td>
+                <td class="small text-muted">Ana Torres</td>
+                <td><span class="modulo-badge">Citas</span></td>
+                <td class="small text-muted">10:48</td>
+                <td><span class="estado-badge estado-inactivo">Cancelada</span></td>
+              </tr>
+              <tr>
+                <td class="small">Mascota registrada</td>
+                <td class="small text-muted">Pedro Soto</td>
+                <td><span class="modulo-badge">Mascotas</span></td>
+                <td class="small text-muted">11:20</td>
+                <td><span class="estado-badge estado-activo">OK</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById('fechaHoy').textContent =
+    new Date().toLocaleDateString('es-CL', {
+      weekday: 'long', year: 'numeric',
+      month: 'long', day: 'numeric'
+    });
+
+  function toggleSidebar() {
+    document.getElementById('adminSidebar').classList.toggle('open');
+    document.getElementById('adminOverlay').classList.toggle('show');
+  }
+</script>
+</body>
+</html>
