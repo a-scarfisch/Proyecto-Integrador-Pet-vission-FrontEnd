@@ -68,7 +68,7 @@ petvission-frontend/
 
 ## 🔗 Backend
 API REST disponible en `http://localhost:8080/api`  
-Repositorio: [petvission-backend](#)
+Repositorio: [petvission-backend](https://github.com/DiegoPenaG/Proyecto-Integrador-Pet-vission-BackEnd)
 
 ---
 
