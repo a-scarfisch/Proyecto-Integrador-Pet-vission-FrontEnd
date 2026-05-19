@@ -3,18 +3,16 @@
 const loginForm = document.getElementById('loginForm');
 
 if (loginForm) {
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const email    = document.getElementById('email');
     const password = document.getElementById('password');
     let valido     = true;
 
-    // Limpiar errores previos
     limpiarError(email);
     limpiarError(password);
 
-    // Validar correo
     if (!email.value.trim()) {
       mostrarError(email, 'El correo es obligatorio');
       valido = false;
@@ -23,7 +21,6 @@ if (loginForm) {
       valido = false;
     }
 
-    // Validar contraseña
     if (!password.value.trim()) {
       mostrarError(password, 'La contraseña es obligatoria');
       valido = false;
@@ -32,8 +29,46 @@ if (loginForm) {
       valido = false;
     }
 
-    if (valido) {
-      redirigirPorRol(email.value);
+    if (!valido) return;
+
+    const btn = loginForm.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ingresando...';
+
+    try {
+      const res = await fetch(`${API.BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          correo:   email.value,
+          password: password.value
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('vv_token', data.data.token);
+        localStorage.setItem('vv_user',  JSON.stringify(data.data));
+
+        const rutas = {
+          VETERINARIO:   '../vet/dashboard.html',
+          ADMINISTRADOR: '../admin/dashboard.html',
+          CLIENTE:       '../client/dashboard.html'
+        };
+
+        window.location.href = rutas[data.data.rol] || '../client/dashboard.html';
+
+      } else {
+        mostrarError(email, data.message || 'Correo o contraseña incorrectos');
+        btn.disabled = false;
+        btn.innerHTML = 'Iniciar sesión <i class="bi bi-arrow-right ms-2"></i>';
+      }
+
+    } catch (err) {
+      mostrarError(email, 'No se pudo conectar con el servidor');
+      btn.disabled = false;
+      btn.innerHTML = 'Iniciar sesión <i class="bi bi-arrow-right ms-2"></i>';
     }
   });
 }
@@ -42,6 +77,8 @@ if (loginForm) {
 // REDIRECCIÓN POR ROL — solo visual
 // TODO Sprint 2: reemplazar por rol del JWT
 // ============================================
+// SE QUITA POR VALIDACIONES, EN DESARROLLO LOCAL DESCOMENTAR ESTO
+/*
 function redirigirPorRol(correo) {
   const c = correo.toLowerCase();
 
@@ -57,6 +94,7 @@ function redirigirPorRol(correo) {
 
   window.location.href = '../client/dashboard.html';
 }
+*/
 
 // ============================================
 // VALIDACIÓN EN TIEMPO REAL

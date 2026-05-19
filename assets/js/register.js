@@ -9,9 +9,9 @@ function mostrarError(inputId, mensaje) {
   const input = document.getElementById(inputId);
   const error = document.getElementById('error-' + inputId);
 
-  if (input)  input.classList.add('is-invalid');
-  if (input)  input.classList.remove('is-valid');
-  if (error)  error.textContent = mensaje;
+  if (input) input.classList.add('is-invalid');
+  if (input) input.classList.remove('is-valid');
+  if (error) error.textContent = mensaje;
 }
 
 // Limpia el error y marca como válido
@@ -19,9 +19,9 @@ function marcarValido(inputId) {
   const input = document.getElementById(inputId);
   const error = document.getElementById('error-' + inputId);
 
-  if (input)  input.classList.remove('is-invalid');
-  if (input)  input.classList.add('is-valid');
-  if (error)  error.textContent = '';
+  if (input) input.classList.remove('is-invalid');
+  if (input) input.classList.add('is-valid');
+  if (error) error.textContent = '';
 }
 
 // Limpia el estado del campo sin marcarlo válido ni inválido
@@ -29,8 +29,8 @@ function limpiarCampo(inputId) {
   const input = document.getElementById(inputId);
   const error = document.getElementById('error-' + inputId);
 
-  if (input)  input.classList.remove('is-invalid', 'is-valid');
-  if (error)  error.textContent = '';
+  if (input) input.classList.remove('is-invalid', 'is-valid');
+  if (error) error.textContent = '';
 }
 
 // Verifica formato de correo con arroba y dominio
@@ -46,46 +46,46 @@ function esPasswordSegura(password) {
 // Toggle para mostrar u ocultar contraseña
 function togglePassword(id, el) {
   const input = document.getElementById(id);
-  const icon  = el.querySelector('i');
+  const icon = el.querySelector('i');
   if (input.type === 'password') {
-    input.type        = 'text';
-    icon.className    = 'bi bi-eye-slash text-muted';
+    input.type = 'text';
+    icon.className = 'bi bi-eye-slash text-muted';
   } else {
-    input.type        = 'password';
-    icon.className    = 'bi bi-eye text-muted';
+    input.type = 'password';
+    icon.className = 'bi bi-eye text-muted';
   }
 }
 
 // Barra de fortaleza de contraseña
 function checkStrength(valor) {
-  const bar  = document.getElementById('strengthBar');
+  const bar = document.getElementById('strengthBar');
   const text = document.getElementById('strengthText');
   if (!bar) return;
 
   if (!valor) {
-    bar.style.width     = '0%';
-    text.textContent    = '';
+    bar.style.width = '0%';
+    text.textContent = '';
     return;
   }
 
   let nivel = 0;
-  if (valor.length >= 8)          nivel++;
-  if (/[A-Z]/.test(valor))        nivel++;
-  if (/[0-9]/.test(valor))        nivel++;
+  if (valor.length >= 8) nivel++;
+  if (/[A-Z]/.test(valor)) nivel++;
+  if (/[0-9]/.test(valor)) nivel++;
   if (/[^A-Za-z0-9]/.test(valor)) nivel++;
 
   const niveles = [
-    { ancho: '25%',  color: '#e63946', texto: 'Muy débil'  },
-    { ancho: '50%',  color: '#f4a261', texto: 'Débil'      },
-    { ancho: '75%',  color: '#2a9d8f', texto: 'Buena'      },
-    { ancho: '100%', color: '#198754', texto: 'Excelente'  },
+    { ancho: '25%', color: '#e63946', texto: 'Muy débil' },
+    { ancho: '50%', color: '#f4a261', texto: 'Débil' },
+    { ancho: '75%', color: '#2a9d8f', texto: 'Buena' },
+    { ancho: '100%', color: '#198754', texto: 'Excelente' },
   ];
 
-  const actual           = niveles[nivel - 1] || niveles[0];
-  bar.style.width            = actual.ancho;
-  bar.style.backgroundColor  = actual.color;
-  text.textContent           = actual.texto;
-  text.style.color           = actual.color;
+  const actual = niveles[nivel - 1] || niveles[0];
+  bar.style.width = actual.ancho;
+  bar.style.backgroundColor = actual.color;
+  text.textContent = actual.texto;
+  text.style.color = actual.color;
 }
 
 // ============================================
@@ -155,7 +155,7 @@ function validarPassword() {
 
 function validarConfirm() {
   const password = document.getElementById('password').value;
-  const confirm  = document.getElementById('confirm').value;
+  const confirm = document.getElementById('confirm').value;
   if (!confirm) {
     mostrarError('confirm', 'Confirma tu contraseña');
     return false;
@@ -217,25 +217,63 @@ document.getElementById('confirm')
 
 // ============================================
 // SUBMIT — valida todo antes de enviar
+// ===========================================
+
+// ============================================
+// SUBMIT — conectado al backend
 // ============================================
 
 const registerForm = document.getElementById('registerForm');
 
 if (registerForm) {
-  registerForm.addEventListener('submit', (e) => {
+  registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Ejecuta todas las validaciones
-    const nombreOk    = validarNombre();
+    const nombreOk = validarNombre();
     const apellidosOk = validarApellidos();
-    const emailOk     = validarEmail();
-    const passwordOk  = validarPassword();
-    const confirmOk   = validarConfirm();
-    const termsOk     = validarTerms();
+    const emailOk = validarEmail();
+    const passwordOk = validarPassword();
+    const confirmOk = validarConfirm();
+    const termsOk = validarTerms();
 
-    // Solo redirige si todo está correcto
-    if (nombreOk && apellidosOk && emailOk && passwordOk && confirmOk && termsOk) {
-      window.location.href = '../client/dashboard.html';
+    if (!nombreOk || !apellidosOk || !emailOk ||
+      !passwordOk || !confirmOk || !termsOk) return;
+
+    const btn = registerForm.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creando cuenta...';
+
+    try {
+      const res = await fetch(`${API.BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombres: document.getElementById('nombre').value.trim(),
+          apellidos: document.getElementById('apellidos').value.trim(),
+          correo: document.getElementById('email').value.trim(),
+          password: document.getElementById('password').value,
+          telefono: document.getElementById('telefono')?.value.trim() || '',
+          rol: 'CLIENTE'
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('vv_token', data.data.token);
+        localStorage.setItem('vv_user', JSON.stringify(data.data));
+        window.location.href = '../client/dashboard.html';
+
+      } else {
+        mostrarError('email', data.message || 'Error al crear la cuenta');
+        btn.disabled = false;
+        btn.innerHTML = 'Crear cuenta <i class="bi bi-arrow-right ms-2"></i>';
+      }
+
+    } catch (err) {
+      mostrarError('email', 'No se pudo conectar con el servidor');
+      btn.disabled = false;
+      btn.innerHTML = 'Crear cuenta <i class="bi bi-arrow-right ms-2"></i>';
     }
   });
 }
