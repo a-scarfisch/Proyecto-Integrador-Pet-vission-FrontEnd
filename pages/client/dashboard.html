@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +8,7 @@
   <link href="../../assets/css/styles.css" rel="stylesheet" />
 </head>
 <body class="dashboard-body">
+  <html lang="es">
 
   <!-- NAVBAR SUPERIOR -->
   <nav class="navbar navbar-expand-lg bg-white shadow-sm px-3 sticky-top">
@@ -84,32 +84,26 @@
           <li class="sidebar-label">Principal</li>
 
           <li>
-            <a href="#" class="sidebar-link active">
+            <a href="dashboard.html" class="sidebar-link active">
               <i class="bi bi-grid-fill"></i>
               <span>Dashboard</span>
             </a>
           </li>
           <li>
-            <a href="#" class="sidebar-link">
+            <a href="mascotas.html" class="sidebar-link">
               <i class="bi bi-heart-fill"></i>
               <span>Mis Mascotas</span>
               <span class="badge bg-teal-light text-teal ms-auto">2</span>
             </a>
           </li>
           <li>
-            <a href="#" class="sidebar-link">
+            <a href="miscitas.html" class="sidebar-link">
               <i class="bi bi-calendar2-check-fill"></i>
               <span>Mis Citas</span>
               <span class="badge bg-warning text-dark ms-auto">1</span>
             </a>
           </li>
-          <li>
-            <a href="#" class="sidebar-link">
-              <i class="bi bi-file-medical-fill"></i>
-              <span>Historial Clínico</span>
-            </a>
-          </li>
-
+        
           <li class="sidebar-label mt-3">Cuenta</li>
 
           <li>
@@ -143,9 +137,10 @@
             <p class="text-muted mb-0">Aquí tienes un resumen del estado de tus mascotas</p>
           </div>
           <div class="col-auto d-none d-sm-block">
-            <button class="btn btn-teal text-white px-4">
-              <i class="bi bi-calendar-plus me-2"></i>Nueva cita
-            </button>
+            <a href="agendamiento.html" class="btn btn-teal text-white px-4" onclick="goFoward()">
+            <i class="bi bi-calendar-plus me-2"></i>Nueva cita
+            </a>
+
           </div>
         </div>
       </div>
@@ -160,6 +155,7 @@
             <div class="kpi-info">
               <div class="kpi-number">2</div>
               <div class="kpi-label">Mis mascotas</div>
+              
             </div>
           </div>
         </div>
@@ -188,11 +184,11 @@
         <div class="col-6 col-lg-3">
           <div class="kpi-card">
             <div class="kpi-icon" style="background:#d1e7dd;">
-              <i class="bi bi-bag-check-fill" style="color:#198754;"></i>
+              <i class="bi bi-bell-fill" style="color:#198754;"></i>
             </div>
             <div class="kpi-info">
-              <div class="kpi-number">3</div>
-              <div class="kpi-label">Pedidos</div>
+              <div class="kpi-number">1</div>
+              <div class="kpi-label">Pendientes</div>
             </div>
           </div>
         </div>
@@ -241,7 +237,12 @@
               <h6 class="fw-bold mb-0">
                 <i class="bi bi-calendar2-check-fill text-teal me-2"></i>Próximas Citas
               </h6>
-              <a href="#" class="btn btn-sm btn-outline-teal">Ver todas</a>
+               <div class="col-auto d-none d-sm-block">
+               <a href="miscitas.html" class="btn btn-teal text-white px-4" onclick="goFoward()">
+               <i class="bi bi-calendar-plus me-2"></i>Ver todas
+              </a>
+
+          </div>
             </div>
             <div class="card-body">
               <div class="appointment-card">
@@ -259,9 +260,11 @@
                 <span class="badge rounded-pill" style="background:#e8f5f0;color:#2a9d8f;">Confirmada</span>
               </div>
               <div class="text-center mt-4">
-                <button class="btn btn-teal text-white w-100">
-                  <i class="bi bi-calendar-plus me-2"></i>Agendar nueva cita
-                </button>
+                <div class="col-auto d-none d-sm-block">
+                <a href="agendamiento.html" class="btn btn-teal text-white px-4" onclick="goFoward()">
+                <i class="bi bi-calendar-plus me-2"></i>Agendar nueva cita 
+              </a>
+          </div>
               </div>
             </div>
           </div>
