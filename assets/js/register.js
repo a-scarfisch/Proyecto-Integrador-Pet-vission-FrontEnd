@@ -93,6 +93,20 @@ function checkStrength(valor) {
 // Se llaman al hacer blur en cada campo
 // ============================================
 
+function validarTelefono() {
+  const valor = document.getElementById('telefono').value.trim();
+  if (!valor) {
+    mostrarError('telefono', 'El teléfono es obligatorio');
+    return false;
+  }
+  if (valor.length < 8) {
+    mostrarError('telefono', 'Ingresa un teléfono válido');
+    return false;
+  }
+  marcarValido('telefono');
+  return true;
+}
+
 function validarNombre() {
   const valor = document.getElementById('nombre').value.trim();
   if (!valor) {
@@ -192,6 +206,9 @@ document.getElementById('apellidos')
 document.getElementById('email')
   ?.addEventListener('blur', validarEmail);
 
+document.getElementById('telefono')
+  ?.addEventListener('blur', validarTelefono);
+
 document.getElementById('password')
   ?.addEventListener('blur', validarPassword);
 
@@ -235,8 +252,9 @@ if (registerForm) {
     const passwordOk = validarPassword();
     const confirmOk = validarConfirm();
     const termsOk = validarTerms();
+    const telefonoOk = validarTelefono();
 
-    if (!nombreOk || !apellidosOk || !emailOk ||
+    if (!nombreOk || !apellidosOk || !emailOk || !telefonoOk ||
       !passwordOk || !confirmOk || !termsOk) return;
 
     const btn = registerForm.querySelector('button[type=submit]');
