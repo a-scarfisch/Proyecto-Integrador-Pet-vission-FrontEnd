@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="../../assets/css/styles.css" rel="stylesheet" />
 </head>
+
 <body class="auth-body">
 
   <div class="auth-wrapper">
@@ -71,10 +73,7 @@
               <span class="input-group-text bg-white border-end-0">
                 <i class="bi bi-person text-muted"></i>
               </span>
-              <input type="text"
-                     id="nombre"
-                     class="form-control border-start-0 ps-0"
-                     placeholder="Juan" />
+              <input type="text" id="nombre" class="form-control border-start-0 ps-0" placeholder="Juan" />
             </div>
             <div class="text-danger small mt-1" id="error-nombre"></div>
           </div>
@@ -86,10 +85,7 @@
               <span class="input-group-text bg-white border-end-0">
                 <i class="bi bi-person text-muted"></i>
               </span>
-              <input type="text"
-                     id="apellidos"
-                     class="form-control border-start-0 ps-0"
-                     placeholder="Pérez" />
+              <input type="text" id="apellidos" class="form-control border-start-0 ps-0" placeholder="Pérez" />
             </div>
             <div class="text-danger small mt-1" id="error-apellidos"></div>
           </div>
@@ -101,14 +97,21 @@
               <span class="input-group-text bg-white border-end-0">
                 <i class="bi bi-envelope text-muted"></i>
               </span>
-              <input type="email"
-                     id="email"
-                     class="form-control border-start-0 ps-0"
-                     placeholder="tu@email.com" />
+              <input type="email" id="email" class="form-control border-start-0 ps-0" placeholder="tu@email.com" />
             </div>
             <div class="text-danger small mt-1" id="error-email"></div>
           </div>
-
+          <!-- Teléfono — agregar después del bloque de Email -->
+          <div class="mb-3">
+            <label class="form-label fw-medium">Teléfono</label>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-white border-end-0">
+                <i class="bi bi-telephone text-muted"></i>
+              </span>
+              <input type="tel" id="telefono" class="form-control border-start-0 ps-0" placeholder="+56 9 XXXX XXXX" />
+            </div>
+            <div class="text-danger small mt-1" id="error-telefono"></div>
+          </div>
           <!-- Contraseña -->
           <div class="mb-3">
             <label class="form-label fw-medium">Contraseña</label>
@@ -116,12 +119,10 @@
               <span class="input-group-text bg-white border-end-0">
                 <i class="bi bi-lock text-muted"></i>
               </span>
-              <input type="password"
-                     id="password"
-                     class="form-control border-start-0 border-end-0 ps-0"
-                     placeholder="Mínimo 8 caracteres" />
+              <input type="password" id="password" class="form-control border-start-0 border-end-0 ps-0"
+                placeholder="Mínimo 8 caracteres" />
               <span class="input-group-text bg-white border-start-0 toggle-pw"
-                    onclick="togglePassword('password', this)">
+                onclick="togglePassword('password', this)">
                 <i class="bi bi-eye text-muted"></i>
               </span>
             </div>
@@ -139,12 +140,10 @@
               <span class="input-group-text bg-white border-end-0">
                 <i class="bi bi-lock-fill text-muted"></i>
               </span>
-              <input type="password"
-                     id="confirm"
-                     class="form-control border-start-0 border-end-0 ps-0"
-                     placeholder="Repite tu contraseña" />
+              <input type="password" id="confirm" class="form-control border-start-0 border-end-0 ps-0"
+                placeholder="Repite tu contraseña" />
               <span class="input-group-text bg-white border-start-0 toggle-pw"
-                    onclick="togglePassword('confirm', this)">
+                onclick="togglePassword('confirm', this)">
                 <i class="bi bi-eye text-muted"></i>
               </span>
             </div>
@@ -160,12 +159,11 @@
               y la
               <a href="#" class="text-teal text-decoration-none">Política de privacidad</a>
             </label>
-          </div>
+          </div>git
           <div class="text-danger small mb-3" id="error-terms"></div>
 
           <!-- Botón -->
-          <button type="submit"
-                  class="btn btn-teal btn-lg w-100 text-white fw-semibold mb-3">
+          <button type="submit" class="btn btn-teal btn-lg w-100 text-white fw-semibold mb-3">
             Crear cuenta
             <i class="bi bi-arrow-right ms-2"></i>
           </button>
@@ -193,4 +191,5 @@
   <script src="../../assets/js/api.js"></script>
   <script src="../../assets/js/register.js"></script>
 </body>
+
 </html>
