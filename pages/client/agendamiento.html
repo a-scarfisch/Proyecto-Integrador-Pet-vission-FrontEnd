@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PetVission — Nueva Cita</title>
+  <link href=""/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --teal:       #1a9e8f;
+      --teal-dark:  #137a6e;
+      --teal-light: #e6f7f5;
+      --teal-mid:   #b2e8e2;
+      --amber:      #f5a623;
+      --amber-light:#fff8ed;
+      --green:      #4caf7d;
+      --green-light:#e8f8ef;
+      --red:        #e05252;
+      --red-light:  #fdeaea;
+      --gray-bg:    #f4f6f8;
+      --gray-border:#dde3ea;
+      --text-dark:  #1a2535;
+      --text-mid:   #4a5568;
+      --text-light: #8a97a8;
+      --white:      #ffffff;
+      --radius-sm:  8px;
+      --radius-md:  14px;
+      --radius-lg:  22px;
+      --shadow-sm:  0 2px 8px rgba(26,158,143,.10);
+      --shadow-md:  0 4px 20px rgba(26,158,143,.14);
+      --shadow-lg:  0 8px 40px rgba(26,158,143,.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--gray-bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ── */
+    .pv-topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .pv-logo {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .pv-logo span { color: var(--text-dark); }
+    .pv-logo-icon {
+      width: 34px; height: 34px;
+      background: var(--teal);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 1rem;
+    }
+    .pv-back-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .875rem;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--teal);
+      transition: all .2s;
+    }
+    .pv-back-btn:hover { background: var(--teal-light); color: var(--teal-dark); }
+
+    /* ── SYMPTOM BANNER ── */
+    .symptom-banner {
+      background: var(--teal);
+      padding: 10px 32px;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .symptom-banner::-webkit-scrollbar { display: none; }
+    .symptom-chip {
+      background: rgba(255,255,255,.15);
+      border: 1.5px solid rgba(255,255,255,.3);
+      border-radius: 50px;
+      padding: 7px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      font-size: .82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .symptom-chip:hover { background: rgba(255,255,255,.28); }
+    .symptom-chip .chip-emoji { font-size: 1.1rem; }
+
+    /* ── MAIN WRAPPER ── */
+    .pv-main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.7rem;
+      color: var(--text-dark);
+    }
+    .page-header p { font-size: .9rem; color: var(--text-mid); margin-top: 3px; }
+
+    /* ── STEPPER ── */
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px;
+    }
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .step-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      width: 100%;
+      height: 3px;
+      background: var(--gray-border);
+      z-index: 0;
+      transition: background .4s;
+    }
+    .step-item.done:not(:last-child)::after,
+    .step-item.active:not(:last-child)::after { background: var(--teal); }
+    .step-circle {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 3px solid var(--gray-border);
+      background: var(--white);
+      display: grid;
+      place-items: center;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .85rem;
+      color: var(--text-light);
+      z-index: 1;
+      position: relative;
+      transition: all .3s;
+    }
+    .step-item.done .step-circle {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+    .step-item.active .step-circle {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+      box-shadow: 0 0 0 5px rgba(26,158,143,.2);
+    }
+    .step-label {
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-top: 6px;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .step-item.active .step-label,
+    .step-item.done .step-label { color: var(--teal-dark); }
+
+    /* ── CARD ── */
+    .pv-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 32px;
+      border: 1px solid var(--gray-border);
+    }
+
+    /* ── STEP SECTIONS ── */
+    .step-section { display: none; }
+    .step-section.active { display: block; animation: fadeUp .35s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── STEP 1 — PACIENTE ── */
+    .pv-label {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .pv-select, .pv-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid var(--gray-border);
+      border-radius: var(--radius-md);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      color: var(--text-dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .pv-select:focus, .pv-input:focus { border-color: var(--teal); }
+    .pv-hint { font-size: .8rem; color: var(--text-light); margin-top: 6px; }
+
+    .pet-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 8px;
+    }
+    .pet-card {
+      border: 2px solid var(--gray-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .pet-card:hover { border-color: var(--teal); background: var(--teal-light); }
+    .pet-card.selected { border-color: var(--teal); background: var(--teal-light); }
+    .pet-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--teal-mid);
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+    }
+    .pet-name { font-weight: 700; font-size: .95rem; }
+    .pet-breed { font-size: .8rem; color: var(--text-mid); }
+    .pet-badge {
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 50px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+    .pet-badge.ok { background: var(--green-light); color: var(--green); }
+    .pet-badge.warn { background: var(--amber-light); color: var(--amber); }
+    .pet-card-new {
+      border: 2px dashed var(--gray-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      color: var(--teal);
+      font-weight: 700;
+      font-size: .9rem;
+      transition: all .2s;
+    }
+    .pet-card-new:hover { border-color: var(--teal); background: var(--teal-light); }
+
+    /* ── STEP 2 — SERVICIO ── */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .service-tile {
+      border: 2px solid var(--gray-border);
+      border-radius: var(--radius-md);
+      padding: 24px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .22s;
+    }
+    .service-tile:hover { border-color: var(--teal); background: var(--teal-light); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .service-tile.selected { border-color: var(--teal); background: var(--teal-light); }
+    .service-icon {
+      width: 54px; height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      margin: 0 auto 12px;
+    }
+    .service-name {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .9rem;
+      color: var(--text-dark);
+      line-height: 1.3;
+    }
+
+    /* ── STEP 3 — ESPECIALIDAD ── */
+    .spec-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .spec-tab {
+      padding: 9px 22px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: .875rem;
+      border: 2px solid var(--gray-border);
+      background: var(--white);
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .spec-tab.active {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: white;
+    }
+    .spec-form { display: flex; gap: 16px; }
+    .spec-form > div { flex: 1; }
+
+    /* ── STEP 4 — HORARIO ── */
+    .date-nav {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-bottom: 2px solid var(--gray-border);
+      margin-bottom: 28px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .date-nav::-webkit-scrollbar { display: none; }
+    .date-btn {
+      padding: 12px 22px;
+      text-align: center;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all .2s;
+      white-space: nowrap;
+      min-width: 90px;
+    }
+    .date-btn:hover { background: var(--teal-light); }
+    .date-btn.active {
+      border-bottom-color: var(--teal);
+      background: var(--teal-light);
+    }
+    .date-btn .d-day { font-size: .75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; }
+    .date-btn .d-num { font-size: 1.3rem; font-weight: 900; font-family: 'Nunito', sans-serif; color: var(--text-dark); }
+    .date-btn .d-month { font-size: .72rem; color: var(--text-mid); }
+    .date-btn.active .d-num, .date-btn.active .d-day, .date-btn.active .d-month { color: var(--teal-dark); }
+    .date-btn.no-hours { opacity: .45; cursor: not-allowed; }
+
+    .vet-section-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .vet-section-title span { font-size: .8rem; color: var(--text-mid); font-weight: 600; font-family: 'DM Sans', sans-serif; }
+
+    .vet-list { display: flex; flex-direction: column; gap: 14px; }
+    .vet-row {
+      border: 2px solid var(--gray-border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: border-color .2s;
+    }
+    .vet-row:hover { border-color: var(--teal-mid); }
+    .vet-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--teal-mid);
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .vet-info { flex: 1; min-width: 0; }
+    .vet-name { font-weight: 700; font-size: .95rem; color: var(--text-dark); }
+    .vet-spec { font-size: .8rem; color: var(--text-mid); margin-top: 2px; }
+    .hours-scroll {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex: 2;
+    }
+    .hour-btn {
+      padding: 8px 16px;
+      border: 2px solid var(--teal);
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: .82rem;
+      color: var(--teal);
+      background: var(--white);
+      cursor: pointer;
+      transition: all .18s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .hour-btn:hover, .hour-btn.selected {
+      background: var(--teal);
+      color: var(--white);
+    }
+    .hours-count {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--teal);
+      background: var(--teal-light);
+      border-radius: 50px;
+      padding: 4px 12px;
+      white-space: nowrap;
+    }
+    .ver-mas {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--teal);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    /* ── STEP 5 — CONFIRMAR ── */
+    .confirm-hero {
+      text-align: center;
+      padding: 24px 0 32px;
+    }
+    .confirm-check {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--green-light);
+      display: grid;
+      place-items: center;
+      font-size: 2.2rem;
+      margin: 0 auto 16px;
+    }
+    .confirm-hero h2 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: var(--text-dark);
+    }
+    .confirm-hero p { color: var(--text-mid); margin-top: 4px; }
+    .confirm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .confirm-item {
+      background: var(--gray-bg);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+    .confirm-item-label { font-size: .75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: .04em; }
+    .confirm-item-val { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-top: 4px; }
+    .confirm-item-sub { font-size: .82rem; color: var(--text-mid); }
+
+    /* ── BUTTONS ── */
+    .pv-btn-primary {
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 14px 32px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pv-btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .pv-btn-primary:disabled { background: var(--gray-border); color: var(--text-light); cursor: not-allowed; transform: none; box-shadow: none; }
+    .pv-btn-ghost {
+      background: none;
+      color: var(--teal);
+      border: 2px solid var(--teal);
+      border-radius: var(--radius-md);
+      padding: 12px 28px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .pv-btn-ghost:hover { background: var(--teal-light); }
+    .pv-btn-success {
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 14px 32px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pv-btn-success:hover { background: #3a9168; transform: translateY(-1px); }
+
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-border);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 200;
+      display: none;
+      place-items: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: grid; }
+    .modal-box {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+      animation: fadeUp .3s ease;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--gray-border);
+      background: none;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      color: var(--text-mid);
+      transition: all .2s;
+    }
+    .modal-close:hover { background: var(--red-light); border-color: var(--red); color: var(--red); }
+    .modal-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .pv-main { padding: 20px 12px 40px; }
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+      .spec-form { flex-direction: column; }
+      .pet-card-grid { grid-template-columns: 1fr; }
+      .confirm-grid { grid-template-columns: 1fr; }
+      .vet-row { flex-wrap: wrap; }
+      .pv-card { padding: 20px; }
+      .stepper { gap: 0; }
+      .step-label { font-size: .6rem; }
+      .hours-scroll { flex: 100%; margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="pv-topbar">
+  <a class="pv-logo" href="dashboard.html">
+    <div class="pv-logo-icon">🐾</div>
+    PetVission</span>
+  </a>
+  <a href="dashboard.html" class="pv-back-btn" onclick="goBack()">← Volver al Dashboard</a>
+</nav>
+
+<!-- SYMPTOM BANNER -->
+<div class="symptom-banner">
+  <div class="symptom-chip" onclick="quickBook('No come bien')"><span class="chip-emoji">🍽️</span> ¿No come bien?</div>
+  <div class="symptom-chip" onclick="quickBook('Vacunación')"><span class="chip-emoji">💉</span> ¿Necesita vacunas?</div>
+  <div class="symptom-chip" onclick="quickBook('Control de rutina')"><span class="chip-emoji">🩺</span> Control de rutina</div>
+  <div class="symptom-chip" onclick="quickBook('Desparasitación')"><span class="chip-emoji">🐛</span> Desparasitación</div>
+  <div class="symptom-chip" onclick="quickBook('Cirugía')"><span class="chip-emoji">🔬</span> Problemas de piel</div>
+</div>
+
+<!-- MAIN -->
+<div class="pv-main">
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>Nueva Cita</h1>
+    <p id="stepSubtitle">Paso 1: Identificar paciente</p>
+  </div>
+
+  <!-- STEPPER -->
+  <div class="stepper" id="stepper">
+    <div class="step-item active" data-step="1">
+      <div class="step-circle">1</div>
+      <div class="step-label">Paciente</div>
+    </div>
+    <div class="step-item" data-step="2">
+      <div class="step-circle">2</div>
+      <div class="step-label">Servicio</div>
+    </div>
+    <div class="step-item" data-step="3">
+      <div class="step-circle">3</div>
+      <div class="step-label">Procedimiento</div>
+    </div>
+    <div class="step-item" data-step="4">
+      <div class="step-circle">4</div>
+      <div class="step-label">Día y Hora</div>
+    </div>
+    <div class="step-item" data-step="5">
+      <div class="step-circle">✓</div>
+      <div class="step-label">Confirmar</div>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <div class="pv-card">
+
+    <!-- STEP 1: PACIENTE -->
+    <div class="step-section active" id="step1">
+      <div class="text-center mb-4">
+        <h4 style="font-family:'Nunito',sans-serif;font-weight:900;font-size:1.2rem;">¿Para quién es la cita?</h4>
+        <p style="color:var(--text-mid);font-size:.9rem;margin-top:4px;">Selecciona la mascota que será atendida</p>
+      </div>
+      <div class="pet-card-grid" id="petGrid">
+        <div class="pet-card" data-pet="Max" onclick="selectPet(this)">
+          <div class="pet-avatar">🐶</div>
+          <div>
+            <div class="pet-name">Max</div>
+            <div class="pet-breed">Golden Retriever · 3 años</div>
+            <span class="pet-badge ok">Saludable</span>
+          </div>
+        </div>
+        <div class="pet-card" data-pet="Luna" onclick="selectPet(this)">
+          <div class="pet-avatar">🐱</div>
+          <div>
+            <div class="pet-name">Luna</div>
+            <div class="pet-breed">Gato Siamés · 2 años</div>
+            <span class="pet-badge warn">Vacuna pendiente</span>
+          </div>
+        </div>
+        <div class="pet-card-new" onclick="openNewPetModal()">
+          <span style="font-size:1.3rem;">+</span> Agregar nueva mascota
+        </div>
+      </div>
+      <div class="footer-actions">
+        <span></span>
+        <button class="pv-btn-primary" onclick="nextStep()" id="btn1" disabled>
+          Continuar →
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: SERVICIO -->
+    <div class="step-section" id="step2">
+      <div class="text-center mb-4">
+        <h4 style="font-family:'Nunito',sans-serif;font-weight:900;font-size:1.2rem;">¿Qué servicio necesitas agendar?</h4>
+        <p style="color:var(--text-mid);font-size:.9rem;margin-top:4px;">Elige el tipo de atención para tu mascota</p>
+      </div>
+      <div class="service-grid" id="serviceGrid">
+        <div class="service-tile" data-service="Consulta General" onclick="selectService(this)">
+          <div class="service-icon" style="background:#e6f7f5;">🩺</div>
+          <div class="service-name">Consulta General</div>
+        </div>
+        <div class="service-tile" data-service="Vacunación" onclick="selectService(this)">
+          <div class="service-icon" style="background:#fff8ed;">💉</div>
+          <div class="service-name">Cirugía</div>
+        </div>
+        <div class="service-tile" data-service="Especialidades" onclick="selectService(this)">
+          <div class="service-icon" style="background:#e6f7f5;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 54" width="38" height="38">
+              <!-- Cruz médica outline teal con esquinas redondeadas -->
+              <path d="M20 6 h14 a4 4 0 0 1 4 4 v10 h10 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-10 v10 a4 4 0 0 1 -4 4 h-14 a4 4 0 0 1 -4 -4 v-10 h-10 a4 4 0 0 1 -4 -4 v-6 a4 4 0 0 1 4 -4 h10 v-10 a4 4 0 0 1 4 -4 z" fill="#b2e8e2" stroke="#1a9e8f" stroke-width="2.2"/>
+              <!-- Huella: almohadilla central -->
+              <path d="M27 26 Q24 23 23 27 Q22 32 27 35 Q32 32 31 27 Q30 23 27 26 Z" fill="#1a9e8f" stroke="#1a9e8f" stroke-width="0.5"/>
+              <!-- Dedo superior izquierdo -->
+              <ellipse cx="22" cy="23" rx="2.8" ry="2.2" transform="rotate(-20 22 23)" fill="#1a9e8f"/>
+              <!-- Dedo superior derecho -->
+              <ellipse cx="32" cy="23" rx="2.8" ry="2.2" transform="rotate(20 32 23)" fill="#1a9e8f"/>
+              <!-- Dedo izquierdo -->
+              <ellipse cx="19" cy="27" rx="2.2" ry="2.8" transform="rotate(-10 19 27)" fill="#1a9e8f"/>
+              <!-- Dedo derecho -->
+              <ellipse cx="35" cy="27" rx="2.2" ry="2.8" transform="rotate(10 35 27)" fill="#1a9e8f"/>
+            </svg>
+          </div>
+          <div class="service-name">Especialidades</div>
+        </div>
+        
+    
+        <div class="service-tile" data-service="Laboratorio" onclick="selectService(this)">
+          <div class="service-icon" style="background:#fef9e7;">🧪</div>
+          <div class="service-name">Laboratorio y Exámenes</div>
+        </div>
+        <div class="service-tile" data-service="Imagenología" onclick="selectService(this)">
+          <div class="service-icon" style="background:#f0f7ff;">📷</div>
+          <div class="service-name">Imagenología</div>
+        </div>
+        <div class="service-tile" data-service="Peluquería" onclick="selectService(this)">
+          <div class="service-icon" style="background:#f5f0ff;">✂️</div>
+          <div class="service-name">Peluquería</div>
+        </div>
+      </div>
+      <div class="footer-actions">
+        <button class="pv-btn-ghost" onclick="prevStep()">← Volver</button>
+        <button class="pv-btn-primary" onclick="nextStep()" id="btn2" disabled>Continuar →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: PROCEDIMIENTO -->
+    <div class="step-section" id="step3">
+      <div class="spec-tabs">
+        <div class="spec-tab active" onclick="switchSpecTab(this,'specialty')">Búsqueda por especialidad</div>
+        <div class="spec-tab" onclick="switchSpecTab(this,'professional')">Búsqueda por profesional</div>
+      </div>
+      <div id="specBySpecialty">
+        <div class="spec-form">
+          <div>
+            <div class="pv-label">Procedimiento</div>
+            <select class="pv-select" id="specialtySelect" onchange="checkStep3()">
+              <option value="">Seleccionar especialidad</option>
+              <option>Medicina General Veterinaria</option>
+              <option>Cirugía Veterinaria</option>
+              <option>Dermatología Veterinaria</option>
+              <option>Cardiología Veterinaria</option>
+              <option>Neurología Veterinaria</option>
+              <option>Oftalmología Veterinaria</option>
+              <option>Oncología Veterinaria</option>
+            </select>
+          </div>
+          <div>
+            <div class="pv-label">Región o Centro</div>
+            <select class="pv-select" id="centerSelect" onchange="checkStep3()">
+              <option value="">Seleccionar centro</option>
+              <option>PetVission Santiago Centro</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="specByProfessional" style="display:none;">
+        <div class="pv-label">Nombre del Profesional</div>
+        <input type="text" class="pv-input" placeholder="Ej: Dr. Ramírez" oninput="checkStep3Pro(this)"/>
+        <p class="pv-hint">Ingresa al menos 3 caracteres para buscar</p>
+      </div>
+      <div class="footer-actions">
+        <button class="pv-btn-ghost" onclick="prevStep()">← Volver</button>
+        <button class="pv-btn-primary" onclick="nextStep()" id="btn3" disabled>Buscar Horas →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: DÍA Y HORA -->
+    <div class="step-section" id="step4">
+      <div class="date-nav" id="dateNav"></div>
+      <div class="vet-section-title">
+        📍 PetVission Santiago Centro <span>(4 Profesionales)</span>
+      </div>
+      <div class="vet-list" id="vetList"></div>
+      <div class="footer-actions">
+        <button class="pv-btn-ghost" onclick="prevStep()">← Volver</button>
+        <button class="pv-btn-primary" onclick="nextStep()" id="btn4" disabled>Confirmar Hora →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: CONFIRMAR -->
+    <div class="step-section" id="step5">
+      <div class="confirm-hero">
+        <div class="confirm-check">✅</div>
+        <h2>Revisa y confirma tu cita</h2>
+        <p>Verifica los datos antes de confirmar</p>
+      </div>
+      <div class="confirm-grid" id="confirmGrid"></div>
+      <div class="footer-actions">
+        <button class="pv-btn-ghost" onclick="prevStep()">← Modificar</button>
+        <button class="pv-btn-success" onclick="confirmAppointment()">✓ Confirmar Cita</button>
+      </div>
+    </div>
+
+  </div><!-- /pv-card -->
+</div><!-- /pv-main -->
+
+<!-- MODAL: NUEVA MASCOTA -->
+<div class="modal-overlay" id="newPetModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeNewPetModal()">✕</button>
+    <div class="modal-title">➕ Agregar Nueva Mascota</div>
+    <div class="mb-3">
+      <div class="pv-label">Nombre de la mascota</div>
+      <input type="text" class="pv-input" id="newPetName" placeholder="Ej: Rocky"/>
+    </div>
+    <div class="mb-3">
+      <div class="pv-label">Especie</div>
+      <select class="pv-select" id="newPetSpecies">
+        <option>Perro</option><option>Gato</option><option>Conejo</option><option>Ave</option><option>Otro</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <div class="pv-label">Raza</div>
+      <input type="text" class="pv-input" id="newPetBreed" placeholder="Ej: Labrador"/>
+    </div>
+    <div class="mb-4">
+      <div class="pv-label">Edad</div>
+      <input type="text" class="pv-input" id="newPetAge" placeholder="Ej: 1 año"/>
+    </div>
+    <button class="pv-btn-primary w-100" onclick="addNewPet()">Agregar Mascota</button>
+  </div>
+</div>
+
+<!-- MODAL: CONFIRMACIÓN FINAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box" style="text-align:center;">
+    <div style="font-size:3.5rem;margin-bottom:12px;">🎉</div>
+    <h3 style="font-family:'Nunito',sans-serif;font-weight:900;font-size:1.4rem;margin-bottom:8px;">¡Cita confirmada!</h3>
+    <p style="color:var(--text-mid);margin-bottom:24px;" id="successMsg">Tu cita ha sido agendada exitosamente.</p>
+    <div style="background:var(--teal-light);border-radius:var(--radius-md);padding:16px;margin-bottom:24px;" id="successDetails"></div>
+    <button class="pv-btn-primary" style="width:100%;justify-content:center;" onclick="goToDashboard()">Volver al Dashboard</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── STATE ──
+  const state = {
+    step: 1,
+    pet: null,
+    service: null,
+    specialty: null,
+    center: null,
+    vet: null,
+    date: null,
+    hour: null
+  };
+
+  const stepTitles = [
+    'Paso 1: Identificar paciente',
+    'Paso 2: Seleccionar servicio',
+    'Paso 3: Seleccionar especialidad o profesional',
+    'Paso 4: Seleccionar día y hora',
+    'Paso 5: Confirmar cita'
+  ];
+
+  // ── STEPPER ──
+  function updateStepper() {
+    document.getElementById('stepSubtitle').textContent = stepTitles[state.step - 1];
+    document.querySelectorAll('.step-item').forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      const n = i + 1;
+      if (n < state.step) el.classList.add('done');
+      if (n === state.step) el.classList.add('active');
+    });
+    document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('step' + state.step).classList.add('active');
+  }
+
+  function nextStep() { if (state.step < 5) { state.step++; updateStepper(); if (state.step === 4) buildSchedule(); if (state.step === 5) buildConfirm(); } }
+  function prevStep() { if (state.step > 1) { state.step--; updateStepper(); } }
+
+  // ── STEP 1 ──
+  function selectPet(card) {
+    document.querySelectorAll('.pet-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    state.pet = card.dataset.pet;
+    document.getElementById('btn1').disabled = false;
+  }
+
+  // ── STEP 2 ──
+  function selectService(tile) {
+    document.querySelectorAll('.service-tile').forEach(t => t.classList.remove('selected'));
+    tile.classList.add('selected');
+    state.service = tile.dataset.service;
+    document.getElementById('btn2').disabled = false;
+  }
+
+  // ── STEP 3 ──
+  function switchSpecTab(tab, mode) {
+    document.querySelectorAll('.spec-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('specBySpecialty').style.display = mode === 'specialty' ? '' : 'none';
+    document.getElementById('specByProfessional').style.display = mode === 'professional' ? '' : 'none';
+    document.getElementById('btn3').disabled = true;
+  }
+  function checkStep3() {
+    const s = document.getElementById('specialtySelect').value;
+    const c = document.getElementById('centerSelect').value;
+    state.specialty = s; state.center = c;
+    document.getElementById('btn3').disabled = !(s && c);
+  }
+  function checkStep3Pro(input) {
+    state.specialty = input.value;
+    document.getElementById('btn3').disabled = input.value.length < 3;
+  }
+
+  // ── STEP 4 ──
+  const vets = [
+    { name: 'Dra. Valentina Rojas', spec: 'Medicina General Veterinaria', emoji: '👩‍⚕️',
+      hours: ['10:00','10:30','11:00','11:30','12:00','13:00','14:00','14:30'] },
+    { name: 'Dr. Sebastián Mora', spec: 'Cirugía y Medicina General', emoji: '👨‍⚕️',
+      hours: ['09:30','10:00','12:30','13:30','15:00','15:30','16:00'] },
+    { name: 'Dra. Camila Fuentes', spec: 'Dermatología Veterinaria', emoji: '👩‍⚕️',
+      hours: ['11:00','11:30','14:00','16:00','16:30','17:00'] },
+    { name: 'Dr. Andrés Vidal', spec: 'Medicina General Veterinaria', emoji: '👨‍⚕️',
+      hours: ['09:00','10:30','11:30','13:00','14:00','17:00','17:30','18:00'] }
+  ];
+
+  const days = [
+    { day:'Dom', num:17, month:'May', noHours: true },
+    { day:'Lun', num:18, month:'May' },
+    { day:'Mar', num:19, month:'May' },
+    { day:'Mié', num:20, month:'May' },
+    { day:'Jue', num:21, month:'May' },
+    { day:'Vie', num:22, month:'May' },
+    { day:'Sáb', num:23, month:'May' }
+  ];
+
+  function buildSchedule() {
+    const nav = document.getElementById('dateNav');
+    nav.innerHTML = '';
+    days.forEach((d, i) => {
+      const div = document.createElement('div');
+      div.className = 'date-btn' + (i === 1 ? ' active' : '') + (d.noHours ? ' no-hours' : '');
+      div.innerHTML = `<div class="d-day">${d.day}</div><div class="d-num">${d.num}</div><div class="d-month">${d.month}</div>`;
+      if (!d.noHours) div.onclick = () => { document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active')); div.classList.add('active'); state.date = `${d.day} ${d.num} de mayo`; };
+      nav.appendChild(div);
+    });
+    state.date = 'Lun 18 de mayo';
+
+    const list = document.getElementById('vetList');
+    list.innerHTML = '';
+    vets.forEach(vet => {
+      const row = document.createElement('div');
+      row.className = 'vet-row';
+      const shown = vet.hours.slice(0, 5);
+      const extra = vet.hours.length - shown.length;
+      row.innerHTML = `
+        <div class="vet-avatar">${vet.emoji}</div>
+        <div class="vet-info">
+          <div class="vet-name">${vet.name}</div>
+          <div class="vet-spec">${vet.spec}</div>
+        </div>
+        <div class="hours-scroll">
+          ${shown.map(h => `<button class="hour-btn" data-vet="${vet.name}" data-hour="${h}" onclick="selectHour(this)">${h}</button>`).join('')}
+          ${extra > 0 ? `<span class="hours-count">${vet.hours.length} horas</span>` : ''}
+        </div>`;
+      list.appendChild(row);
+    });
+  }
+
+  function selectHour(btn) {
+    document.querySelectorAll('.hour-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state.vet = btn.dataset.vet;
+    state.hour = btn.dataset.hour;
+    document.getElementById('btn4').disabled = false;
+  }
+
+  // ── STEP 5 ──
+  function buildConfirm() {
+    const g = document.getElementById('confirmGrid');
+    g.innerHTML = `
+      <div class="confirm-item">
+        <div class="confirm-item-label">Mascota</div>
+        <div class="confirm-item-val">${state.pet || '—'}</div>
+      </div>
+      <div class="confirm-item">
+        <div class="confirm-item-label">Servicio</div>
+        <div class="confirm-item-val">${state.service || '—'}</div>
+      </div>
+      <div class="confirm-item">
+        <div class="confirm-item-label">Especialidad</div>
+        <div class="confirm-item-val">${state.specialty || '—'}</div>
+        <div class="confirm-item-sub">${state.center || ''}</div>
+      </div>
+      <div class="confirm-item">
+        <div class="confirm-item-label">Profesional</div>
+        <div class="confirm-item-val">${state.vet || '—'}</div>
+      </div>
+      <div class="confirm-item">
+        <div class="confirm-item-label">Fecha</div>
+        <div class="confirm-item-val">${state.date || '—'}</div>
+      </div>
+      <div class="confirm-item">
+        <div class="confirm-item-label">Hora</div>
+        <div class="confirm-item-val" style="color:var(--teal);font-size:1.3rem;">${state.hour || '—'}</div>
+      </div>`;
+  }
+
+  function confirmAppointment() {
+    document.getElementById('successMsg').textContent = `La cita para ${state.pet} ha sido agendada exitosamente.`;
+    document.getElementById('successDetails').innerHTML = `
+      <strong>${state.vet}</strong><br>
+      📅 ${state.date} · ⏰ ${state.hour}<br>
+      📍 ${state.center || 'PetVission Santiago Centro'}`;
+    document.getElementById('successModal').classList.add('open');
+  }
+
+  // ── MODALS ──
+  function openNewPetModal() { document.getElementById('newPetModal').classList.add('open'); }
+  function closeNewPetModal() { document.getElementById('newPetModal').classList.remove('open'); }
+
+  function addNewPet() {
+    const name = document.getElementById('newPetName').value.trim();
+    const species = document.getElementById('newPetSpecies').value;
+    const breed = document.getElementById('newPetBreed').value.trim() || species;
+    const age = document.getElementById('newPetAge').value.trim() || '?';
+    if (!name) return;
+    const emoji = species === 'Perro' ? '🐶' : species === 'Gato' ? '🐱' : species === 'Conejo' ? '🐰' : species === 'Ave' ? '🐦' : '🐾';
+    const grid = document.getElementById('petGrid');
+    const newCard = document.createElement('div');
+    newCard.className = 'pet-card';
+    newCard.dataset.pet = name;
+    newCard.onclick = function(){ selectPet(this); };
+    newCard.innerHTML = `
+      <div class="pet-avatar">${emoji}</div>
+      <div>
+        <div class="pet-name">${name}</div>
+        <div class="pet-breed">${breed} · ${age}</div>
+        <span class="pet-badge ok">Nueva</span>
+      </div>`;
+    grid.insertBefore(newCard, grid.lastElementChild);
+    closeNewPetModal();
+    selectPet(newCard);
+  }
+
+  function goToDashboard() { window.location.reload(); }
+  function goBack() { window.history.back(); }
+
+  function quickBook(symptom) {
+    state.service = symptom;
+    state.step = 1;
+    updateStepper();
+  }
+</script>
+</body>
+</html>
