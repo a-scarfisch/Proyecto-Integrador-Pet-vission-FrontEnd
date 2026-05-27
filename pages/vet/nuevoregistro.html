@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PetVission — Nuevo Registro</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --teal:#037389; --teal-dark:#0e8f80; --teal-light:#e6f7f5;
+  --teal-tab:#a5d4d0; --gray-bg:#f0f2f4; --gray-border:#c8d0d8;
+  --text-dark:#1a2535; --text-mid:#4a5568; --text-light:#8a97a8;
+  --white:#ffffff; --section-bg:#f7f9fa;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--gray-bg);color:var(--text-dark);font-size:13px;}
+
+/* TOPBAR */
+.pv-topbar{background:var(--white);border-bottom:1px solid var(--gray-border);padding:0 20px;height:50px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;}
+.pv-logo{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;color:var(--teal);display:flex;align-items:center;gap:8px;text-decoration:none;}
+.pv-logo-icon{width:28px;height:28px;background:var(--teal);border-radius:7px;display:grid;place-items:center;color:white;font-size:.85rem;}
+.pv-back-btn{font-size:.75rem;font-weight:600;color:var(--teal);text-decoration:none;display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;border:1.5px solid var(--teal);transition:all .2s;}
+.pv-back-btn:hover{background:var(--teal-light);}
+
+/* DOC BAR */
+.doc-bar{background:var(--teal);color:white;padding:5px 20px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;}
+.doc-bar-center{text-align:center;font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;}
+.doc-bar-actions{display:flex;gap:8px;}
+.doc-bar-btn{background:rgba(255,255,255,.2);border:none;color:white;padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;}
+.doc-bar-btn:hover{background:rgba(255,255,255,.35);}
+
+/* PATIENT BAR */
+.patient-bar{background:var(--white);border-bottom:2px solid var(--gray-border);padding:5px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.patient-bar .name{font-family:'Nunito',sans-serif;font-weight:900;font-size:.95rem;}
+.patient-bar .badge-rut{background:#e8edf2;color:var(--text-mid);font-size:.7rem;padding:2px 7px;border-radius:4px;font-weight:700;}
+.patient-bar .age{color:var(--text-mid);font-size:.8rem;font-weight:600;}
+.patient-bar-right{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:.75rem;color:var(--text-mid);}
+.patient-bar-right label{font-weight:700;}
+.patient-bar-right select,.patient-bar-right input{border:1px solid var(--gray-border);border-radius:4px;padding:3px 6px;font-size:.72rem;color:var(--text-dark);background:var(--white);}
+
+/* MAIN TABS */
+.main-tabs{background:var(--white);border-bottom:2px solid var(--gray-border);display:flex;}
+.main-tab{padding:9px 28px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;border:none;background:none;color:var(--text-mid);border-right:1px solid var(--gray-border);}
+.main-tab.active{background:var(--teal-tab);color:#000;}
+.tab-badge{background:#e05252;color:white;font-size:.6rem;padding:1px 5px;border-radius:8px;margin-left:4px;}
+
+/* PANELS */
+.panel-view{display:none;}
+.panel-view.active{display:block;}
+
+/* 3-COL GRID */
+.consult-grid{display:grid;grid-template-columns:1fr 1fr 300px;gap:0;height:calc(100vh - 148px);overflow:hidden;}
+.col-panel{border-right:1px solid var(--gray-border);overflow-y:auto;background:var(--white);display:flex;flex-direction:column;}
+.col-panel:last-child{border-right:none;}
+.col-panel::-webkit-scrollbar{width:4px;}
+.col-panel::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:3px;}
+
+/* SECTION BLOCKS */
+.sec-block{border-bottom:1px solid var(--gray-border);}
+.sec-head{padding:6px 12px;font-size:.72rem;font-weight:700;color:var(--text-dark);background:var(--section-bg);border-bottom:1px solid var(--gray-border);display:flex;align-items:center;justify-content:space-between;}
+.add-btn{width:18px;height:18px;border-radius:50%;background:var(--teal);color:white;border:none;cursor:pointer;font-size:1rem;line-height:1;display:inline-grid;place-items:center;flex-shrink:0;}
+.add-btn:hover{background:var(--teal-dark);}
+.sec-content{padding:7px 12px;font-size:.78rem;color:var(--text-mid);}
+.sec-content textarea{width:100%;border:none;outline:none;resize:none;font-family:inherit;font-size:.78rem;color:var(--text-dark);background:transparent;line-height:1.55;}
+
+/* Saved items list */
+.saved-list{padding:4px 12px 6px;display:flex;flex-direction:column;gap:4px;}
+.saved-item{display:flex;align-items:flex-start;gap:6px;font-size:.77rem;color:var(--text-dark);background:#f0fbf9;border-radius:5px;padding:5px 8px;border-left:3px solid var(--teal);}
+.saved-item .del-x{margin-left:auto;background:none;border:none;color:#e05252;cursor:pointer;font-size:.9rem;padding:0 2px;flex-shrink:0;}
+.saved-item .item-text{flex:1;white-space:pre-wrap;}
+
+/* Inner tabs */
+.inner-tabs{display:flex;border-bottom:1px solid var(--gray-border);background:var(--section-bg);}
+.inner-tab{padding:5px 13px;font-size:.68rem;font-weight:700;text-transform:uppercase;cursor:pointer;border:none;background:none;color:var(--text-mid);border-right:1px solid var(--gray-border);}
+.inner-tab.active{background:var(--teal-tab);color:#000;}
+.inner-pane{display:none;}
+.inner-pane.active{display:block;}
+
+/* Vitals grid */
+.vitals-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 12px;}
+.vital-row label{display:block;font-size:.67rem;color:var(--text-light);font-weight:600;text-transform:uppercase;margin-bottom:2px;}
+.vital-row input{width:100%;border:1px solid var(--gray-border);border-radius:4px;padding:4px 7px;font-size:.77rem;}
+
+/* Right col */
+.perm-section{border-bottom:1px solid var(--gray-border);}
+.perm-head{padding:5px 12px;font-size:.72rem;font-weight:700;background:var(--section-bg);border-bottom:1px solid var(--gray-border);display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;}
+.perm-head .chevron{font-size:.65rem;color:var(--text-light);margin-left:auto;transition:transform .2s;}
+.perm-head.open .chevron{transform:rotate(90deg);}
+.perm-body{padding:6px 12px;font-size:.76rem;color:var(--text-mid);}
+.perm-body .info-line{margin-bottom:3px;}
+
+/* Consultas anteriores panel */
+.prev-panel{padding:20px;height:calc(100vh-148px);overflow-y:auto;}
+.prev-card{background:white;border:1px solid var(--gray-border);border-radius:8px;padding:14px;margin-bottom:12px;}
+.prev-card .pc-date{font-size:.75rem;font-weight:700;color:var(--teal);margin-bottom:6px;}
+.prev-card .pc-row{display:flex;gap:8px;margin-bottom:4px;font-size:.78rem;}
+.prev-card .pc-label{font-weight:700;color:var(--text-dark);min-width:100px;}
+
+/* Stats panel */
+.stats-panel{padding:16px;background:white;height:calc(100vh-148px);overflow-y:auto;}
+.stat-box{background:var(--section-bg);border:1px solid var(--gray-border);border-radius:8px;padding:14px;margin-bottom:12px;}
+.stat-box h6{font-size:.78rem;font-weight:700;color:var(--text-dark);margin-bottom:10px;}
+.stat-row{display:flex;justify-content:space-between;font-size:.76rem;color:var(--text-mid);padding:3px 0;border-bottom:1px dashed var(--gray-border);}
+.stat-row:last-child{border:none;}
+.stat-val{font-weight:700;color:var(--text-dark);}
+
+/* BOTTOM BAR */
+.bottom-bar{background:var(--white);border-top:2px solid var(--gray-border);padding:6px 20px;display:flex;align-items:center;gap:14px;font-size:.77rem;}
+.bottom-bar .auto-save{color:var(--text-light);font-size:.7rem;flex:1;}
+.bottom-bar select{border:1px solid var(--gray-border);border-radius:4px;padding:3px 7px;font-size:.73rem;}
+.bottom-bar label{font-weight:700;color:var(--text-mid);}
+.bottom-bar-right{margin-left:auto;display:flex;gap:7px;}
+.btn-bottom{padding:5px 12px;border-radius:5px;font-size:.72rem;font-weight:700;cursor:pointer;border:1.5px solid transparent;}
+.btn-teal{background:var(--teal);color:white;border-color:var(--teal);}
+.btn-teal:hover{background:var(--teal-dark);}
+.btn-outline{background:white;color:var(--text-mid);border-color:var(--gray-border);}
+.btn-outline:hover{background:var(--section-bg);}
+.btn-blue{background:#2c7be5;color:white;border-color:#2c7be5;}
+.btn-blue:hover{background:#1a5fc2;}
+
+/* ══ MODAL OVERLAY ══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:white;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.25);width:520px;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;}
+.modal-box.wide{width:680px;}
+.modal-header{background:var(--teal);color:white;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;}
+.modal-close{background:none;border:none;color:white;font-size:1.3rem;cursor:pointer;line-height:1;padding:0 4px;}
+.modal-body{padding:18px;overflow-y:auto;flex:1;}
+.modal-footer{padding:12px 18px;border-top:1px solid var(--gray-border);display:flex;gap:8px;justify-content:flex-end;background:var(--section-bg);}
+.modal-footer .btn-print{background:#f5a623;color:white;border:none;padding:6px 16px;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;}
+.modal-footer .btn-print:hover{background:#d4891a;}
+.modal-footer .btn-save-modal{background:var(--teal);color:white;border:none;padding:6px 16px;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;}
+.modal-footer .btn-save-modal:hover{background:var(--teal-dark);}
+.modal-footer .btn-cancel-modal{background:white;color:var(--text-mid);border:1px solid var(--gray-border);padding:6px 16px;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;}
+
+/* Form inside modal */
+.mf-label{font-size:.75rem;font-weight:700;color:var(--text-dark);display:block;margin-bottom:4px;}
+.mf-input{width:100%;border:1px solid var(--gray-border);border-radius:6px;padding:7px 10px;font-size:.8rem;font-family:inherit;color:var(--text-dark);}
+.mf-input:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+.mf-textarea{width:100%;border:1px solid var(--gray-border);border-radius:6px;padding:7px 10px;font-size:.8rem;font-family:inherit;color:var(--text-dark);resize:vertical;min-height:90px;}
+.mf-textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+.mf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.mf-group{margin-bottom:13px;}
+
+/* Printable */
+.print-doc{font-family:'DM Sans',sans-serif;font-size:.82rem;color:#1a2535;}
+.print-doc .pd-title{text-align:center;font-family:'Nunito',sans-serif;font-weight:800;font-size:1.1rem;color:var(--teal);margin-bottom:4px;}
+.print-doc .pd-sub{text-align:center;font-size:.75rem;color:var(--text-mid);margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--teal);}
+.print-doc .pd-section{margin-bottom:10px;}
+.print-doc .pd-section-title{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--teal);margin-bottom:4px;}
+.print-doc .pd-content{border:1px solid var(--gray-border);border-radius:5px;padding:8px 10px;min-height:40px;font-size:.8rem;white-space:pre-wrap;}
+
+@media print{
+  body>*:not(#printArea){display:none!important;}
+  #printArea{display:block!important;position:fixed;inset:0;background:white;padding:24px;z-index:9999;}
+}
+
+/* ══ VIEWER MODAL ══ */
+.viewer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:center;justify-content:center;}
+.viewer-overlay.open{display:flex;}
+.viewer-shell{background:white;border-radius:14px;box-shadow:0 10px 50px rgba(0,0,0,.3);width:860px;max-width:96vw;height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.viewer-header{background:var(--teal);color:white;padding:12px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.viewer-header h5{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;flex:1;margin:0;}
+.viewer-close{background:none;border:none;color:white;font-size:1.4rem;cursor:pointer;line-height:1;padding:0 4px;}
+.viewer-body{display:flex;flex:1;overflow:hidden;}
+/* sidebar list */
+.vw-sidebar{width:240px;border-right:1px solid var(--gray-border);background:var(--section-bg);display:flex;flex-direction:column;flex-shrink:0;}
+.vw-sidebar-head{padding:10px 14px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-light);border-bottom:1px solid var(--gray-border);display:flex;align-items:center;justify-content:space-between;}
+.vw-list{flex:1;overflow-y:auto;padding:6px;}
+.vw-list::-webkit-scrollbar{width:4px;}
+.vw-list::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:3px;}
+.vw-item{padding:8px 10px;border-radius:7px;cursor:pointer;margin-bottom:4px;border:1.5px solid transparent;transition:all .15s;}
+.vw-item:hover{background:var(--teal-light);}
+.vw-item.active{background:var(--teal-light);border-color:var(--teal);}
+.vw-item .vi-title{font-size:.78rem;font-weight:700;color:var(--text-dark);margin-bottom:2px;}
+.vw-item .vi-meta{font-size:.68rem;color:var(--text-light);}
+.vw-item .vi-badge{display:inline-block;font-size:.6rem;padding:1px 6px;border-radius:8px;font-weight:700;margin-top:3px;}
+.badge-lab{background:#e8f3ff;color:#2c7be5;}
+.badge-img{background:#fff3e0;color:#e67e22;}
+.badge-doc{background:#e8f8ef;color:#27ae60;}
+.badge-arch{background:#f3e8ff;color:#8e44ad;}
+/* content pane */
+.vw-content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.vw-content-head{padding:12px 18px;border-bottom:1px solid var(--gray-border);display:flex;align-items:center;gap:10px;flex-shrink:0;background:white;}
+.vw-content-head h6{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;margin:0;flex:1;}
+.vw-content-body{flex:1;overflow-y:auto;padding:18px;}
+.vw-content-body::-webkit-scrollbar{width:5px;}
+.vw-content-body::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:3px;}
+/* doc renderer */
+.doc-render{background:white;border:1px solid var(--gray-border);border-radius:8px;padding:20px;font-size:.82rem;line-height:1.7;color:var(--text-dark);}
+.doc-render .dr-header{text-align:center;padding-bottom:12px;border-bottom:2px solid var(--teal);margin-bottom:16px;}
+.doc-render .dr-clinic{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;color:var(--teal);}
+.doc-render .dr-subtitle{font-size:.75rem;color:var(--text-mid);margin-top:2px;}
+.doc-render .dr-patient{background:var(--teal-light);border-radius:6px;padding:8px 12px;margin-bottom:14px;font-size:.8rem;}
+.doc-render .dr-patient strong{color:var(--teal);}
+.doc-render .dr-section{margin-bottom:14px;}
+.doc-render .dr-section-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);margin-bottom:5px;}
+.doc-render .dr-section-content{border:1px solid var(--gray-border);border-radius:5px;padding:10px 12px;min-height:36px;white-space:pre-wrap;}
+.doc-render .dr-footer{border-top:1px solid var(--gray-border);margin-top:16px;padding-top:10px;display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-light);}
+/* empty state */
+.vw-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-light);gap:8px;}
+.vw-empty .ve-icon{font-size:2.5rem;opacity:.4;}
+.vw-empty p{font-size:.82rem;font-weight:600;}
+/* add-doc form */
+.vw-addform{background:var(--section-bg);border:1px solid var(--gray-border);border-radius:8px;padding:16px;margin-bottom:14px;}
+.vw-addform h6{font-size:.78rem;font-weight:800;color:var(--text-dark);margin-bottom:10px;}
+/* file input */
+.file-drop{border:2px dashed var(--gray-border);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:border-color .2s;font-size:.78rem;color:var(--text-mid);}
+.file-drop:hover{border-color:var(--teal);background:var(--teal-light);}
+.file-drop input{display:none;}
+.file-thumb{display:flex;align-items:center;gap:10px;background:white;border:1px solid var(--gray-border);border-radius:6px;padding:8px 12px;margin-top:8px;}
+.file-thumb .ft-icon{font-size:1.4rem;}
+.file-thumb .ft-name{font-size:.78rem;font-weight:600;color:var(--text-dark);flex:1;}
+.file-thumb .ft-remove{background:none;border:none;color:#e05252;cursor:pointer;font-size:.9rem;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="pv-topbar">
+  <a class="pv-logo" href="VetVission_Logo">
+    <div class="pv-logo-icon">🐾</div>PetVission
+  </a>
+  <a href="dashboard.html" class="pv-back-btn">← Volver al Dashboard</a>
+</nav>
+
+<!-- DOC BAR -->
+<div class="doc-bar">
+  <div>Dr. Veterinario — Medicina General</div>
+  <div class="doc-bar-center">🐾 PetVission — Consultorio<br><span style="font-weight:400;font-size:.72rem;" id="clockDisplay"></span></div>
+
+</div>
+
+<!-- PATIENT BAR -->
+<div class="patient-bar">
+  <span class="name">MAX</span>
+  <span class="badge-rut">SIN CHIP</span>
+  <span class="age">3 AÑOS</span>
+  <span style="color:var(--gray-border);">|</span>
+  <span style="font-size:.78rem;color:var(--text-mid);">Perro · Golden Retriever · Macho</span>
+  <div class="patient-bar-right">
+    <label>Texto:</label><select><option>ORIGINAL</option><option>COPIA</option></select>
+    <label>Fecha:</label><input type="text" value="26-05-2026" style="width:88px;"/>
+    <label>Hora:</label><input type="time" value="13:35" style="width:72px;"/>
+    <label>Lugar:</label><select><option>CONSULTA</option><option>DOMICILIO</option><option>URGENCIA</option></select>
+  </div>
+</div>
+
+<!-- MAIN TABS -->
+<div class="main-tabs">
+  <button class="main-tab" onclick="switchMain(0,this)">Consultas Anteriores</button>
+  <button class="main-tab" onclick="switchMain(1,this)">Estadísticas del Paciente</button>
+  <button class="main-tab active" onclick="switchMain(2,this)">Nueva Consulta <span class="tab-badge">3</span></button>
+</div>
+
+<!-- ══ PANEL: Consultas Anteriores ══ -->
+<div class="panel-view" id="pv0">
+  <div class="prev-panel" style="background:var(--gray-bg);">
+    <h6 style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;margin-bottom:14px;color:var(--text-dark);">Historial de Atenciones — Max</h6>
+    <div class="prev-card">
+      <div class="pc-date">📋 12/03/2026 — Consulta General</div>
+      <div class="pc-row"><span class="pc-label">Motivo:</span><span>Revisión de rutina, control de peso</span></div>
+      <div class="pc-row"><span class="pc-label">Diagnóstico:</span><span>Paciente sano, leve sobrepeso</span></div>
+      <div class="pc-row"><span class="pc-label">Tratamiento:</span><span>Dieta hipocalórica, ejercicio diario</span></div>
+      <div class="pc-row"><span class="pc-label">Vet.:</span><span>Dr. Veterinario</span></div>
+    </div>
+    <div class="prev-card">
+      <div class="pc-date">📋 05/11/2025 — Urgencia</div>
+      <div class="pc-row"><span class="pc-label">Motivo:</span><span>Vómitos y decaimiento</span></div>
+      <div class="pc-row"><span class="pc-label">Diagnóstico:</span><span>Gastroenteritis aguda</span></div>
+      <div class="pc-row"><span class="pc-label">Tratamiento:</span><span>Metronidazol 250mg c/12h x 5 días, dieta blanda</span></div>
+      <div class="pc-row"><span class="pc-label">Vet.:</span><span>Dr. Veterinario</span></div>
+    </div>
+    <div class="prev-card">
+      <div class="pc-date">📋 20/07/2025 — Vacunación</div>
+      <div class="pc-row"><span class="pc-label">Motivo:</span><span>Vacuna anual</span></div>
+      <div class="pc-row"><span class="pc-label">Diagnóstico:</span><span>Paciente sano</span></div>
+      <div class="pc-row"><span class="pc-label">Tratamiento:</span><span>Vacuna polivalente + antirrábica</span></div>
+      <div class="pc-row"><span class="pc-label">Vet.:</span><span>Dr. Veterinario</span></div>
+    </div>
+    <div id="prevExtra"></div>
+  </div>
+</div>
+
+<!-- ══ PANEL: Estadísticas ══ -->
+<div class="panel-view" id="pv1">
+  <div class="stats-panel" style="background:var(--gray-bg);">
+    <h6 style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;margin-bottom:14px;color:var(--text-dark);">Evolución Clínica — Max</h6>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="background:white;border:1px solid var(--gray-border);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:1.6rem;font-weight:800;color:var(--teal);">3</div>
+        <div style="font-size:.72rem;color:var(--text-mid);font-weight:600;">Consultas</div>
+      </div>
+      <div style="background:white;border:1px solid var(--gray-border);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:1.6rem;font-weight:800;color:#f5a623;">26.5</div>
+        <div style="font-size:.72rem;color:var(--text-mid);font-weight:600;">Peso actual (kg)</div>
+      </div>
+      <div style="background:white;border:1px solid var(--gray-border);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:1.6rem;font-weight:800;color:#4caf7d;">3</div>
+        <div style="font-size:.72rem;color:var(--text-mid);font-weight:600;">Vacunas al día</div>
+      </div>
+    </div>
+    <div class="stat-box">
+      <h6>Evolución de Peso (kg)</h6>
+      <div class="stat-row"><span>Jul 2025</span><span class="stat-val">24.2 kg</span></div>
+      <div class="stat-row"><span>Nov 2025</span><span class="stat-val">25.8 kg</span></div>
+      <div class="stat-row"><span>Mar 2026</span><span class="stat-val">26.5 kg ▲</span></div>
+    </div>
+    <div class="stat-box">
+      <h6>Últimos Signos Vitales Registrados</h6>
+      <div class="stat-row"><span>Temperatura</span><span class="stat-val" id="stat-temp">—</span></div>
+      <div class="stat-row"><span>Frecuencia Cardíaca</span><span class="stat-val" id="stat-fc">—</span></div>
+      <div class="stat-row"><span>Frecuencia Respiratoria</span><span class="stat-val" id="stat-fr">—</span></div>
+      <div class="stat-row"><span>Peso</span><span class="stat-val" id="stat-peso">—</span></div>
+    </div>
+    <div class="stat-box">
+      <h6>Alergias conocidas</h6>
+      <div id="stat-alergias"><div class="stat-row"><span>Sin alergias registradas</span><span>—</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL: Nueva Consulta ══ -->
+<div class="panel-view active" id="pv2">
+<div class="consult-grid">
+
+  <!-- ── COL 1 ── -->
+  <div class="col-panel">
+
+    <div class="sec-block">
+      <div class="sec-head">Motivo de la Consulta
+        <button class="add-btn" onclick="openModal('motivo')">＋</button>
+      </div>
+      <div class="saved-list" id="list-motivo"></div>
+    </div>
+
+    <div class="sec-block">
+      <div class="sec-head">Evaluación / Examen Físico / Otros
+        <button class="add-btn" onclick="openModal('evaluacion')">＋</button>
+      </div>
+      <div class="saved-list" id="list-evaluacion"></div>
+      <div class="inner-tabs">
+        <button class="inner-tab active" onclick="switchInner(this,'vitales-pane')">Signos Vitales</button>
+        <button class="inner-tab" onclick="switchInner(this,'dimensiones-pane')">Dimensiones</button>
+        <button class="inner-tab" onclick="switchInner(this,'riesgo-pane')">Factores de Riesgo</button>
+      </div>
+      <div class="inner-pane active" id="vitales-pane">
+        <div class="vitals-grid">
+          <div class="vital-row"><label>Temperatura (°C)</label><input type="text" id="v-temp" placeholder="38.5"/></div>
+          <div class="vital-row"><label>Frec. Cardíaca (lpm)</label><input type="text" id="v-fc" placeholder="80"/></div>
+          <div class="vital-row"><label>Frec. Respiratoria (rpm)</label><input type="text" id="v-fr" placeholder="20"/></div>
+          <div class="vital-row"><label>Saturación O₂ (%)</label><input type="text" id="v-sat" placeholder="98"/></div>
+        </div>
+        <div style="padding:0 12px 8px;display:flex;justify-content:flex-end;">
+          <button class="btn-bottom btn-teal" onclick="saveVitals()">💾 Guardar Signos</button>
+        </div>
+      </div>
+      <div class="inner-pane" id="dimensiones-pane">
+        <div class="vitals-grid">
+          <div class="vital-row"><label>Peso (kg)</label><input type="text" id="v-peso" placeholder="25"/></div>
+          <div class="vital-row"><label>Tamaño</label><input type="text" id="v-talla" placeholder="Pequeño, Mediano, Grande, Gigante"/></div>
+          <div class="vital-row"><label>Condición Corporal (1-9)</label><input type="text" id="v-cc" placeholder="5"/></div>
+          <div class="vital-row"><label>Cintura (cm)</label><input type="text" id="v-cintura" placeholder="40"/></div>
+        </div>
+        <div style="padding:0 12px 8px;display:flex;justify-content:flex-end;">
+          <button class="btn-bottom btn-teal" onclick="saveDimensiones()">💾 Guardar Dimensiones</button>
+        </div>
+      </div>
+      <div class="inner-pane" id="riesgo-pane">
+        <div style="padding:8px 12px;">
+          <div class="mf-group">
+            <label class="mf-label">Factor de Riesgo</label>
+            <textarea class="mf-textarea" id="v-riesgo" style="min-height:60px;" placeholder="Describe factores de riesgo identificados…"></textarea>
+          </div>
+          <div style="display:flex;justify-content:flex-end;">
+            <button class="btn-bottom btn-teal" onclick="saveRiesgo()">💾 Guardar</button>
+          </div>
+          <div id="list-riesgo" style="margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-block" style="flex:1;">
+      <div class="sec-head">Hipótesis Diagnóstica
+        <button class="add-btn" onclick="openModal('hipotesis')">＋</button>
+      </div>
+      <div class="saved-list" id="list-hipotesis"></div>
+    </div>
+
+  </div>
+
+  <!-- ── COL 2 ── -->
+  <div class="col-panel">
+
+    <div class="sec-block">
+      <div class="sec-head">Exámenes
+        <button class="add-btn" onclick="openModal('examenes')">＋</button>
+      </div>
+      <div class="saved-list" id="list-examenes"></div>
+      <div class="inner-tabs">
+        <button class="inner-tab active" onclick="switchInner(this,'imagen-pane')">Solicitud de Imagenología</button>
+        <button class="inner-tab" onclick="switchInner(this,'lab-pane')">Solicitud de Laboratorio</button>
+      </div>
+      <div class="inner-pane active" id="imagen-pane">
+        <div style="padding:8px 12px 4px;">
+          <div class="saved-list" id="list-imagen" style="margin-bottom:6px;"></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn-bottom btn-teal" onclick="openPrintModal('imagen')">📝 Nueva Solicitud</button>
+          </div>
+        </div>
+      </div>
+      <div class="inner-pane" id="lab-pane">
+        <div style="padding:8px 12px 4px;">
+          <div class="saved-list" id="list-lab" style="margin-bottom:6px;"></div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-bottom btn-teal" onclick="openPrintModal('lab')">📝 Nueva Solicitud</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-block">
+      <div class="sec-head">Procedimientos / Tratamiento efectuado
+        <button class="add-btn" onclick="openModal('procedimientos')">＋</button>
+      </div>
+      <div class="saved-list" id="list-procedimientos"></div>
+    </div>
+
+    <div class="sec-block" style="flex:1;">
+      <div class="sec-head">Indicaciones / Alta Médica
+        <button class="add-btn" onclick="openModal('indicaciones')">＋</button>
+      </div>
+      <div class="saved-list" id="list-indicaciones"></div>
+      <div class="inner-tabs">
+        <button class="inner-tab active" onclick="switchInner(this,'receta-pane')">Receta Médica</button>
+        <button class="inner-tab" onclick="switchInner(this,'indmed-pane')">Indicaciones Médicas</button>
+      </div>
+      <div class="inner-pane active" id="receta-pane">
+        <div style="padding:8px 12px 4px;">
+          <div class="saved-list" id="list-receta" style="margin-bottom:6px;"></div>
+          <button class="btn-bottom btn-teal" onclick="openPrintModal('receta')">💊 Nueva Receta</button>
+        </div>
+      </div>
+      <div class="inner-pane" id="indmed-pane">
+        <div style="padding:8px 12px 4px;">
+          <div class="saved-list" id="list-indmed" style="margin-bottom:6px;"></div>
+          <button class="btn-bottom btn-teal" onclick="openPrintModal('indmed')">📄 Nuevas Indicaciones</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── COL 3 ── -->
+  <div class="col-panel">
+
+    <div class="perm-section">
+      <div style="background:#c8e6e4;padding:7px 12px;font-size:.72rem;font-weight:700;border-bottom:1px solid var(--gray-border);display:flex;align-items:center;justify-content:space-between;">
+        Información de Carácter Permanente
+        <button class="add-btn" onclick="openModal('infoperm')">＋</button>
+      </div>
+      <div class="perm-body" id="list-infoperm">
+        <div class="info-line" id="perm-display">Peso: — kg | Tamaño: —  | C. Corporal: — | S.Corporal: — cm</div>
+        <div class="info-line">Estado nutricional: <span id="perm-nutricion">—</span></div>
+      </div>
+    </div>
+
+    <div class="perm-section">
+      <div class="perm-head" onclick="togglePerm('p-alergias',this)">
+        Alergias <button class="add-btn" onclick="event.stopPropagation();openModal('alergia')" style="margin-left:auto;">＋</button>
+        <span class="chevron">▶</span>
+      </div>
+      <div id="p-alergias" class="perm-body" style="display:none;">
+        <div class="saved-list" id="list-alergia" style="padding:0;"></div>
+        <div id="empty-alergia" style="font-size:.73rem;color:var(--text-light);">Sin alergias registradas.</div>
+      </div>
+    </div>
+
+    <div class="perm-section">
+      <div class="perm-head" onclick="togglePerm('p-morbidos',this)">
+        Antecedentes Mórbidos <button class="add-btn" onclick="event.stopPropagation();openModal('morbido')" style="margin-left:auto;">＋</button>
+        <span class="chevron">▶</span>
+      </div>
+      <div id="p-morbidos" class="perm-body" style="display:none;">
+        <div class="saved-list" id="list-morbido" style="padding:0;"></div>
+        <div id="empty-morbido" style="font-size:.73rem;color:var(--text-light);">Sin antecedentes registrados.</div>
+      </div>
+    </div>
+
+    <div class="perm-section">
+      <div class="perm-head" onclick="togglePerm('p-familiares',this)">
+        Antecedentes Familiares <button class="add-btn" onclick="event.stopPropagation();openModal('familiar')" style="margin-left:auto;">＋</button>
+        <span class="chevron">▶</span>
+      </div>
+      <div id="p-familiares" class="perm-body" style="display:none;">
+        <div class="saved-list" id="list-familiar" style="padding:0;"></div>
+        <div id="empty-familiar" style="font-size:.73rem;color:var(--text-light);">Sin antecedentes familiares.</div>
+      </div>
+    </div>
+
+    <div class="perm-section">
+      <div class="perm-head" onclick="togglePerm('p-medicamentos',this)">
+        Consumo de medicamentos <button class="add-btn" onclick="event.stopPropagation();openModal('medactivo')" style="margin-left:auto;">＋</button>
+        <span class="chevron">▶</span>
+      </div>
+      <div id="p-medicamentos" class="perm-body" style="display:none;">
+        <div class="saved-list" id="list-medactivo" style="padding:0;"></div>
+        <div id="empty-medactivo" style="font-size:.73rem;color:var(--text-light);">Sin medicamentos activos.</div>
+      </div>
+    </div>
+
+    <div class="perm-section">
+      <div class="perm-head" onclick="togglePerm('p-actividades',this)">
+        Actividades que practica <button class="add-btn" onclick="event.stopPropagation();openModal('actividad')" style="margin-left:auto;">＋</button>
+        <span class="chevron">▶</span>
+      </div>
+      <div id="p-actividades" class="perm-body" style="display:none;">
+        <div class="saved-list" id="list-actividad" style="padding:0;"></div>
+        <div id="empty-actividad" style="font-size:.73rem;color:var(--text-light);">Sin información.</div>
+      </div>
+    </div>
+
+    <div class="perm-section" style="flex:1;">
+      <div class="perm-head" onclick="togglePerm('p-vacunas',this)">
+        Vacunas recibidas <button class="add-btn" onclick="event.stopPropagation();openModal('vacuna')" style="margin-left:auto;">＋</button>
+        <span class="chevron">▶</span>
+      </div>
+      <div id="p-vacunas" class="perm-body" style="display:none;">
+        <div class="saved-list" id="list-vacuna" style="padding:0;"></div>
+        <div id="empty-vacuna" style="font-size:.73rem;color:var(--text-light);">Sin esquema registrado.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div><!-- /pv2 -->
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <span class="auto-save" id="autoSaveMsg">Sin cambios pendientes.</span>
+  <label>Pronóstico:</label>
+  <select><option>LEVE</option><option>MODERADO</option><option>GRAVE</option><option>RESERVADO</option></select>
+  <label>Destino:</label>
+  <select><option>DOMICILIO</option><option>HOSPITALIZACIÓN</option><option>DERIVACIÓN</option></select>
+  <div class="bottom-bar-right">
+    <button class="btn-bottom btn-outline" onclick="openViewer('resultadoExamen')">🔬 Resultado de Exámenes</button>
+    <button class="btn-bottom btn-outline" onclick="openViewer('documentos')">📋 Documentos</button>
+    <button class="btn-bottom btn-outline" onclick="openViewer('archivos')">🗂️ Archivos del Paciente</button>
+    <button class="btn-bottom btn-teal" onclick="guardarTodo()">💾 Guardar</button>
+    <button class="btn-bottom btn-blue" onclick="terminarConsulta()">✓ Terminar Consulta</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODALES GENÉRICOS DE TEXTO
+══════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnBg(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <span id="modal-title">Agregar</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel-modal" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save-modal" onclick="saveModal()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODALES DE IMPRESIÓN
+══════════════════════════════════ -->
+<div class="modal-overlay" id="print-overlay" onclick="closePrintOnBg(event)">
+  <div class="modal-box wide" id="print-box">
+    <div class="modal-header">
+      <span id="print-title">Documento</span>
+      <button class="modal-close" onclick="closePrintModal()">✕</button>
+    </div>
+    <div class="modal-body" id="print-body"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel-modal" onclick="closePrintModal()">Cancelar</button>
+      <button class="btn-print" onclick="doPrint()">🖨️ Imprimir</button>
+      <button class="btn-save-modal" onclick="savePrintDoc()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden print area -->
+<div id="printArea" style="display:none;"></div>
+
+<!-- ══════════════════════════════════
+     VIEWER MODAL (Resultados / Docs / Archivos)
+══════════════════════════════════ -->
+<div class="viewer-overlay" id="viewer-overlay" onclick="closeViewerOnBg(event)">
+  <div class="viewer-shell">
+    <div class="viewer-header">
+      <span id="viewer-icon" style="font-size:1.2rem;">📄</span>
+      <h5 id="viewer-title">Documentos</h5>
+      <button class="btn-bottom btn-teal" onclick="openAddDocForm()" style="font-size:.72rem;padding:4px 12px;">＋ Agregar</button>
+      <button class="viewer-close" onclick="closeViewer()">✕</button>
+    </div>
+    <div class="viewer-body">
+      <div class="vw-sidebar">
+        <div class="vw-sidebar-head">
+          <span id="vw-count">0 documentos</span>
+        </div>
+        <div class="vw-list" id="vw-list"></div>
+      </div>
+      <div class="vw-content">
+        <div class="vw-content-head" id="vw-doc-head" style="display:none;">
+          <h6 id="vw-doc-title">—</h6>
+          <span id="vw-doc-date" style="font-size:.72rem;color:var(--text-light);margin-right:8px;"></span>
+          <button class="btn-bottom btn-outline" style="font-size:.7rem;padding:3px 10px;" onclick="printCurrentDoc()">🖨️ Imprimir</button>
+          <button class="btn-bottom btn-outline" style="font-size:.7rem;padding:3px 10px;color:#e05252;border-color:#e05252;" onclick="deleteCurrentDoc()">🗑️ Eliminar</button>
+        </div>
+        <div class="vw-content-body" id="vw-content-body">
+          <div class="vw-empty" id="vw-empty">
+            <div class="ve-icon">📂</div>
+            <p>Selecciona un documento de la lista</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ══ CLOCK ══ */
+function updateClock(){
+  const now=new Date();
+  const days=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const months=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const t=now.toTimeString().slice(0,8);
+  document.getElementById('clockDisplay').textContent=`${days[now.getDay()]}, ${now.getDate()} / ${months[now.getMonth()]} / ${now.getFullYear()} | ${t}`;
+}
+updateClock(); setInterval(updateClock,1000);
+
+/* ══ MAIN TAB SWITCH ══ */
+function switchMain(idx, btn){
+  document.querySelectorAll('.main-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.panel-view').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+
+/* ══ INNER TAB SWITCH ══ */
+function switchInner(btn, paneId){
+  const colPanel = btn.closest('.col-panel') || btn.closest('.sec-block') || btn.parentElement.parentElement;
+  const group = btn.closest('.sec-block') || btn.closest('.col-panel');
+  group.querySelectorAll('.inner-tab').forEach(t=>t.classList.remove('active'));
+  group.querySelectorAll('.inner-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const pane = document.getElementById(paneId);
+  if(pane) pane.classList.add('active');
+}
+
+/* ══ PERM TOGGLE ══ */
+function togglePerm(id, headEl){
+  const el=document.getElementById(id);
+  const open = el.style.display==='none';
+  el.style.display = open?'block':'none';
+  if(headEl) headEl.classList.toggle('open', open);
+}
+
+/* ══ MODAL CONFIG ══ */
+const modalConfigs = {
+  motivo:          { title:'Motivo de la Consulta',         list:'list-motivo',       fields:[{id:'m1',label:'Descripción',type:'textarea',placeholder:'El paciente presenta…'}] },
+  evaluacion:      { title:'Evaluación / Examen Físico',    list:'list-evaluacion',   fields:[{id:'e1',label:'Hallazgos',type:'textarea',placeholder:'Estado general, mucosas, auscultación…'}] },
+  hipotesis:       { title:'Hipótesis Diagnóstica',         list:'list-hipotesis',    fields:[{id:'h1',label:'Diagnóstico presuntivo',type:'text',placeholder:'Ej: Gastroenteritis'},{id:'h2',label:'Código CIE-10 / observaciones',type:'textarea',placeholder:'K59.0 — detalles adicionales…'}] },
+  examenes:        { title:'Agregar Examen',                list:'list-examenes',     fields:[{id:'ex1',label:'Tipo de examen',type:'text',placeholder:'Ej: Hemograma completo'},{id:'ex2',label:'Indicación clínica',type:'textarea',placeholder:'Motivo de la solicitud…'}] },
+  procedimientos:  { title:'Procedimiento / Tratamiento',   list:'list-procedimientos',fields:[{id:'p1',label:'Procedimiento',type:'text',placeholder:'Ej: Toma de muestra'},{id:'p2',label:'Descripción',type:'textarea',placeholder:'Técnica, respuesta del paciente…'}] },
+  indicaciones:    { title:'Indicación / Alta Médica',      list:'list-indicaciones', fields:[{id:'i1',label:'Indicación',type:'textarea',placeholder:'Medicamento, dosis, frecuencia, duración…'}] },
+  alergia:         { title:'Agregar Alergia',               list:'list-alergia',      empty:'empty-alergia', fields:[{id:'al1',label:'Alérgeno',type:'text',placeholder:'Ej: Pulgicida, penicilina'},{id:'al2',label:'Reacción',type:'text',placeholder:'Ej: Urticaria, anafilaxia'}] },
+  morbido:         { title:'Antecedente Mórbido',           list:'list-morbido',      empty:'empty-morbido', fields:[{id:'mo1',label:'Condición',type:'text',placeholder:'Ej: Diabetes mellitus'},{id:'mo2',label:'Desde (año)',type:'text',placeholder:'2023'}] },
+  familiar:        { title:'Antecedente Familiar',          list:'list-familiar',     empty:'empty-familiar',fields:[{id:'fa1',label:'Condición',type:'text',placeholder:'Ej: Displasia de cadera'},{id:'fa2',label:'Parentesco',type:'text',placeholder:'Madre, padre…'}] },
+  medactivo:       { title:'Medicamento Activo',            list:'list-medactivo',    empty:'empty-medactivo',fields:[{id:'ma1',label:'Medicamento',type:'text',placeholder:'Nombre comercial o genérico'},{id:'ma2',label:'Dosis y frecuencia',type:'text',placeholder:'Ej: 250mg c/8h'}] },
+  actividad:       { title:'Actividad que practica',        list:'list-actividad',    empty:'empty-actividad',fields:[{id:'ac1',label:'Actividad',type:'text',placeholder:'Ej: Caminatas diarias, agility'}] },
+  vacuna:          { title:'Vacuna Recibida',               list:'list-vacuna',       empty:'empty-vacuna',  fields:[{id:'va1',label:'Vacuna',type:'text',placeholder:'Ej: Polivalente, Antirrábica'},{id:'va2',label:'Fecha',type:'text',placeholder:'dd/mm/aaaa'},{id:'va3',label:'Próxima dosis',type:'text',placeholder:'dd/mm/aaaa'}] },
+  infoperm:        { title:'Información Permanente',        list:'list-infoperm',     special:'infoperm',    fields:[] },
+};
+
+let currentModal = null;
+
+function openModal(key){
+  const cfg = modalConfigs[key];
+  if(!cfg) return;
+  currentModal = key;
+  document.getElementById('modal-title').textContent = cfg.title;
+
+  let html = '';
+  if(cfg.special === 'infoperm'){
+    html = `
+      <div class="mf-row mf-group">
+        <div><label class="mf-label">Peso (kg)</label><input class="mf-input" id="ip-peso" placeholder="25"/></div>
+        <div><label class="mf-label">Tamaño</label><input class="mf-input" id="ip-tamaño" placeholder="Pequeño, Mediano, Grande, Gigante"/></div>
+      </div>
+      <div class="mf-row mf-group">
+        <div><label class="mf-label">Condición Corporal (1-9)</label><input class="mf-input" id="ip-cc" placeholder="5"/></div>
+        <div><label class="mf-label">S.Corporal (cm)</label><input class="mf-input" id="ip-sc" placeholder="40"/></div>
+      </div>
+      <div class="mf-group">
+        <label class="mf-label">Estado Nutricional</label>
+        <select class="mf-input" id="ip-nutricion">
+          <option>Normal</option><option>Bajo peso</option><option>Sobrepeso</option><option>Obesidad</option>
+        </select>
+      </div>`;
+  } else {
+    cfg.fields.forEach(f => {
+      html += `<div class="mf-group"><label class="mf-label">${f.label}</label>`;
+      if(f.type==='textarea') html += `<textarea class="mf-textarea" id="${f.id}" placeholder="${f.placeholder}"></textarea>`;
+      else html += `<input class="mf-input" type="text" id="${f.id}" placeholder="${f.placeholder}"/>`;
+      html += `</div>`;
+    });
+  }
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+  // focus first input
+  setTimeout(()=>{ const first = document.querySelector('#modal-body input, #modal-body textarea'); if(first) first.focus(); },100);
+}
+
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); currentModal=null; }
+function closeModalOnBg(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+
+function saveModal(){
+  const cfg = modalConfigs[currentModal];
+  if(!cfg) return;
+  let text = '';
+
+  if(cfg.special === 'infoperm'){
+    const peso = document.getElementById('ip-peso').value||'—';
+    const tamaño = document.getElementById('ip-tamaño').value||'—';
+    const cc = document.getElementById('ip-cc').value||'—';
+    const sc = document.getElementById('ip-sc').value||'—';
+    const nutri = document.getElementById('ip-nutricion').value;
+    document.getElementById('perm-display').textContent = `Peso: ${peso} kg | Tamaño: ${tamaño} cm | C.Corporal: ${cc} | S.Corporal: ${sc} cm`;
+    document.getElementById('perm-nutricion').textContent = nutri;
+    // sync stats
+    document.getElementById('stat-peso').textContent = peso ? peso+' kg' : '—';
+    document.getElementById('stat-tamaño').textContent = tamaño ? tamaño : '—';
+    document.getElementById('stat-cc').textContent = cc ? cc : '—';
+    document.getElementById('stat-sc').textContent = sc ? sc : '—'; 
+    markSaved(); closeModal(); return;
+  }
+
+  const parts = cfg.fields.map(f=>{
+    const el = document.getElementById(f.id);
+    return el ? el.value.trim() : '';
+  }).filter(Boolean);
+
+  if(!parts.length || !parts[0]){ alert('Por favor, completa al menos el primer campo.'); return; }
+
+  if(cfg.fields.length > 1 && parts.length > 1){
+    text = cfg.fields.map((f,i)=> parts[i] ? `${f.label}: ${parts[i]}` : '').filter(Boolean).join('\n');
+  } else {
+    text = parts.join(' — ');
+  }
+
+  addSavedItem(cfg.list, text, cfg.empty);
+  markSaved();
+  closeModal();
+}
+
+function addSavedItem(listId, text, emptyId){
+  const list = document.getElementById(listId);
+  if(!list) return;
+  const div = document.createElement('div');
+  div.className = 'saved-item';
+  div.innerHTML = `<span class="item-text">${text.replace(/\n/g,'<br>')}</span><button class="del-x" onclick="this.parentElement.remove();checkEmpty('${emptyId}')">✕</button>`;
+  list.appendChild(div);
+  if(emptyId){ const e=document.getElementById(emptyId); if(e) e.style.display='none'; }
+  // sync alergias to stats
+  if(listId==='list-alergia') syncAlergiaStats();
+}
+
+function checkEmpty(emptyId){
+  if(!emptyId) return;
+  const empty = document.getElementById(emptyId);
+  if(!empty) return;
+  const list = document.getElementById(empty.previousElementSibling?.id);
+  // crude: just show empty msg if no saved-items in sibling list
+  const parentBody = empty.closest('.perm-body') || empty.parentElement;
+  const items = parentBody.querySelectorAll('.saved-item');
+  empty.style.display = items.length===0 ? 'block':'none';
+  syncAlergiaStats();
+}
+
+function syncAlergiaStats(){
+  const items = document.querySelectorAll('#list-alergia .saved-item .item-text');
+  const box = document.getElementById('stat-alergias');
+  if(items.length===0){
+    box.innerHTML='<div class="stat-row"><span>Sin alergias registradas</span><span>—</span></div>';
+  } else {
+    box.innerHTML = [...items].map(i=>`<div class="stat-row"><span>${i.textContent}</span></div>`).join('');
+  }
+}
+
+/* ══ VITALS SAVE ══ */
+function saveVitals(){
+  const t=document.getElementById('v-temp').value;
+  const fc=document.getElementById('v-fc').value;
+  const fr=document.getElementById('v-fr').value;
+  const sat=document.getElementById('v-sat').value;
+  if(!t&&!fc&&!fr&&!sat){alert('Ingresa al menos un valor.');return;}
+  document.getElementById('stat-temp').textContent = t ? t+'°C' : '—';
+  document.getElementById('stat-fc').textContent = fc ? fc+' lpm' : '—';
+  document.getElementById('stat-fr').textContent = fr ? fr+' rpm' : '—';
+  markSaved();
+  showToast('Signos vitales guardados ✓');
+}
+
+function saveDimensiones(){
+  const p=document.getElementById('v-peso').value;
+  const t=document.getElementById('v-tamaño').value;
+  const cc=document.getElementById('v-cc').value;
+  const c=document.getElementById('v-cintura').value;
+  if(!p&&!t){alert('Ingresa al menos peso o tamaño.');return;}
+  document.getElementById('stat-peso').textContent = p ? p+' kg' : '—';
+  markSaved();
+  showToast('Dimensiones guardadas ✓');
+}
+
+function saveRiesgo(){
+  const txt=document.getElementById('v-riesgo').value.trim();
+  if(!txt){alert('Escribe al menos un factor de riesgo.');return;}
+  addSavedItem('list-riesgo', txt);
+  document.getElementById('v-riesgo').value='';
+  markSaved();
+}
+
+/* ══ PRINT MODALS ══ */
+const printConfigs = {
+  imagen:  { title:'Solicitud de Imagenología',   list:'list-imagen' },
+  lab:     { title:'Solicitud de Laboratorio',    list:'list-lab' },
+  receta:  { title:'Receta Médica',               list:'list-receta' },
+  indmed:  { title:'Indicaciones Médicas',        list:'list-indmed' },
+};
+
+let currentPrint = null;
+
+function openPrintModal(key){
+  currentPrint = key;
+  const cfg = printConfigs[key];
+  document.getElementById('print-title').textContent = cfg.title;
+  let html = '';
+  if(key==='receta'){
+    html = `
+      <div class="print-doc" id="printDoc">
+        <div class="pd-title">🐾 PetVission — Receta Médica</div>
+        <div class="pd-sub">Dr. Veterinario — Medicina General<br>Fecha: <span id="rd-fecha">${new Date().toLocaleDateString('es-CL')}</span> &nbsp;|&nbsp; Paciente: MAX (Perro, Golden Retriever, 3 años)</div>
+        <div class="pd-section"><div class="pd-section-title">Medicamentos Recetados</div>
+          <textarea class="mf-textarea" id="rd-meds" style="min-height:100px;" placeholder="Ej:&#10;1. Metronidazol 250mg — 1 comprimido cada 12h durante 5 días&#10;2. Probiótico — 1 sobre al día durante 10 días"></textarea>
+        </div>
+        <div class="pd-section"><div class="pd-section-title">Observaciones</div>
+          <textarea class="mf-textarea" id="rd-obs" style="min-height:60px;" placeholder="Indicaciones adicionales para el propietario…"></textarea>
+        </div>
+      </div>`;
+  } else if(key==='indmed'){
+    html = `
+      <div class="print-doc" id="printDoc">
+        <div class="pd-title">🐾 PetVission — Indicaciones Médicas</div>
+        <div class="pd-sub">Dr. Veterinario — Medicina General<br>Fecha: ${new Date().toLocaleDateString('es-CL')} &nbsp;|&nbsp; Paciente: MAX</div>
+        <div class="pd-section"><div class="pd-section-title">Indicaciones para el Propietario</div>
+          <textarea class="mf-textarea" id="rd-ind" style="min-height:130px;" placeholder="Ej:&#10;• Reposo absoluto por 48 horas&#10;• Dieta blanda (pollo hervido + arroz) por 5 días&#10;• Evitar baños o mojarse&#10;• Control en 7 días o antes si hay fiebre"></textarea>
+        </div>
+        <div class="pd-section"><div class="pd-section-title">Próxima Cita</div>
+          <input class="mf-input" id="rd-cita" placeholder="dd/mm/aaaa — motivo"/>
+        </div>
+      </div>`;
+  } else if(key==='imagen'){
+    html = `
+      <div class="print-doc" id="printDoc">
+        <div class="pd-title">🐾 PetVission — Solicitud de Imagenología</div>
+        <div class="pd-sub">Dr. Veterinario — Medicina General<br>Fecha: ${new Date().toLocaleDateString('es-CL')} &nbsp;|&nbsp; Paciente: MAX</div>
+        <div class="pd-section"><div class="pd-section-title">Exámenes Solicitados</div>
+          <textarea class="mf-textarea" id="rd-exams" style="min-height:100px;" placeholder="Ej:&#10;• Ecografía abdominal completa&#10;• Radiografía tórax AP y lateral"></textarea>
+        </div>
+        <div class="pd-section"><div class="pd-section-title">Indicación Clínica / Hipótesis</div>
+          <textarea class="mf-textarea" id="rd-indica" style="min-height:60px;" placeholder="Motivo de la solicitud…"></textarea>
+        </div>
+        <div class="pd-section"><div class="pd-section-title">Urgencia</div>
+          <select class="mf-input" id="rd-urg"><option>Rutina</option><option>Urgente</option><option>Inmediata</option></select>
+        </div>
+      </div>`;
+  } else if(key==='lab'){
+    html = `
+      <div class="print-doc" id="printDoc">
+        <div class="pd-title">🐾 PetVission — Solicitud de Laboratorio</div>
+        <div class="pd-sub">Dr. Veterinario — Medicina General<br>Fecha: ${new Date().toLocaleDateString('es-CL')} &nbsp;|&nbsp; Paciente: MAX</div>
+        <div class="pd-section"><div class="pd-section-title">Exámenes de Laboratorio</div>
+          <textarea class="mf-textarea" id="rd-labs" style="min-height:100px;" placeholder="Ej:&#10;• Hemograma completo&#10;• Perfil bioquímico (ALT, AST, BUN, Creatinina)&#10;• Urianálisis"></textarea>
+        </div>
+        <div class="pd-section"><div class="pd-section-title">Indicación Clínica</div>
+          <textarea class="mf-textarea" id="rd-labind" style="min-height:60px;" placeholder="Hipótesis o motivo…"></textarea>
+        </div>
+        <div class="pd-section"><div class="pd-section-title">Ayuno requerido</div>
+          <select class="mf-input" id="rd-ayuno"><option>No requiere</option><option>8 horas</option><option>12 horas</option></select>
+        </div>
+      </div>`;
+  }
+  document.getElementById('print-body').innerHTML = html;
+  document.getElementById('print-overlay').classList.add('open');
+}
+
+function closePrintModal(){ document.getElementById('print-overlay').classList.remove('open'); currentPrint=null; }
+function closePrintOnBg(e){ if(e.target===document.getElementById('print-overlay')) closePrintModal(); }
+
+function savePrintDoc(){
+  const cfg = printConfigs[currentPrint];
+  let summary = '';
+  if(currentPrint==='receta'){
+    const meds = document.getElementById('rd-meds').value.trim();
+    summary = meds || 'Receta sin detalle';
+  } else if(currentPrint==='indmed'){
+    const ind = document.getElementById('rd-ind').value.trim();
+    summary = ind || 'Indicaciones sin detalle';
+  } else if(currentPrint==='imagen'){
+    const ex = document.getElementById('rd-exams').value.trim();
+    summary = ex || 'Solicitud sin detalle';
+  } else if(currentPrint==='lab'){
+    const lb = document.getElementById('rd-labs').value.trim();
+    summary = lb || 'Solicitud sin detalle';
+  }
+  if(cfg.list) addSavedItem(cfg.list, summary);
+  markSaved();
+  closePrintModal();
+}
+
+function doPrint(){
+  const content = document.getElementById('printDoc');
+  if(!content){ alert('Nada para imprimir.'); return; }
+  const printArea = document.getElementById('printArea');
+  printArea.innerHTML = content.innerHTML;
+  printArea.style.display = 'block';
+  window.print();
+  setTimeout(()=>{ printArea.style.display='none'; },1000);
+}
+
+/* ══ GUARDAR GENERAL ══ */
+function markSaved(){
+  const now = new Date().toLocaleTimeString('es-CL');
+  document.getElementById('autoSaveMsg').textContent = `Consulta guardada automáticamente a las ${now} hrs.`;
+}
+
+function guardarTodo(){
+  markSaved();
+  showToast('Registro guardado correctamente ✓');
+}
+
+function terminarConsulta(){
+  if(confirm('¿Deseas terminar y cerrar esta consulta? Asegúrate de haber guardado todos los datos.')){
+    guardarTodo();
+    showToast('Consulta terminada. Redirigiendo…');
+    setTimeout(()=>{ window.location.href='dashboard.html'; },1500);
+  }
+}
+
+/* ══ TOAST ══ */
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id='toast';
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a9e8f;color:white;padding:10px 22px;border-radius:22px;font-size:.82rem;font-weight:700;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:opacity .3s;';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>{t.style.opacity='0';},2200);
+}
+
+/* ══ VIEWER LOGIC ══ */
+// Store docs per section key
+const viewerStore = {
+  resultadoExamen: {
+    icon:'🔬', title:'Resultado de Exámenes',
+    docs:[
+      { id:1, title:'Hemograma completo', date:'12/03/2026', type:'lab', sections:[
+        {label:'Examen solicitado','content':'Hemograma completo con diferencial'},
+        {label:'Resultado',content:'Leucocitos: 8.2 x10³/μL (normal)\nEritrocitos: 6.1 x10⁶/μL (normal)\nHemoglobina: 14.2 g/dL (normal)\nHematocrito: 43% (normal)\nPlaquetas: 210 x10³/μL (normal)'},
+        {label:'Interpretación',content:'Hemograma dentro de rangos normales. Sin evidencia de proceso inflamatorio o infeccioso activo.'},
+        {label:'Laboratorio',content:'Lab. Veterinario Central — Dr. J. Pérez'}
+      ]},
+      { id:2, title:'Perfil bioquímico', date:'12/03/2026', type:'lab', sections:[
+        {label:'Examen solicitado',content:'Perfil bioquímico básico'},
+        {label:'Resultado',content:'ALT: 42 U/L (normal <80)\nAST: 35 U/L (normal <50)\nBUN: 18 mg/dL (normal 7-27)\nCreatinina: 0.9 mg/dL (normal 0.5-1.5)\nGlucosa: 92 mg/dL (normal 70-120)'},
+        {label:'Interpretación',content:'Función hepática y renal dentro de rangos normales.'},
+        {label:'Laboratorio',content:'Lab. Veterinario Central — Dr. J. Pérez'}
+      ]}
+    ]
+  },
+  documentos: {
+    icon:'📋', title:'Documentos',
+    docs:[
+      { id:1, title:'Certificado de Salud', date:'12/03/2026', type:'doc', sections:[
+        {label:'Tipo de documento',content:'Certificado de Salud para Viaje'},
+        {label:'Contenido',content:'Se certifica que el paciente MAX, Golden Retriever macho de 3 años, se encuentra en buen estado de salud general, apto para viajar. Sin enfermedades infecciosas activas. Vacunas al día.'},
+        {label:'Emitido por',content:'Dr. Veterinario — PetVission\nFecha: 12/03/2026'}
+      ]},
+      { id:2, title:'Derivación a Especialista', date:'05/11/2025', type:'doc', sections:[
+        {label:'Tipo de documento',content:'Carta de Derivación a Gastroenterología'},
+        {label:'Motivo',content:'Se deriva al paciente MAX para evaluación por gastroenteritis recurrente. 2 episodios en 6 meses.'},
+        {label:'Antecedentes relevantes',content:'Gastroenteritis aguda Nov 2025. Tratado con Metronidazol. Recidiva actual.'},
+        {label:'Emitido por',content:'Dr. Veterinario — PetVission\nFecha: 05/11/2025'}
+      ]}
+    ]
+  },
+  archivos: {
+    icon:'🗂️', title:'Archivos del Paciente',
+    docs:[
+      { id:1, title:'Radiografía Tórax AP', date:'12/03/2026', type:'arch', sections:[
+        {label:'Tipo de archivo',content:'Radiografía — Tórax AP y Lateral'},
+        {label:'Descripción',content:'Radiografía de tórax tomada el 12/03/2026. Sin imágenes de consolidación. Silueta cardíaca normal. Campos pulmonares limpios.'},
+        {label:'Archivo',content:'📎 RX_TORAX_MAX_12032026.jpg (Simulado — subir archivo real para visualizar)'},
+        {label:'Técnico radiólogo',content:'Dr. Radiología — PetVission'}
+      ]},
+      { id:2, title:'Ecografía Abdominal', date:'05/11/2025', type:'arch', sections:[
+        {label:'Tipo de archivo',content:'Ecografía abdominal completa'},
+        {label:'Descripción',content:'Ecografía de abdomen realizada el 05/11/2025. Hígado, bazo y riñones de aspecto normal. Discreta cantidad de líquido libre en cavidad peritoneal. Compatible con gastroenteritis.'},
+        {label:'Archivo',content:'📎 ECO_ABD_MAX_05112025.jpg (Simulado)'},
+        {label:'Ecografista',content:'Dr. Radiología — PetVission'}
+      ]}
+    ]
+  }
+};
+
+let currentViewer = null;
+let currentDocId = null;
+
+function openViewer(key){
+  currentViewer = key;
+  currentDocId = null;
+  const store = viewerStore[key];
+  document.getElementById('viewer-icon').textContent = store.icon;
+  document.getElementById('viewer-title').textContent = store.title;
+  renderVwSidebar();
+  // show empty state
+  document.getElementById('vw-doc-head').style.display='none';
+  document.getElementById('vw-content-body').innerHTML = `<div class="vw-empty" id="vw-empty"><div class="ve-icon">📂</div><p>Selecciona un documento de la lista</p></div>`;
+  document.getElementById('viewer-overlay').classList.add('open');
+}
+
+function closeViewer(){ document.getElementById('viewer-overlay').classList.remove('open'); currentViewer=null; currentDocId=null; }
+function closeViewerOnBg(e){ if(e.target===document.getElementById('viewer-overlay')) closeViewer(); }
+
+function renderVwSidebar(){
+  const store = viewerStore[currentViewer];
+  const list = document.getElementById('vw-list');
+  const count = store.docs.length;
+  document.getElementById('vw-count').textContent = `${count} documento${count!==1?'s':''}`;
+  const badgeClass = {lab:'badge-lab',img:'badge-img',doc:'badge-doc',arch:'badge-arch'};
+  const badgeLabel = {lab:'Laboratorio',img:'Imagenología',doc:'Documento',arch:'Archivo'};
+  list.innerHTML = store.docs.map(d=>`
+    <div class="vw-item${currentDocId===d.id?' active':''}" onclick="selectDoc(${d.id})">
+      <div class="vi-title">${d.title}</div>
+      <div class="vi-meta">${d.date}</div>
+      <span class="vi-badge ${badgeClass[d.type]||'badge-doc'}">${badgeLabel[d.type]||'Doc'}</span>
+    </div>`).join('') || '<div style="padding:12px;font-size:.75rem;color:var(--text-light);text-align:center;">Sin documentos aún</div>';
+}
+
+function selectDoc(id){
+  const store = viewerStore[currentViewer];
+  const doc = store.docs.find(d=>d.id===id);
+  if(!doc) return;
+  currentDocId = id;
+  renderVwSidebar();
+  // head
+  document.getElementById('vw-doc-head').style.display='flex';
+  document.getElementById('vw-doc-title').textContent = doc.title;
+  document.getElementById('vw-doc-date').textContent = doc.date;
+  // body
+  const body = document.getElementById('vw-content-body');
+  body.innerHTML = `<div class="doc-render" id="currentDocRender">
+    <div class="dr-header">
+      <div class="dr-clinic">🐾 PetVission — ${viewerStore[currentViewer].title}</div>
+      <div class="dr-subtitle">Dr. Veterinario — Medicina General &nbsp;|&nbsp; ${doc.date}</div>
+    </div>
+    <div class="dr-patient"><strong>Paciente:</strong> MAX &nbsp;|&nbsp; <strong>Especie:</strong> Perro &nbsp;|&nbsp; <strong>Raza:</strong> Golden Retriever &nbsp;|&nbsp; <strong>Edad:</strong> 3 años</div>
+    ${doc.sections.map(s=>`
+      <div class="dr-section">
+        <div class="dr-section-label">${s.label}</div>
+        <div class="dr-section-content">${s.content}</div>
+      </div>`).join('')}
+    <div class="dr-footer">
+      <span>PetVission — Sistema de Gestión Clínica</span>
+      <span>Generado: ${new Date().toLocaleDateString('es-CL')}</span>
+    </div>
+  </div>`;
+}
+
+function openAddDocForm(){
+  const store = viewerStore[currentViewer];
+  const isArchivo = currentViewer==='archivos';
+  const isResultado = currentViewer==='resultadoExamen';
+  const body = document.getElementById('vw-content-body');
+  document.getElementById('vw-doc-head').style.display='none';
+  body.innerHTML = `
+    <div class="vw-addform">
+      <h6>➕ Nuevo ${store.title}</h6>
+      <div class="mf-group"><label class="mf-label">Título / Nombre del documento</label>
+        <input class="mf-input" id="nd-title" placeholder="Ej: Hemograma completo"/></div>
+      <div class="mf-row mf-group">
+        <div><label class="mf-label">Fecha</label><input class="mf-input" id="nd-date" value="${new Date().toLocaleDateString('es-CL')}"/></div>
+        <div><label class="mf-label">Tipo</label>
+          <select class="mf-input" id="nd-type">
+            ${isResultado?'<option value="lab">Laboratorio</option><option value="img">Imagenología</option>':''}
+            ${currentViewer==='documentos'?'<option value="doc">Documento clínico</option><option value="doc">Certificado</option><option value="doc">Derivación</option>':''}
+            ${isArchivo?'<option value="arch">Radiografía</option><option value="arch">Ecografía</option><option value="arch">Fotografía</option><option value="arch">Otro archivo</option>':''}
+          </select></div>
+      </div>
+      ${isArchivo?`<div class="mf-group"><label class="mf-label">Subir archivo</label>
+        <div class="file-drop" onclick="document.getElementById('nd-file').click()">
+          <input type="file" id="nd-file" accept="image/*,.pdf" onchange="previewFile(this)"/>
+          📎 Haz clic para seleccionar un archivo (imagen o PDF)
+        </div>
+        <div id="file-preview"></div></div>`:''}
+      <div class="mf-group"><label class="mf-label">Contenido / Descripción</label>
+        <textarea class="mf-textarea" id="nd-content" style="min-height:110px;" placeholder="${isResultado?'Resultados, valores, interpretación…':isArchivo?'Descripción del archivo, hallazgos…':'Contenido del documento…'}"></textarea></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px;">
+        <button class="btn-cancel-modal" onclick="selectDoc(${store.docs[0]?.id||0})||renderEmpty()">Cancelar</button>
+        <button class="btn-save-modal" onclick="saveNewDoc()">💾 Guardar documento</button>
+      </div>
+    </div>`;
+}
+
+function renderEmpty(){
+  document.getElementById('vw-content-body').innerHTML=`<div class="vw-empty"><div class="ve-icon">📂</div><p>Selecciona un documento de la lista</p></div>`;
+}
+
+function previewFile(input){
+  const preview = document.getElementById('file-preview');
+  const file = input.files[0];
+  if(!file){preview.innerHTML='';return;}
+  const icon = file.type.startsWith('image/')?'🖼️':'📄';
+  preview.innerHTML=`<div class="file-thumb"><span class="ft-icon">${icon}</span><span class="ft-name">${file.name} (${(file.size/1024).toFixed(1)} KB)</span><button class="ft-remove" onclick="document.getElementById('nd-file').value='';this.closest('.file-thumb').remove()">✕</button></div>`;
+}
+
+function saveNewDoc(){
+  const title = document.getElementById('nd-title').value.trim();
+  const date = document.getElementById('nd-date').value.trim();
+  const typeEl = document.getElementById('nd-type');
+  const type = typeEl ? typeEl.value : 'doc';
+  const content = document.getElementById('nd-content').value.trim();
+  const fileInput = document.getElementById('nd-file');
+  if(!title){alert('Escribe un título para el documento.');return;}
+
+  const store = viewerStore[currentViewer];
+  const newId = Date.now();
+  const sections = [];
+  sections.push({label:'Descripción', content: content||'(Sin descripción)'});
+  if(fileInput && fileInput.files[0]){
+    sections.push({label:'Archivo adjunto', content:`📎 ${fileInput.files[0].name}`});
+  }
+  store.docs.unshift({ id:newId, title, date:date||new Date().toLocaleDateString('es-CL'), type, sections });
+  renderVwSidebar();
+  selectDoc(newId);
+  markSaved();
+  showToast('Documento guardado ✓');
+}
+
+function printCurrentDoc(){
+  const content = document.getElementById('currentDocRender');
+  if(!content){alert('Selecciona un documento primero.');return;}
+  const printArea = document.getElementById('printArea');
+  printArea.innerHTML = `<div style="font-family:'DM Sans',sans-serif;padding:20px;font-size:13px;">${content.innerHTML}</div>`;
+  printArea.style.display='block';
+  window.print();
+  setTimeout(()=>{printArea.style.display='none';},1000);
+}
+
+function deleteCurrentDoc(){
+  if(!currentDocId) return;
+  if(!confirm('¿Eliminar este documento? Esta acción no se puede deshacer.')) return;
+  const store = viewerStore[currentViewer];
+  store.docs = store.docs.filter(d=>d.id!==currentDocId);
+  currentDocId = null;
+  renderVwSidebar();
+  document.getElementById('vw-doc-head').style.display='none';
+  renderEmpty();
+  showToast('Documento eliminado');
+}
+
+/* ══ ESC key ══ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeModal(); closePrintModal(); closeViewer(); }
+});
+</script>
+</body>
+</html>

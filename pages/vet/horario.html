@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetVission — Dashboard Veterinario</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="../../assets/css/vet.css" rel="stylesheet" />
+</head>
+<body>
+
+<div class="vet-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="vet-sidebar" id="vetSidebar">
+
+    <div class="vet-sidebar-brand">
+      <div class="d-flex align-items-center gap-2">
+        <div class="brand-icon">
+          <i class="bi bi-heart-pulse-fill"></i>
+        </div>
+        <div>
+          <div class="fw-bold">PetVission</div>
+          <div style="font-size:0.72rem;opacity:0.7;">Gestión Veterinaria</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="vet-nav">
+      <a href="dashboard.html" class="vet-nav-link">
+        <i class="bi bi-calendar3"></i><span>Inicio</span>
+      </a>
+      <a href="calendario.html" class="vet-nav-link">
+        <i class="bi bi-person-fill"></i><span>Calendario</span>
+      </a>
+      <a href="pacientes.html" class="vet-nav-link active">
+        <i class="bi bi-people-fill"></i><span>Pacientes</span>
+      </a>
+      <a href="historial.html" class="vet-nav-link">
+        <i class="bi bi-clipboard2-pulse-fill"></i><span>Historial Clínico</span>
+      </a>
+      <a href="inventario.html" class="vet-nav-link">
+        <i class="bi bi-box-seam-fill"></i><span>Inventario</span>
+      </a>
+    </nav>
+
+    <div class="vet-sidebar-footer">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="vet-avatar">DV</div>
+        <div>
+          <div class="fw-semibold small">Dr. Veterinario</div>
+          <div style="font-size:0.72rem;opacity:0.7;">veterinario@petvission.cl</div>
+        </div>
+      </div>
+      <a href="../../index.html" class="vet-nav-link px-0">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Cerrar Sesión</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- Overlay mobile -->
+  <div class="vet-sidebar-overlay" id="vetOverlay" onclick="toggleSidebar()"></div>
+  <!-- Main content -->
+   <style>
+    :root {
+      --teal:         #1ab5a3;
+      --teal-dark:    oklab(58.440999999999995% -0.10226 -0.00344);
+      --teal-light:   #e6f9f7;
+      --teal-mid:     #a8ede7;
+      --teal-btn:     #2dcfc0;
+      --red:          #e05252;
+      --red-light:    #fdeaea;
+      --green:        #27ae60;
+      --amber:        #f5a623;
+      --amber-light:  #fff8ed;
+      --gray-bg:      #f4f6f8;
+      --gray-border:  #e2e8f0;
+      --text-dark:    #1a2535;
+      --text-mid:     #4a5568;
+      --text-light:   #94a3b8;
+      --white:        #ffffff;
+      --sidebar-dark: #1e2d3d;
+      --sidebar-mid:  #243447;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--text-dark); min-height: 100vh; }
+
+/* mini calendar */
+    .mini-cal { border: 2px solid var(--gray-border); border-radius: var(--radius-md); overflow: hidden; }
+    .cal-header { background: var(--teal); color: white; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .cal-header span { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .95rem; }
+    .cal-nav { background: none; border: none; color: white; font-size: 1.1rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: background .18s; }
+    .cal-nav:hover { background: rgba(255,255,255,.2); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); background: var(--white); }
+    .cal-dow { text-align: center; padding: 8px 0; font-size: .7rem; font-weight: 700; color: var(--text-light); }
+    .cal-day {
+      text-align: center; padding: 9px 2px; font-size: .82rem; font-weight: 600;
+      cursor: pointer; transition: all .15s; border-radius: 6px; margin: 2px;
+    }
+    .cal-day:hover:not(.empty):not(.past) { background: var(--teal-light); color: var(--teal); }
+    .cal-day.selected { background: var(--teal); color: white; border-radius: 8px; }
+    .cal-day.today { font-weight: 900; color: var(--teal); }
+    .cal-day.empty, .cal-day.past { color: var(--gray-border); cursor: not-allowed; }
+
+    <!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PetVission — Horarios</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --teal:#1a9e8f; --teal-dark:#137a6e; --teal-light:#e6f7f5; --teal-mid:#b2e8e2;
+  --pink:#f472b6; --pink-light:#fce7f3;
+  --amber:#f59e0b; --amber-light:#fef3c7;
+  --purple:#8b5cf6; --purple-light:#ede9fe;
+  --sky:#38bdf8; --sky-light:#e0f7ff;
+  --green:#22c55e; --green-light:#dcfce7;
+  --red:#ef4444; --red-light:#fee2e2;
+  --gray-bg:#f5f7fa; --gray-border:#e2e8f0;
+  --text-dark:#1e2a3a; --text-mid:#4a5568; --text-light:#94a3b8;
+  --white:#ffffff; --sidebar-w:240px;
+  --card-radius:12px; --btn-radius:8px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:0 10px 40px rgba(0,0,0,.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--gray-bg);color:var(--text-dark);font-size:13px;display:flex;flex-direction:column;}
+
+/* ── TOPBAR ── */
+.topbar{height:56px;background:var(--white);border-bottom:1px solid var(--gray-border);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0;position:relative;z-index:50;}
+.topbar .logo{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.15rem;color:var(--teal);display:flex;align-items:center;gap:7px;text-decoration:none;}
+.topbar .logo-icon{width:30px;height:30px;background:var(--teal);border-radius:8px;display:grid;place-items:center;color:white;font-size:.9rem;}
+.topbar nav{display:flex;gap:2px;margin-left:20px;}
+.topbar nav a{padding:6px 14px;border-radius:6px;font-size:.78rem;font-weight:600;color:var(--text-mid);text-decoration:none;transition:all .15s;}
+.topbar nav a:hover{background:var(--gray-bg);color:var(--text-dark);}
+.topbar nav a.active{background:var(--teal-light);color:var(--teal);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.topbar-avatar{width:32px;height:32px;border-radius:50%;background:var(--teal);display:grid;place-items:center;color:white;font-size:.8rem;font-weight:700;cursor:pointer;}
+
+/* ── LAYOUT ── */
+.app-body{flex:1;display:flex;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--gray-border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;padding:16px;}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:2px;}
+
+.sb-section{margin-bottom:20px;}
+.sb-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:8px;}
+
+.sb-select{width:100%;border:1px solid var(--gray-border);border-radius:var(--btn-radius);padding:7px 10px;font-size:.78rem;font-family:inherit;color:var(--text-dark);background:var(--white);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;}
+.sb-select:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+
+/* Status checkboxes */
+.status-options{display:flex;flex-direction:column;gap:6px;}
+.status-opt{display:flex;align-items:center;gap:8px;font-size:.78rem;cursor:pointer;padding:5px 8px;border-radius:6px;transition:background .15s;}
+.status-opt:hover{background:var(--gray-bg);}
+.status-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* Quick search btn */
+.sb-btn{width:100%;border:1px solid var(--gray-border);border-radius:var(--btn-radius);padding:7px 12px;font-size:.78rem;font-family:inherit;color:var(--text-mid);background:var(--white);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
+.sb-btn:hover{background:var(--gray-bg);color:var(--text-dark);}
+
+/* Mini calendar */
+.mini-cal{font-size:.75rem;}
+.mc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.mc-header span{font-weight:700;font-size:.8rem;}
+.mc-nav{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:.85rem;padding:2px 5px;border-radius:4px;}
+.mc-nav:hover{background:var(--gray-bg);color:var(--text-dark);}
+.mc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;}
+.mc-day-name{text-align:center;color:var(--text-light);font-size:.65rem;font-weight:700;padding:3px 0;}
+.mc-day{text-align:center;padding:4px 2px;border-radius:5px;cursor:pointer;transition:all .15s;font-size:.73rem;}
+.mc-day:hover{background:var(--teal-light);color:var(--teal);}
+.mc-day.today{background:var(--teal);color:white;font-weight:700;border-radius:50%;}
+.mc-day.other-month{color:var(--text-light);}
+.mc-day.selected{background:var(--teal-light);color:var(--teal);font-weight:700;}
+
+/* Regular week panel */
+.rw-panel{margin-top:4px;}
+.rw-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.rw-title{font-weight:700;font-size:.82rem;color:var(--text-dark);}
+.rw-badge{background:var(--pink-light);color:var(--pink);font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:12px;}
+.rw-table{width:100%;font-size:.72rem;}
+.rw-table th{color:var(--text-light);font-weight:700;text-align:center;padding:3px 2px;font-size:.65rem;text-transform:uppercase;}
+.rw-table td{text-align:center;padding:3px 2px;}
+.rw-period{display:flex;align-items:center;gap:4px;font-size:.7rem;font-weight:600;color:var(--text-dark);}
+.rw-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.rw-time-chip{background:#f0f0f0;border-radius:6px;padding:3px 5px;font-size:.67rem;font-weight:600;color:var(--text-mid);white-space:nowrap;}
+
+/* ── MAIN CONTENT ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Calendar toolbar */
+.cal-toolbar{background:var(--white);border-bottom:1px solid var(--gray-border);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.btn-hoy{border:1px solid var(--gray-border);background:white;border-radius:var(--btn-radius);padding:6px 14px;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--text-dark);transition:all .15s;}
+.btn-hoy:hover{background:var(--gray-bg);}
+.cal-nav{display:flex;gap:2px;}
+.cal-nav button{border:none;background:none;cursor:pointer;color:var(--text-mid);font-size:1rem;padding:4px 8px;border-radius:5px;transition:all .15s;}
+.cal-nav button:hover{background:var(--gray-bg);color:var(--text-dark);}
+.cal-date-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;color:var(--text-dark);}
+.cal-toolbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.view-toggle{display:flex;border:1px solid var(--gray-border);border-radius:var(--btn-radius);overflow:hidden;}
+.view-btn{border:none;background:white;padding:5px 14px;font-size:.75rem;font-weight:600;cursor:pointer;color:var(--text-mid);transition:all .15s;}
+.view-btn:hover{background:var(--gray-bg);}
+.view-btn.active{background:var(--teal);color:white;}
+.btn-nuevo{background:var(--purple);color:white;border:none;border-radius:var(--btn-radius);padding:7px 16px;font-size:.78rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
+.btn-nuevo:hover{background:#7c3aed;}
+.btn-swap{background:var(--pink-light);color:var(--pink);border:1.5px solid var(--pink);border-radius:var(--btn-radius);padding:6px 14px;font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;}
+.btn-swap:hover{background:var(--pink);color:white;}
+
+/* ── WEEK VIEW ── */
+.cal-grid-wrap{flex:1;overflow:auto;}
+.cal-grid-wrap::-webkit-scrollbar{width:6px;height:6px;}
+.cal-grid-wrap::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:3px;}
+
+/* Week header row */
+.week-header{display:grid;position:sticky;top:0;z-index:10;background:var(--white);border-bottom:1px solid var(--gray-border);}
+.week-header-inner{display:contents;}
+.wh-time{width:64px;flex-shrink:0;border-right:1px solid var(--gray-border);padding:8px 0;background:var(--white);}
+.wh-day{flex:1;text-align:center;padding:8px 4px;border-right:1px solid var(--gray-border);cursor:pointer;transition:background .15s;}
+.wh-day:hover{background:var(--gray-bg);}
+.wh-day .wd-name{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);}
+.wh-day .wd-num{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.15rem;color:var(--text-dark);line-height:1.1;margin-top:2px;}
+.wh-day.today .wd-num{background:var(--teal);color:white;width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;}
+
+/* Week body */
+.week-body{display:flex;min-height:800px;}
+.wb-times{width:64px;flex-shrink:0;border-right:1px solid var(--gray-border);}
+.wb-time-row{height:60px;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;}
+.wb-time-label{font-size:.67rem;color:var(--text-light);font-weight:600;}
+
+.wb-days{flex:1;display:flex;}
+.wb-day-col{flex:1;border-right:1px solid var(--gray-border);position:relative;}
+.wb-day-col:last-child{border-right:none;}
+.wb-cell{height:60px;border-bottom:1px solid #f1f5f9;position:relative;}
+.wb-cell:hover{background:rgba(26,158,143,.03);}
+
+/* Events */
+.cal-event{position:absolute;left:3px;right:3px;border-radius:7px;padding:5px 8px;cursor:pointer;transition:transform .1s,box-shadow .1s;z-index:5;overflow:hidden;}
+.cal-event:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);z-index:10;}
+.cal-event .ev-name{font-weight:700;font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cal-event .ev-time{font-size:.66rem;opacity:.8;margin-top:1px;}
+/* Event color variants */
+.ev-teal{background:#ccf2ec;color:#0d6e63;border-left:3px solid var(--teal);}
+.ev-amber{background:#fef3c7;color:#92400e;border-left:3px solid var(--amber);}
+.ev-pink{background:#fce7f3;color:#9d174d;border-left:3px solid var(--pink);}
+.ev-purple{background:#ede9fe;color:#5b21b6;border-left:3px solid var(--purple);}
+.ev-sky{background:#e0f2fe;color:#075985;border-left:3px solid var(--sky);}
+.ev-green{background:#dcfce7;color:#14532d;border-left:3px solid var(--green);}
+
+/* ── MONTH VIEW ── */
+.month-grid{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.month-header-row{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--gray-border);background:var(--white);}
+.month-day-name{text-align:center;padding:8px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);}
+.month-body{flex:1;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(5,1fr);overflow:hidden;}
+.month-cell{border-right:1px solid var(--gray-border);border-bottom:1px solid var(--gray-border);padding:5px;overflow:hidden;cursor:pointer;transition:background .1s;}
+.month-cell:hover{background:#fafcff;}
+.month-cell:nth-child(7n){border-right:none;}
+.mc-num{font-size:.78rem;font-weight:700;color:var(--text-dark);width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;margin-bottom:3px;}
+.mc-num.today-num{background:var(--teal);color:white;}
+.mc-num.other{color:var(--text-light);}
+.month-event{font-size:.67rem;font-weight:700;padding:2px 6px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.month-event:hover{filter:brightness(.92);}
+
+/* ── EVENT POPUP ── */
+.ev-popup{position:fixed;background:white;border-radius:var(--card-radius);box-shadow:var(--shadow-lg);width:300px;z-index:200;padding:0;overflow:hidden;animation:popIn .15s ease-out;}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.ev-popup-head{padding:14px 16px 10px;border-bottom:1px solid var(--gray-border);display:flex;align-items:flex-start;gap:8px;}
+.ev-popup-actions{display:flex;gap:4px;margin-left:auto;}
+.ev-popup-actions button{background:none;border:none;cursor:pointer;color:var(--text-light);font-size:.9rem;padding:3px 5px;border-radius:5px;transition:all .15s;}
+.ev-popup-actions button:hover{background:var(--gray-bg);color:var(--text-dark);}
+.ev-popup-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:var(--text-dark);margin-bottom:2px;}
+.ev-popup-type{font-size:.75rem;color:var(--text-mid);}
+.ev-popup-time{font-size:.78rem;color:var(--text-mid);margin-bottom:2px;}
+.ev-popup-body{padding:10px 16px;}
+.ev-popup-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.8rem;color:var(--text-mid);}
+.ev-popup-row .icon{width:16px;text-align:center;font-size:.85rem;flex-shrink:0;}
+.ev-popup-row .val{color:var(--text-dark);}
+.ev-popup-row a{color:var(--teal);text-decoration:none;font-weight:600;}
+.ev-popup-row a:hover{text-decoration:underline;}
+.ev-popup-comment{background:var(--gray-bg);border-radius:6px;padding:7px 10px;font-size:.75rem;color:var(--text-mid);font-style:italic;}
+.ev-popup-status{display:flex;align-items:center;gap:8px;padding:8px 16px;border-top:1px solid var(--gray-border);border-bottom:1px solid var(--gray-border);}
+.ev-status-badge{display:flex;align-items:center;gap:5px;font-size:.75rem;font-weight:700;color:var(--teal);}
+.ev-color-dots{display:flex;gap:5px;margin-left:auto;}
+.ev-color-dot{width:14px;height:14px;border-radius:50%;cursor:pointer;transition:transform .1s;}
+.ev-color-dot:hover{transform:scale(1.25);}
+.ev-popup-footer{display:flex;justify-content:space-between;padding:8px 16px;}
+.ev-popup-footer a{font-size:.78rem;font-weight:700;color:var(--text-mid);text-decoration:none;display:flex;align-items:center;gap:4px;}
+.ev-popup-footer a:hover{color:var(--teal);}
+.ev-popup-footer .pay{color:var(--teal);}
+
+/* ── SHIFT SWAP MODAL ── */
+.swap-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;display:none;align-items:flex-end;justify-content:center;}
+.swap-overlay.open{display:flex;}
+.swap-sheet{background:white;border-radius:20px 20px 0 0;width:420px;max-width:100vw;max-height:92vh;overflow-y:auto;padding-bottom:24px;animation:slideUp .25s ease-out;}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.swap-handle{width:40px;height:4px;background:#dde;border-radius:2px;margin:12px auto 0;}
+.swap-topbar{display:flex;align-items:center;padding:14px 20px 8px;border-bottom:1px solid var(--gray-border);}
+.swap-topbar h5{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;flex:1;text-align:center;margin:0;}
+.swap-back{background:none;border:none;cursor:pointer;color:var(--text-mid);font-size:1rem;padding:4px 8px;border-radius:6px;}
+.swap-back:hover{background:var(--gray-bg);}
+.swap-section{padding:16px 20px 0;}
+.swap-section-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:10px;}
+.swap-shift-card{border:1.5px solid var(--gray-border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.ss-bar{width:4px;border-radius:2px;align-self:stretch;flex-shrink:0;}
+.ss-info{flex:1;}
+.ss-name{font-weight:700;font-size:.85rem;color:var(--text-dark);}
+.ss-time{font-size:.78rem;color:var(--text-mid);margin-top:2px;}
+.ss-icon{font-size:.75rem;color:var(--text-light);margin-top:4px;}
+.ss-date-badge{background:var(--red);color:white;border-radius:7px;padding:4px 8px;text-align:center;flex-shrink:0;}
+.ss-date-badge .db-month{font-size:.58rem;font-weight:700;text-transform:uppercase;}
+.ss-date-badge .db-day{font-size:1.1rem;font-weight:900;line-height:1.1;}
+.swap-shift-select{border:1.5px solid var(--gray-border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s;margin-bottom:8px;}
+.swap-shift-select:hover{border-color:var(--teal);background:var(--teal-light);}
+.swap-shift-select.selected{border-color:var(--teal);background:var(--teal-light);}
+.approval-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--gray-border);}
+.approval-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f472b6,#fb923c);display:grid;place-items:center;font-size:1rem;flex-shrink:0;}
+.approval-info .ai-name{font-weight:700;font-size:.82rem;color:var(--text-dark);}
+.approval-info .ai-role{font-size:.72rem;color:var(--text-light);}
+.approval-note{font-size:.75rem;color:var(--text-mid);margin-top:6px;}
+.swap-textarea{width:100%;border:1.5px solid var(--gray-border);border-radius:8px;padding:10px;font-family:inherit;font-size:.8rem;resize:none;min-height:90px;color:var(--text-dark);}
+.swap-textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+.btn-confirm-swap{width:calc(100% - 40px);margin:16px 20px 0;background:var(--text-dark);color:white;border:none;border-radius:12px;padding:14px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.btn-confirm-swap:hover{background:#0f1a2a;}
+
+/* ── NEW SHIFT MODAL ── */
+.new-shift-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:center;justify-content:center;}
+.new-shift-overlay.open{display:flex;}
+.new-shift-box{background:white;border-radius:var(--card-radius);box-shadow:var(--shadow-lg);width:400px;max-width:95vw;overflow:hidden;animation:popIn .18s ease-out;}
+.nsb-head{background:var(--purple);color:white;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;}
+.nsb-head h5{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;margin:0;}
+.nsb-close{background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;}
+.nsb-body{padding:18px;}
+.nsb-group{margin-bottom:14px;}
+.nsb-label{font-size:.72rem;font-weight:700;color:var(--text-dark);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
+.nsb-input{width:100%;border:1.5px solid var(--gray-border);border-radius:7px;padding:8px 10px;font-family:inherit;font-size:.8rem;color:var(--text-dark);}
+.nsb-input:focus{outline:2px solid var(--purple);border-color:var(--purple);}
+.nsb-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.nsb-footer{padding:12px 18px;border-top:1px solid var(--gray-border);display:flex;gap:8px;justify-content:flex-end;background:var(--gray-bg);}
+.btn-nsb-cancel{background:white;border:1.5px solid var(--gray-border);border-radius:7px;padding:7px 16px;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--text-mid);}
+.btn-nsb-save{background:var(--purple);color:white;border:none;border-radius:7px;padding:7px 16px;font-size:.78rem;font-weight:700;cursor:pointer;}
+.btn-nsb-save:hover{background:#7c3aed;}
+
+/* color options for new event */
+.color-picker{display:flex;gap:8px;margin-top:4px;}
+.cp-option{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.cp-option:hover,.cp-option.active{border-color:var(--text-dark);transform:scale(1.15);}
+
+/* Toast */
+.pv-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--teal);color:white;padding:10px 22px;border-radius:22px;font-size:.82rem;font-weight:700;z-index:9999;box-shadow:var(--shadow-lg);transition:opacity .3s;pointer-events:none;}
+
+/* ── BACKDROP CLOSE ── */
+#ev-backdrop{position:fixed;inset:0;z-index:190;display:none;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="#" class="logo"><div class="logo-icon">🐾</div>PetVission</a>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#">Pacientes</a>
+    <a href="#" class="active">Horarios</a>
+    <a href="#">Reportes</a>
+  </nav>
+  <div class="topbar-right">
+    <button class="btn-swap" onclick="openSwap()">🔄 Solicitar cambio de turno</button>
+    <div class="topbar-avatar">DV</div>
+  </div>
+</div>
+
+<div class="app-body">
+
+<!-- ── SIDEBAR ── -->
+<div class="sidebar">
+  <div class="sb-section">
+    <div class="sb-label">Agendas</div>
+    <select class="sb-select"><option>Profesional</option><option>Sala</option><option>Equipo</option></select>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Estado de la reserva</div>
+    <div class="status-options">
+      <label class="status-opt"><input type="checkbox" checked style="display:none;"/><div class="status-dot" style="background:var(--teal);"></div> Reservas activas</label>
+      <label class="status-opt"><input type="checkbox" checked style="display:none;"/><div class="status-dot" style="background:var(--amber);"></div> Pendientes</label>
+      <label class="status-opt"><input type="checkbox" checked style="display:none;"/><div class="status-dot" style="background:var(--red);"></div> Canceladas</label>
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <button class="sb-btn">🔍 Búsqueda rápida de hora</button>
+  </div>
+
+  <!-- Mini calendars -->
+  <div class="sb-section" id="miniCals"></div>
+
+  <!-- Regular week -->
+  <div class="sb-section">
+    <div class="sb-label">Semana regular</div>
+    <div class="rw-panel">
+      <div class="rw-header">
+        <span class="rw-title">Horario fijo</span>
+        <span class="rw-badge">Horario Fijo</span>
+      </div>
+      <table class="rw-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;">Período</th>
+            <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th>
+          </tr>
+        </thead>
+        <tbody id="rwBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /sidebar -->
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- Toolbar -->
+  <div class="cal-toolbar">
+    <button class="btn-hoy" onclick="goToday()">Hoy</button>
+    <div class="cal-nav">
+      <button onclick="navPrev()">‹</button>
+      <button onclick="navNext()">›</button>
+    </div>
+    <span class="cal-date-title" id="calTitle"></span>
+    <div class="cal-toolbar-right">
+      <div class="view-toggle">
+        <button class="view-btn active" id="btnWeek" onclick="setView('week')">Semana</button>
+        <button class="view-btn" id="btnMonth" onclick="setView('month')">Mes</button>
+      </div>
+      <button class="btn-nuevo" onclick="openNewShift()">＋ Nuevo</button>
+    </div>
+  </div>
+
+  <!-- Calendar area -->
+  <div class="cal-grid-wrap" id="calArea"></div>
+
+</div><!-- /main -->
+</div><!-- /app-body -->
+
+<!-- ── EVENT BACKDROP ── -->
+<div id="ev-backdrop" onclick="closeEventPopup()"></div>
+
+<!-- ── SHIFT SWAP MODAL ── -->
+<div class="swap-overlay" id="swapOverlay" onclick="closeSwapOnBg(event)">
+  <div class="swap-sheet">
+    <div class="swap-handle"></div>
+    <div class="swap-topbar">
+      <button class="swap-back" onclick="closeSwap()">‹</button>
+      <h5>Solicitar cambio de turno</h5>
+      <div style="width:40px;"></div>
+    </div>
+
+    <div class="swap-section">
+      <div class="swap-section-title">Turno actual</div>
+      <div class="swap-shift-card">
+        <div class="ss-bar" style="background:var(--teal);"></div>
+        <div class="ss-info">
+          <div class="ss-name">Dr. Veterinario</div>
+          <div class="ss-time">08:00 – 14:00</div>
+          <div class="ss-icon">🏥 Sucursal casa matriz</div>
+        </div>
+        <div class="ss-date-badge">
+          <div class="db-month">MAY</div>
+          <div class="db-day">27</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="swap-section" style="margin-top:14px;">
+      <div class="swap-section-title">Seleccionar turno a intercambiar</div>
+      <div class="swap-shift-select selected" onclick="selectSwapShift(this,'shift1')">
+        <div class="ss-bar" style="background:var(--amber);height:36px;border-radius:2px;"></div>
+        <div class="ss-info">
+          <div class="ss-name" style="font-size:.8rem;">Dr. García</div>
+          <div class="ss-time">09:00 – 13:00</div>
+        </div>
+        <div class="ss-date-badge" style="background:#e05252;">
+          <div class="db-month">MAY</div>
+          <div class="db-day">28</div>
+        </div>
+      </div>
+      <div class="swap-shift-select" onclick="selectSwapShift(this,'shift2')">
+        <div class="ss-bar" style="background:var(--purple);height:36px;border-radius:2px;"></div>
+        <div class="ss-info">
+          <div class="ss-name" style="font-size:.8rem;">Dra. Reyes</div>
+          <div class="ss-time">14:00 – 20:00</div>
+        </div>
+        <div class="ss-date-badge" style="background:#8b5cf6;">
+          <div class="db-month">MAY</div>
+          <div class="db-day">29</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="swap-section" style="margin-top:14px;">
+      <div class="swap-section-title">Aprobaciones</div>
+      <div class="approval-note" style="margin-bottom:8px;">El médico debe aprobar el intercambio.</div>
+      <div class="approval-row">
+        <div class="approval-avatar">👩‍⚕️</div>
+        <div class="approval-info">
+          <div class="ai-name">Dra. Admin</div>
+          <div class="ai-role">Jefe de turno</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="swap-section" style="margin-top:14px;">
+      <div class="swap-section-title">Motivo (opcional)</div>
+      <textarea class="swap-textarea" placeholder="Describe el motivo del cambio de turno…"></textarea>
+    </div>
+
+    <button class="btn-confirm-swap" onclick="confirmSwap()">Confirmar solicitud de cambio</button>
+  </div>
+</div>
+
+<!-- ── NEW SHIFT MODAL ── -->
+<div class="new-shift-overlay" id="newShiftOverlay" onclick="closeNewShiftOnBg(event)">
+  <div class="new-shift-box">
+    <div class="nsb-head">
+      <h5>Nueva cita / turno</h5>
+      <button class="nsb-close" onclick="closeNewShift()">✕</button>
+    </div>
+    <div class="nsb-body">
+      <div class="nsb-group">
+        <label class="nsb-label">Paciente / Descripción</label>
+        <input class="nsb-input" type="text" placeholder="Nombre del paciente o descripción"/>
+      </div>
+      <div class="nsb-group">
+        <label class="nsb-label">Tipo de consulta</label>
+        <select class="nsb-input">
+          <option>Primera cita</option><option>Segunda cita</option><option>Control</option>
+          <option>Cirugía</option><option>Urgencia</option><option>Sesión grupal</option>
+        </select>
+      </div>
+      <div class="nsb-row nsb-group">
+        <div>
+          <label class="nsb-label">Fecha</label>
+          <input class="nsb-input" type="date" id="nsb-date"/>
+        </div>
+        <div>
+          <label class="nsb-label">Profesional</label>
+          <select class="nsb-input">
+            <option>Dr. Veterinario</option><option>Dr. García</option><option>Dra. Reyes</option>
+          </select>
+        </div>
+      </div>
+      <div class="nsb-row nsb-group">
+        <div>
+          <label class="nsb-label">Hora inicio</label>
+          <input class="nsb-input" type="time" value="09:00"/>
+        </div>
+        <div>
+          <label class="nsb-label">Hora fin</label>
+          <input class="nsb-input" type="time" value="10:00"/>
+        </div>
+      </div>
+      <div class="nsb-group">
+        <label class="nsb-label">Color</label>
+        <div class="color-picker">
+          <div class="cp-option active" style="background:#ccf2ec;" data-color="ev-teal" onclick="selectColor(this)"></div>
+          <div class="cp-option" style="background:#fef3c7;" data-color="ev-amber" onclick="selectColor(this)"></div>
+          <div class="cp-option" style="background:#fce7f3;" data-color="ev-pink" onclick="selectColor(this)"></div>
+          <div class="cp-option" style="background:#ede9fe;" data-color="ev-purple" onclick="selectColor(this)"></div>
+          <div class="cp-option" style="background:#e0f2fe;" data-color="ev-sky" onclick="selectColor(this)"></div>
+          <div class="cp-option" style="background:#dcfce7;" data-color="ev-green" onclick="selectColor(this)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="nsb-footer">
+      <button class="btn-nsb-cancel" onclick="closeNewShift()">Cancelar</button>
+      <button class="btn-nsb-save" onclick="saveNewShift()">Guardar cita</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ══ STATE ══ */
+const today = new Date();
+let currentDate = new Date(today);
+let currentView = 'week';
+let selectedColor = 'ev-teal';
+
+const PROFESSIONALS = [
+  {id:'dr-vet',  name:'Dr. Veterinario', color:'ev-teal'},
+  {id:'dr-garcia', name:'Dr. García',   color:'ev-amber'},
+  {id:'dr-reyes',  name:'Dra. Reyes',   color:'ev-pink'},
+];
+
+/* Sample events: {id, title, type, prof, date, startH, endH, color, phone, email, comment} */
+const EVENTS = [
+  {id:1,title:'Bárbara Troncoso',type:'Sesión grupal',prof:'dr-vet',date:getDateStr(0),startH:10,endH:12,color:'ev-teal',phone:'+56 9 1234 5467',email:'barbara@mail.com',comment:'Prefiere sala grande'},
+  {id:2,title:'Jose Molero',type:'Primera cita',prof:'dr-vet',date:getDateStr(0),startH:14,endH:16,color:'ev-teal',phone:'+56 9 2222 3333',email:'jose@mail.com'},
+  {id:3,title:'Ricardo Quevedo',type:'Tratamiento segunda cita',prof:'dr-vet',date:getDateStr(0),startH:17,endH:18.5,color:'ev-teal'},
+  {id:4,title:'Ferran Santana',type:'Clase',prof:'dr-vet',date:getDateStr(0),startH:19,endH:21,color:'ev-teal'},
+  {id:5,title:'Antonia Cardona',type:'Clase personalizada',prof:'dr-garcia',date:getDateStr(0),startH:11,endH:13,color:'ev-amber',phone:'+56 9 1234 5467',email:'antocardona@gmail.com',comment:'Ana prefiere estacionar en el -1'},
+  {id:6,title:'Felix Nieto',type:'Sesión individual',prof:'dr-garcia',date:getDateStr(0),startH:15,endH:17,color:'ev-amber'},
+  {id:7,title:'María Eva Casal',type:'Segunda cita',prof:'dr-garcia',date:getDateStr(0),startH:19,endH:21,color:'ev-amber'},
+  {id:8,title:'Patricia Fuenzalida',type:'Tratamiento primera cita',prof:'dr-reyes',date:getDateStr(0),startH:9,endH:11,color:'ev-pink'},
+  {id:9,title:'Laila Serrano',type:'Segunda cita',prof:'dr-reyes',date:getDateStr(0),startH:10,endH:11.5,color:'ev-pink'},
+  {id:10,title:'Consulta personalizada',type:'Consulta',prof:'dr-reyes',date:getDateStr(0),startH:18,endH:20,color:'ev-pink'},
+  {id:11,title:'Camila Rodríguez',type:'Primera cita',prof:'dr-reyes',date:getDateStr(0),startH:21,endH:22,color:'ev-pink'},
+  {id:12,title:'Macarena Rial',type:'Primera cita',prof:'dr-garcia',date:getDateStr(1),startH:9,endH:10,color:'ev-sky'},
+  {id:13,title:'Eloi Zurita',type:'Tratamiento segunda cita',prof:'dr-garcia',date:getDateStr(1),startH:11,endH:13,color:'ev-sky'},
+  {id:14,title:'Gustavo Florez',type:'Tercera cita',prof:'dr-garcia',date:getDateStr(1),startH:14,endH:16,color:'ev-amber'},
+  {id:15,title:'Alberto Sanchis',type:'Sesión individual',prof:'dr-garcia',date:getDateStr(1),startH:16,endH:18,color:'ev-purple'},
+  {id:16,title:'Xabier Marques',type:'Segunda cita',prof:'dr-garcia',date:getDateStr(1),startH:19,endH:21,color:'ev-sky'},
+  {id:17,title:'Control rutinario',type:'Control',prof:'dr-vet',date:getDateStr(2),startH:9,endH:10,color:'ev-teal'},
+  {id:18,title:'Vacunación grupal',type:'Procedimiento',prof:'dr-reyes',date:getDateStr(3),startH:10,endH:12,color:'ev-green'},
+];
+
+function getDateStr(offsetDays){
+  const d = new Date(today);
+  d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().slice(0,10);
+}
+
+function dateToStr(d){ return d.toISOString().slice(0,10); }
+
+/* ══ MINI CALENDARS ══ */
+const MONTHS_ES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS_ES_SHORT=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+function renderMiniCals(){
+  const wrap = document.getElementById('miniCals');
+  wrap.innerHTML = '';
+  for(let offset=0;offset<2;offset++){
+    const m = new Date(today.getFullYear(), today.getMonth()+offset, 1);
+    wrap.appendChild(buildMiniCal(m.getFullYear(), m.getMonth()));
+  }
+}
+
+function buildMiniCal(year, month){
+  const div = document.createElement('div');
+  div.className = 'mini-cal';
+  div.style.marginBottom = '16px';
+  const header = `<div class="mc-header"><span>${MONTHS_ES[month]} ${year}</span></div>`;
+  let grid = '<div class="mc-grid">';
+  DAYS_ES_SHORT.forEach(d=>{ grid+=`<div class="mc-day-name">${d[0]}</div>`; });
+  const firstDay = new Date(year,month,1).getDay();
+  const startOffset = firstDay===0?6:firstDay-1;
+  const daysInMonth = new Date(year,month+1,0).getDate();
+  const prevDays = new Date(year,month,0).getDate();
+  for(let i=startOffset-1;i>=0;i--) grid+=`<div class="mc-day other-month">${prevDays-i}</div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday = d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear();
+    const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    grid+=`<div class="mc-day${isToday?' today':''}" onclick="jumpToDate('${ds}')">${d}</div>`;
+  }
+  const remaining=(7-(startOffset+daysInMonth)%7)%7;
+  for(let d=1;d<=remaining;d++) grid+=`<div class="mc-day other-month">${d}</div>`;
+  grid+='</div>';
+  div.innerHTML = header+grid;
+  return div;
+}
+
+function jumpToDate(ds){
+  currentDate = new Date(ds+'T12:00:00');
+  render();
+}
+
+/* ══ REGULAR WEEK TABLE ══ */
+const RW_PERIODS=[
+  {label:'Ene 1 – Jul 31',color:'#14b8a6',times:['8h','8h','8h','8h','8h']},
+  {label:'Jul 31 – Ago 31',color:'#f59e0b',times:['8h','8h','8h','8h','—']},
+];
+function renderRegularWeek(){
+  const body = document.getElementById('rwBody');
+  body.innerHTML = RW_PERIODS.map(p=>`
+    <tr>
+      <td><div class="rw-period"><div class="rw-dot" style="background:${p.color};"></div>${p.label}</div></td>
+      ${p.times.map(t=>`<td><div class="rw-time-chip">${t}</div></td>`).join('')}
+    </tr>`).join('');
+}
+
+/* ══ WEEK VIEW ══ */
+const HOURS = Array.from({length:15},(_,i)=>i+7); // 7:00–21:00
+const H_PX = 60;
+const START_H = 7;
+
+function getWeekStart(d){
+  const day = d.getDay();
+  const diff = day===0?-6:1-day;
+  const ws = new Date(d);
+  ws.setDate(d.getDate()+diff);
+  ws.setHours(0,0,0,0);
+  return ws;
+}
+
+function renderWeek(){
+  const ws = getWeekStart(currentDate);
+  const days=[];
+  for(let i=0;i<7;i++){const d=new Date(ws);d.setDate(ws.getDate()+i);days.push(d);}
+
+  // Title
+  const endD = days[6];
+  document.getElementById('calTitle').textContent =
+    `${MONTHS_ES[ws.getMonth()]} ${ws.getDate()} – ${endD.getDate()} de ${MONTHS_ES[endD.getMonth()]} de ${ws.getFullYear()}`;
+
+  const area = document.getElementById('calArea');
+  area.innerHTML='';
+
+  // Header
+  const hdr = document.createElement('div');
+  hdr.style.cssText='display:flex;position:sticky;top:0;z-index:10;background:white;border-bottom:1px solid #e2e8f0;';
+  hdr.innerHTML=`<div style="width:64px;flex-shrink:0;border-right:1px solid #e2e8f0;"></div>`+
+    days.map(d=>{
+      const isT=dateToStr(d)===dateToStr(today);
+      return `<div class="wh-day${isT?' today':''}" style="flex:1;text-align:center;padding:8px 4px;border-right:1px solid #e2e8f0;">
+        <div class="wd-name">${DAYS_ES_SHORT[d.getDay()===0?6:d.getDay()-1]}</div>
+        <div class="wd-num">${d.getDate()}</div>
+      </div>`;
+    }).join('');
+  area.appendChild(hdr);
+
+  // Body
+  const body = document.createElement('div');
+  body.style.cssText='display:flex;min-height:'+(HOURS.length*H_PX)+'px;';
+
+  // Times column
+  const timesCol=document.createElement('div');
+  timesCol.style.cssText='width:64px;flex-shrink:0;border-right:1px solid #e2e8f0;';
+  HOURS.forEach(h=>{
+    const row=document.createElement('div');
+    row.style.cssText=`height:${H_PX}px;border-bottom:1px solid #f1f5f9;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;`;
+    row.innerHTML=`<span style="font-size:.67rem;color:#94a3b8;font-weight:600;">${h}:00</span>`;
+    timesCol.appendChild(row);
+  });
+  body.appendChild(timesCol);
+
+  // Day columns
+  days.forEach(d=>{
+    const ds=dateToStr(d);
+    const col=document.createElement('div');
+    col.style.cssText=`flex:1;border-right:1px solid #e2e8f0;position:relative;min-height:${HOURS.length*H_PX}px;`;
+    // cell lines
+    HOURS.forEach(()=>{
+      const cell=document.createElement('div');
+      cell.style.cssText=`height:${H_PX}px;border-bottom:1px solid #f1f5f9;`;
+      col.appendChild(cell);
+    });
+    // events for this day
+    const dayEvents=EVENTS.filter(e=>e.date===ds);
+    dayEvents.forEach(ev=>{
+      const top=((ev.startH-START_H)*H_PX);
+      const height=((ev.endH-ev.startH)*H_PX)-4;
+      const el=document.createElement('div');
+      el.className=`cal-event ${ev.color}`;
+      el.style.cssText=`top:${top}px;height:${height}px;`;
+      el.innerHTML=`<div class="ev-name">${ev.title}</div><div class="ev-time">${fmtH(ev.startH)}–${fmtH(ev.endH)}</div>`;
+      el.onclick=(e)=>{e.stopPropagation();showEventPopup(ev,e);};
+      col.appendChild(el);
+    });
+    body.appendChild(col);
+  });
+  area.appendChild(body);
+}
+
+/* ══ MONTH VIEW ══ */
+function renderMonth(){
+  const year=currentDate.getFullYear(), month=currentDate.getMonth();
+  document.getElementById('calTitle').textContent=`${MONTHS_ES[month]} ${year}`;
+
+  const area=document.getElementById('calArea');
+  area.innerHTML='';
+  area.style.display='flex';
+  area.style.flexDirection='column';
+
+  // Day names row
+  const hdr=document.createElement('div');
+  hdr.className='month-header-row';
+  hdr.style.cssText='display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid #e2e8f0;background:white;position:sticky;top:0;z-index:5;';
+  DAYS_ES_SHORT.forEach(n=>{hdr.innerHTML+=`<div class="month-day-name">${n}</div>`;});
+  area.appendChild(hdr);
+
+  // Grid
+  const grid=document.createElement('div');
+  grid.style.cssText='flex:1;display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(90px,1fr);overflow-y:auto;';
+
+  const firstDay=new Date(year,month,1).getDay();
+  const startOffset=firstDay===0?6:firstDay-1;
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const prevDays=new Date(year,month,0).getDate();
+
+  const cells=[];
+  for(let i=startOffset-1;i>=0;i--) cells.push({day:prevDays-i,cur:false,ds:`${year}-${String(month).padStart(2,'0')}-${String(prevDays-i).padStart(2,'0')}`});
+  for(let d=1;d<=daysInMonth;d++) cells.push({day:d,cur:true,ds:`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`});
+  const rem=(7-cells.length%7)%7;
+  for(let d=1;d<=rem;d++) cells.push({day:d,cur:false,ds:`${year+Math.floor((month+1)/12)}-${String((month+1)%12+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`});
+
+  cells.forEach(c=>{
+    const cell=document.createElement('div');
+    cell.className='month-cell';
+    const isToday=c.cur&&c.ds===dateToStr(today);
+    cell.innerHTML=`<div class="mc-num${isToday?' today-num':''}${!c.cur?' other':''}">${c.day}</div>`;
+    const dayEvs=EVENTS.filter(e=>e.date===c.ds).slice(0,3);
+    dayEvs.forEach(ev=>{
+      const evEl=document.createElement('div');
+      evEl.className=`month-event ${ev.color}`;
+      evEl.textContent=ev.title;
+      evEl.onclick=(e)=>{e.stopPropagation();showEventPopup(ev,e);};
+      cell.appendChild(evEl);
+    });
+    const more=EVENTS.filter(e=>e.date===c.ds).length-3;
+    if(more>0) cell.innerHTML+=`<div style="font-size:.65rem;color:var(--text-light);padding:1px 4px;">+${more} más</div>`;
+    grid.appendChild(cell);
+  });
+  area.appendChild(grid);
+}
+
+function fmtH(h){
+  const hh=Math.floor(h);
+  const mm=Math.round((h-hh)*60);
+  return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+}
+
+/* ══ EVENT POPUP ══ */
+let openPopupEl=null;
+function showEventPopup(ev, mouseEvent){
+  closeEventPopup();
+  const popup=document.createElement('div');
+  popup.className='ev-popup';
+  popup.id='evPopup';
+
+  const colorDots=['#f59e0b','#f472b6','#22c55e','#ef4444','#a78bfa'];
+  popup.innerHTML=`
+    <div class="ev-popup-head">
+      <div style="flex:1;">
+        <div class="ev-popup-title">${ev.title}</div>
+        <div class="ev-popup-type">${ev.type}</div>
+        <div class="ev-popup-time" style="margin-top:4px;">📅 ${fmtH(ev.startH)} a ${fmtH(ev.endH)} hrs</div>
+      </div>
+      <div class="ev-popup-actions">
+        <button title="Eliminar">🗑</button>
+        <button title="Editar">✏️</button>
+        <button onclick="closeEventPopup()">✕</button>
+      </div>
+    </div>
+    <div class="ev-popup-body">
+      <div class="ev-popup-row"><span class="icon">👤</span><span class="val">Se atenderá con: Dr. Veterinario</span></div>
+      ${ev.phone?`<div class="ev-popup-row"><span class="icon">📱</span><span class="val">${ev.phone}</span>${ev.phone?`<span style="margin-left:8px;">🟢 <a href="#">Hablar por WhatsApp</a></span>`:''}</div>`:''}
+      ${ev.email?`<div class="ev-popup-row"><span class="icon">✉️</span><span class="val">${ev.email}</span></div>`:''}
+      ${ev.comment?`<div class="ev-popup-row"><span class="icon">💬</span><div class="ev-popup-comment">${ev.comment}</div></div>`:''}
+    </div>
+    <div class="ev-popup-status">
+      <span class="ev-status-badge">✅ Reservado</span>
+      <div class="ev-color-dots">
+        ${colorDots.map(c=>`<div class="ev-color-dot" style="background:${c};" onclick=""></div>`).join('')}
+      </div>
+    </div>
+    <div class="ev-popup-footer">
+      <a href="#" class="pay">$ Pagar</a>
+      <a href="#">📋 Ir a la ficha</a>
+    </div>`;
+
+  document.body.appendChild(popup);
+  document.getElementById('ev-backdrop').style.display='block';
+
+  // Position
+  const rect=mouseEvent.target.getBoundingClientRect();
+  let left=rect.right+8, top=rect.top;
+  if(left+300>window.innerWidth) left=rect.left-308;
+  if(top+350>window.innerHeight) top=window.innerHeight-360;
+  popup.style.left=Math.max(8,left)+'px';
+  popup.style.top=Math.max(8,top)+'px';
+  openPopupEl=popup;
+}
+
+function closeEventPopup(){
+  const p=document.getElementById('evPopup');
+  if(p) p.remove();
+  document.getElementById('ev-backdrop').style.display='none';
+  openPopupEl=null;
+}
+
+/* ══ NAVIGATION ══ */
+function goToday(){ currentDate=new Date(today); render(); }
+function navPrev(){
+  if(currentView==='week') currentDate.setDate(currentDate.getDate()-7);
+  else { currentDate.setMonth(currentDate.getMonth()-1); }
+  render();
+}
+function navNext(){
+  if(currentView==='week') currentDate.setDate(currentDate.getDate()+7);
+  else { currentDate.setMonth(currentDate.getMonth()+1); }
+  render();
+}
+function setView(v){
+  currentView=v;
+  document.getElementById('btnWeek').classList.toggle('active',v==='week');
+  document.getElementById('btnMonth').classList.toggle('active',v==='month');
+  render();
+}
+function render(){
+  closeEventPopup();
+  if(currentView==='week') renderWeek();
+  else renderMonth();
+}
+
+/* ══ FILTER ══ */
+function filterProfessional(val){ render(); }
+
+/* ══ SWAP MODAL ══ */
+function openSwap(){ document.getElementById('swapOverlay').classList.add('open'); }
+function closeSwap(){ document.getElementById('swapOverlay').classList.remove('open'); }
+function closeSwapOnBg(e){ if(e.target===document.getElementById('swapOverlay')) closeSwap(); }
+function selectSwapShift(el){
+  document.querySelectorAll('.swap-shift-select').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function confirmSwap(){
+  closeSwap();
+  showToast('Solicitud de cambio enviada ✓');
+}
+
+/* ══ NEW SHIFT MODAL ══ */
+function openNewShift(){
+  const d=document.getElementById('nsb-date');
+  if(d) d.value=dateToStr(currentDate);
+  document.getElementById('newShiftOverlay').classList.add('open');
+}
+function closeNewShift(){ document.getElementById('newShiftOverlay').classList.remove('open'); }
+function closeNewShiftOnBg(e){ if(e.target===document.getElementById('newShiftOverlay')) closeNewShift(); }
+function selectColor(el){
+  document.querySelectorAll('.cp-option').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  selectedColor=el.dataset.color;
+}
+function saveNewShift(){
+  closeNewShift();
+  showToast('Cita guardada correctamente ✓');
+  render();
+}
+
+/* ══ TOAST ══ */
+function showToast(msg){
+  let t=document.getElementById('pvToast');
+  if(!t){t=document.createElement('div');t.id='pvToast';t.className='pv-toast';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';},2400);
+}
+
+/* ══ ESC ══ */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeEventPopup();closeSwap();closeNewShift();}
+});
+
+/* ══ INIT ══ */
+renderMiniCals();
+renderRegularWeek();
+render();
+</script>
+</body>
+</html>
