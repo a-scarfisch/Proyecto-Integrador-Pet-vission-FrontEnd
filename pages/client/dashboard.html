@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PetVission — Dashboard</title>
+  <title>PetVission — Inicio</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
   <link href="../../assets/css/styles.css" rel="stylesheet" />
@@ -58,8 +58,8 @@
             <i class="bi bi-chevron-down small text-muted"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2 text-teal"></i>Mi perfil</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2 text-teal"></i>Configuración</a></li>
+            <li><a class="dropdown-item" href="miperfil.html"><i class="bi bi-person me-2 text-teal"></i>Mi perfil</a></li>
+            <li><a class="dropdown-item" href="miconfiguracion.html"><i class="bi bi-gear me-2 text-teal"></i>Configuración</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <a class="dropdown-item text-danger" href="../auth/login.html">
@@ -86,7 +86,7 @@
           <li>
             <a href="dashboard.html" class="sidebar-link active">
               <i class="bi bi-grid-fill"></i>
-              <span>Dashboard</span>
+              <span>Inicio</span>
             </a>
           </li>
           <li>
@@ -97,9 +97,9 @@
             </a>
           </li>
           <li>
-            <a href="miscitas.html" class="sidebar-link">
+            <a href="misreserva.html" class="sidebar-link">
               <i class="bi bi-calendar2-check-fill"></i>
-              <span>Mis Citas</span>
+              <span>Mis Reserva</span>
               <span class="badge bg-warning text-dark ms-auto">1</span>
             </a>
           </li>
@@ -107,7 +107,7 @@
           <li class="sidebar-label mt-3">Cuenta</li>
 
           <li>
-            <a href="#" class="sidebar-link">
+            <a href="miperfil.html" class="sidebar-link">
               <i class="bi bi-person-fill"></i>
               <span>Mi Perfil</span>
             </a>
@@ -203,9 +203,13 @@
               <h6 class="fw-bold mb-0">
                 <i class="bi bi-heart-fill text-teal me-2"></i>Mis Mascotas
               </h6>
-              <a href="#" class="btn btn-sm btn-outline-teal">
-                <i class="bi bi-plus me-1"></i>Agregar
-              </a>
+            <div class="col-auto d-none d-sm-block">
+            <a href="nuevamascota.html" class="btn btn-teal text-white px-4" onclick="goFoward()">
+            <i class="bi bi-plus"></i>Agregar mascota
+            </a>
+
+          </div>
+              </button>
             </div>
             <div class="card-body">
               <!-- Mascota 1 -->
@@ -235,10 +239,10 @@
           <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pt-3">
               <h6 class="fw-bold mb-0">
-                <i class="bi bi-calendar2-check-fill text-teal me-2"></i>Próximas Citas
+                <i class="bi bi-calendar2-check-fill text-teal me-2"></i>Próximas Reserva
               </h6>
                <div class="col-auto d-none d-sm-block">
-               <a href="miscitas.html" class="btn btn-teal text-white px-4" onclick="goFoward()">
+               <a href="misreserva.html" class="btn btn-teal text-white px-4" onclick="goFoward()">
                <i class="bi bi-calendar-plus me-2"></i>Ver todas
               </a>
 
@@ -264,21 +268,81 @@
                 <a href="agendamiento.html" class="btn btn-teal text-white px-4" onclick="goFoward()">
                 <i class="bi bi-calendar-plus me-2"></i>Agendar nueva cita 
               </a>
+
           </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </main>
-  </div>
+        <div class="modal fade" id="addPetModal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Agregar nueva mascota</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body    ">
+                <form id="addPetForm">
+                  <div class="mb-3">
+                    <label for="petName" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="petName" required />
+                  </div>
+                  <div class="mb-3">
+                    <label for="petType" class="form-label">Tipo</label>
+                    <select class="form-select" id="petType" required>
+                      <option value="">Selecciona...</option>
+                      <option value="perro">Perro</option>
+                      <option value="gato">Gato</option>
+                      <option value="otro">Otro</option>
+                    </div>
+                    <div class="mb-3">
+                      <label for="petAge" class="form-label">Edad (años)</label>
+                      <input type="number" class="form-control" id="petAge" min="0" required />
+                    </div>
+                    <button type="submit" class="btn btn-teal text-white w-100">Agregar mascota</button>
+                  </form>
+                  
+                </div>
+              </main>
+            </div>
+            
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script>
+              function toggleSidebar() {
+                document.getElementById('sidebar').classList.toggle('open');
+                document.getElementById('overlay').classList.toggle('show');
+              }
+                // ── MODALS ──
+              function openNewPetModal() { document.getElementById('newPetModal').classList.add('open'); }
+              function closeNewPetModal() { document.getElementById('newPetModal').classList.remove('open'); }
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
-      document.getElementById('overlay').classList.toggle('show');
-    }
-  </script>
+              function addNewPet() {
+                const name = document.getElementById('newPetName').value.trim();
+                const species = document.getElementById('newPetSpecies').value;
+                const breed = document.getElementById('newPetBreed').value.trim() || species;
+                const age = document.getElementById('newPetAge').value.trim() || '?';
+                if (!name) return;
+                const emoji = species === 'Perro' ? '🐶' : species === 'Gato' ? '🐱' : species === 'Conejo' ? '🐰' : species === 'Ave' ? '🐦' : '🐾';
+                const grid = document.getElementById('petGrid');
+                const newCard = document.createElement('div');
+                newCard.className = 'pet-card';
+                newCard.dataset.pet = name;
+                newCard.onclick = function(){ selectPet(this); };
+                newCard.innerHTML = `
+                  <div class="pet-avatar">${emoji}</div>
+                  <div>
+                    <div class="pet-name">${name}</div>
+                    <div class="pet-breed">${breed} · ${age}</div>
+                    <span class="pet-badge ok">Nueva</span>
+                  </div>`;
+                grid.insertBefore(newCard, grid.lastElementChild);
+                closeNewPetModal();
+                selectPet(newCard);
+              }
+                          </script>
+
 </body>
 </html>
+
+</select>

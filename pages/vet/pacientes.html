@@ -29,13 +29,13 @@
 
     <nav class="vet-nav">
       <a href="dashboard.html" class="vet-nav-link">
-        <i class="bi bi-calendar3"></i><span>Citas</span>
+        <i class="bi bi-calendar3"></i><span>Reserva</span>
       </a>
-      <a href="calendario.html" class="vet-nav-link">
-        <i class="bi bi-person-fill"></i><span>Calendario</span>
+      <a href="horario.html" class="vet-nav-link">
+        <i class="bi bi-person-fill"></i><span>Mi Horario</span>
       </a>
       <a href="pacientes.html" class="vet-nav-link active">
-        <i class="bi bi-people-fill"></i><span>Pacientes</span>
+        <i class="bi bi-people-fill"></i><span>Mis  Pacientes</span>
       </a>
       <a href="historial.html" class="vet-nav-link">
         <i class="bi bi-clipboard2-pulse-fill"></i><span>Historial Clínico</span>
@@ -61,7 +61,33 @@
 
   </aside>
 
+  <!-- Overlay mobile -->
   <div class="vet-sidebar-overlay" id="vetOverlay" onclick="toggleSidebar()"></div>
+  <!-- Main content -->
+   <style>
+    :root {
+      --teal:         #1ab5a3;
+      --teal-dark:    oklab(58.440999999999995% -0.10226 -0.00344);
+      --teal-light:   #e6f9f7;
+      --teal-mid:     #a8ede7;
+      --teal-btn:     #2dcfc0;
+      --red:          #e05252;
+      --red-light:    #fdeaea;
+      --green:        #27ae60;
+      --amber:        #f5a623;
+      --amber-light:  #fff8ed;
+      --gray-bg:      #f4f6f8;
+      --gray-border:  #e2e8f0;
+      --text-dark:    #1a2535;
+      --text-mid:     #4a5568;
+      --text-light:   #94a3b8;
+      --white:        #ffffff;
+      --sidebar-dark: #1e2d3d;
+      --sidebar-mid:  #243447;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--text-dark); min-height: 100vh; }
+   </style>
 
   <!-- CONTENIDO -->
   <div class="vet-main">
