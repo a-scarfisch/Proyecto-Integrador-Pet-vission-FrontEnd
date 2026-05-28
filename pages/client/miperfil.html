@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PetVission — Mi Perfil</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --teal:        #1ab5a3;
+      --teal-dark:   #0e8f80;
+      --teal-light:  #e6f9f7;
+      --teal-mid:    #a8ede7;
+      --teal-btn:    #19a898;
+      --gray-bg:     #f4f6f8;
+      --gray-border: #e2e8f0;
+      --text-dark:   #1a2535;
+      --text-mid:    #4a5568;
+      --text-light:  #94a3b8;
+      --white:       #ffffff;
+      --red:         #e05252;
+      --amber:       #f5a623;
+      --sidebar-w:   280px;
+      --topbar-h:    64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--gray-bg);
+      color: var(--text-dark);
+      display: flex; flex-direction: column;
+    }
+
+    /* ══ TOPBAR ══ */
+    .pv-topbar {
+      height: var(--topbar-h);
+      background: var(--white);
+      border-bottom: 1.5px solid var(--gray-border);
+      display: flex; align-items: center;
+      padding: 0 28px; gap: 16px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 0 var(--gray-border);
+    }
+    .topbar-logo {
+      display: flex; align-items: center; gap: 9px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .logo-icon {
+      width: 34px; height: 34px; background: var(--teal);
+      border-radius: 9px; display: grid; place-items: center;
+      color: white; font-size: 1.05rem;
+    }
+    .logo-text {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 1.18rem; color: var(--teal);
+    }
+    .topbar-search {
+      flex: 1; max-width: 460px;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--gray-bg); border: 1.5px solid var(--gray-border);
+      border-radius: 50px; padding: 8px 18px;
+    }
+    .topbar-search input {
+      border: none; background: none; outline: none;
+      font-size: .88rem; color: var(--text-dark); width: 100%;
+    }
+    .topbar-search input::placeholder { color: var(--text-light); }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+    .notif-btn {
+      position: relative; width: 38px; height: 38px; border-radius: 50%;
+      border: 1.5px solid var(--gray-border); background: none;
+      display: grid; place-items: center; font-size: 1rem;
+      cursor: pointer; transition: background .15s;
+    }
+    .notif-btn:hover { background: var(--teal-light); }
+    .notif-badge {
+      position: absolute; top: 1px; right: 1px; width: 18px; height: 18px;
+      background: var(--red); border-radius: 50%; font-size: .6rem;
+      font-weight: 800; color: white; display: grid; place-items: center;
+      border: 2px solid white;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 9px;
+      cursor: pointer; padding: 5px 13px 5px 5px;
+      border-radius: 50px; border: 1.5px solid var(--gray-border);
+      background: var(--white); transition: background .15s;
+    }
+    .user-chip:hover { background: var(--teal-light); }
+    .user-av {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--teal); color: white;
+      display: grid; place-items: center;
+      font-family: 'Nunito', sans-serif; font-weight: 900; font-size: .82rem;
+    }
+    .user-name { font-weight: 600; font-size: .88rem; color: var(--text-dark); }
+    .user-caret { color: var(--text-light); font-size: .75rem; }
+
+    /* ══ LAYOUT ══ */
+    .pv-layout { display: flex; flex: 1; min-height: 0; }
+
+    /* ══ SIDEBAR ══ */
+    .pv-sidebar {
+      width: var(--sidebar-w); background: var(--white);
+      border-right: 1.5px solid var(--gray-border);
+      display: flex; flex-direction: column;
+      position: sticky; top: var(--topbar-h);
+      height: calc(100vh - var(--topbar-h));
+      overflow-y: auto; flex-shrink: 0;
+    }
+    .sidebar-inner { padding: 22px 14px; flex: 1; }
+    .sb-lbl {
+      font-size: .64rem; font-weight: 800; color: var(--text-light);
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 12px 8px; display: block;
+    }
+    .sb-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 10px;
+      font-size: .9rem; font-weight: 600; color: var(--text-mid);
+      text-decoration: none; cursor: pointer; transition: all .18s;
+      margin-bottom: 2px;
+    }
+    .sb-link:hover  { background: var(--teal-light); color: var(--teal-dark); }
+    .sb-link.active { background: var(--teal-light); color: var(--teal); font-weight: 700; }
+    .sb-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+    .sb-badge {
+      margin-left: auto; font-size: .65rem; font-weight: 800;
+      padding: 2px 8px; border-radius: 50px; color: white;
+    }
+    .sb-badge.teal  { background: var(--teal); }
+    .sb-badge.amber { background: var(--amber); }
+    .sb-link.danger { color: var(--red); }
+    .sb-link.danger:hover { background: #fdeaea; }
+    .sb-divider { border: none; border-top: 1px solid var(--gray-border); margin: 10px 14px; }
+
+    /* ══ MAIN ══ */
+    .pv-main { flex: 1; padding: 36px 40px; overflow-y: auto; }
+
+    /* Page heading row */
+    .page-heading {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .page-heading h1 {
+      font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.65rem;
+    }
+    .page-heading .ph-sub { font-size: .85rem; color: var(--text-light); margin-top: 2px; }
+
+    /* ══ PROFILE CARD ══ */
+    .profile-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 2px 16px rgba(26,181,163,.07);
+      animation: fadeUp .35s ease;
+      max-width: 900px;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(14px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* Banner */
+    .profile-banner {
+      height: 120px;
+      background: linear-gradient(120deg, #b2e8e2 0%, #e6f9f7 40%, #fef9e7 100%);
+      position: relative;
+    }
+    .profile-banner-edit {
+      position: absolute; bottom: 10px; right: 14px;
+      font-size: .75rem; font-weight: 700; color: var(--text-mid);
+      background: rgba(255,255,255,.7); border: 1.5px solid var(--gray-border);
+      border-radius: 50px; padding: 4px 12px; cursor: pointer;
+      backdrop-filter: blur(4px); transition: all .15s;
+    }
+    .profile-banner-edit:hover { background: white; color: var(--teal); border-color: var(--teal); }
+
+    /* Profile identity row */
+    .profile-identity {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding: 0 32px; margin-top: -2px; margin-bottom: 24px;
+    }
+    .profile-avatar-wrap { position: relative; }
+    .profile-avatar {
+      width: 88px; height: 88px; border-radius: 50%;
+      border: 4px solid var(--white);
+      background: var(--teal-light);
+      display: grid; place-items: center; font-size: 2.6rem;
+      overflow: hidden; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+      transition: filter .2s;
+    }
+    .profile-avatar:hover { filter: brightness(.9); }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .av-upload-badge {
+      position: absolute; bottom: 3px; right: 3px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--teal); color: white; font-size: .75rem;
+      display: grid; place-items: center; border: 2px solid white; cursor: pointer;
+    }
+    .profile-info { margin-left: 18px; padding-bottom: 6px; flex: 1; }
+    .profile-info .pi-name {
+      font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.2rem;
+    }
+    .profile-info .pi-email { font-size: .85rem; color: var(--text-light); margin-top: 2px; }
+    .btn-edit {
+      background: var(--teal-btn); color: white; border: none;
+      border-radius: 10px; padding: 10px 24px;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .88rem;
+      cursor: pointer; transition: all .2s; margin-bottom: 10px;
+    }
+    .btn-edit:hover { background: var(--teal-dark); transform: translateY(-1px); }
+    .btn-save {
+      background: var(--teal-btn); color: white; border: none;
+      border-radius: 10px; padding: 10px 24px;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .88rem;
+      cursor: pointer; transition: all .2s; margin-bottom: 10px; display: none;
+    }
+    .btn-save:hover { background: var(--teal-dark); }
+
+    /* Tabs */
+    .profile-tabs {
+      display: flex; gap: 0; border-bottom: 1.5px solid var(--gray-border);
+      padding: 0 32px;
+    }
+    .ptab {
+      padding: 12px 20px; font-size: .88rem; font-weight: 700;
+      color: var(--text-light); cursor: pointer; border: none; background: none;
+      border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
+      transition: all .18s;
+    }
+    .ptab:hover  { color: var(--teal); }
+    .ptab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+    /* Tab content */
+    .tab-pane { display: none; padding: 30px 32px; }
+    .tab-pane.active { display: block; }
+
+    /* Fields grid */
+    .fields-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px;
+    }
+    .field-group { display: flex; flex-direction: column; gap: 7px; }
+    .field-group.full { grid-column: 1 / -1; }
+    .field-label {
+      font-size: .7rem; font-weight: 800; color: var(--text-light);
+      letter-spacing: .09em; text-transform: uppercase;
+    }
+    .pv-input, .pv-select {
+      padding: 12px 16px;
+      border: 1.5px solid var(--gray-border); border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: .9rem;
+      color: var(--text-dark); background: var(--gray-bg);
+      outline: none; transition: all .2s; appearance: none;
+      pointer-events: none; /* read-only by default */
+    }
+    .pv-input::placeholder { color: var(--text-light); }
+    body.editing .pv-input,
+    body.editing .pv-select {
+      background: var(--white);
+      border-color: var(--gray-border);
+      pointer-events: all;
+    }
+    body.editing .pv-input:focus,
+    body.editing .pv-select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(26,181,163,.12);
+    }
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: "∨"; position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-light);
+      font-size: .85rem; pointer-events: none;
+    }
+
+    /* Divider */
+    .section-divider {
+      border: none; border-top: 1px solid var(--gray-border);
+      margin: 28px 0;
+    }
+    .section-title {
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: .95rem; margin-bottom: 16px;
+    }
+
+    /* Email list */
+    .email-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .email-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 16px; border-radius: 12px;
+      background: var(--gray-bg); border: 1.5px solid var(--gray-border);
+    }
+    .email-icon-wrap {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--teal-light); display: grid; place-items: center;
+      font-size: 1.1rem; flex-shrink: 0; border: 1.5px solid var(--teal-mid);
+    }
+    .email-addr { font-weight: 600; font-size: .9rem; }
+    .email-when { font-size: .75rem; color: var(--text-light); }
+    .email-primary {
+      margin-left: auto; font-size: .7rem; font-weight: 800;
+      background: var(--teal-light); color: var(--teal);
+      border-radius: 50px; padding: 3px 10px;
+    }
+    .btn-add-email {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: 10px;
+      background: var(--teal-light); color: var(--teal);
+      border: 1.5px solid var(--teal-mid);
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .84rem;
+      cursor: pointer; transition: all .15s;
+    }
+    .btn-add-email:hover { background: var(--teal); color: white; }
+
+    /* ── PETS TAB ── */
+    .pets-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .pet-card {
+      border: 1.5px solid var(--gray-border); border-radius: 14px;
+      padding: 18px 16px; text-align: center; background: var(--white);
+      cursor: pointer; transition: all .18s;
+    }
+    .pet-card:hover { border-color: var(--teal); box-shadow: 0 4px 14px rgba(26,181,163,.12); }
+    .pet-card-av {
+      width: 60px; height: 60px; border-radius: 50%;
+      display: grid; place-items: center; font-size: 1.8rem;
+      margin: 0 auto 10px; border: 3px solid var(--teal-mid);
+      background: var(--teal-light);
+    }
+    .pet-card-name { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .95rem; }
+    .pet-card-meta { font-size: .78rem; color: var(--text-mid); margin-top: 3px; }
+    .pet-status {
+      display: inline-block; margin-top: 8px;
+      font-size: .7rem; font-weight: 800; padding: 3px 10px; border-radius: 50px;
+    }
+    .pet-status.green { background: #dcfce7; color: #16a34a; }
+    .pet-status.amber { background: #fef9c3; color: #a16207; }
+
+    /* ── SECURITY TAB ── */
+    .security-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px; border-radius: 12px;
+      border: 1.5px solid var(--gray-border); background: var(--white);
+      margin-bottom: 12px;
+    }
+    .sec-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: grid; place-items: center; font-size: 1.2rem; flex-shrink: 0;
+    }
+    .sec-icon.teal { background: var(--teal-light); }
+    .sec-icon.amber { background: #fff8ed; }
+    .sec-title  { font-weight: 700; font-size: .9rem; }
+    .sec-sub    { font-size: .78rem; color: var(--text-light); }
+    .btn-sec {
+      margin-left: auto; padding: 7px 16px;
+      border-radius: 8px; border: 1.5px solid var(--gray-border);
+      background: none; font-size: .82rem; font-weight: 700;
+      color: var(--text-mid); cursor: pointer; transition: all .15s;
+    }
+    .btn-sec:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* ══ TOAST ══ */
+    .pv-toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--teal); color: white; padding: 12px 24px;
+      border-radius: 50px; font-weight: 700; font-size: .88rem;
+      box-shadow: 0 8px 24px rgba(26,181,163,.3);
+      z-index: 600; opacity: 0; white-space: nowrap;
+      transition: all .4s cubic-bezier(.34,1.56,.64,1);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pv-toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
+
+    /* Responsive */
+    @media(max-width: 768px) {
+      .pv-sidebar { display: none; }
+      .pv-main { padding: 20px 14px; }
+      .fields-grid { grid-template-columns: 1fr; }
+      .profile-identity { flex-wrap: wrap; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="pv-topbar">
+  <a class="topbar-logo" href="dashboard.html">
+    <div class="logo-icon">🏥</div>
+    <span class="logo-text">PetVission</span>
+  </a>
+  <div class="topbar-search">
+    <span style="color:var(--text-light);">🔍</span>
+    <input type="text" placeholder="Buscar..."/>
+  </div>
+  <div class="topbar-right">
+    <button class="notif-btn">🔔<span class="notif-badge">2</span></button>
+    <div class="user-chip">
+      <div class="user-av">JP</div>
+      <span class="user-name">Juan Pérez</span>
+      <span class="user-caret">∨</span>
+    </div>
+  </div>
+</nav>
+
+<div class="pv-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="pv-sidebar">
+    <div class="sidebar-inner">
+      <span class="sb-lbl">Principal</span>
+      <a class="sb-link" href="dashboard.html"><span class="sb-icon">⊞</span> Inicio</a>
+      <a class="sb-link" href="mismascotas.html"><span class="sb-icon">🐾</span> Mis Mascotas <span class="sb-badge teal">2</span></a>
+      <a class="sb-link" href="misreserva.html"><span class="sb-icon">📅</span> Mis Reserva <span class="sb-badge amber">1</span></a>
+      <hr class="sb-divider"/>
+      <span class="sb-lbl">Cuenta</span>
+      <a class="sb-link active" href="miperfil.html"><span class="sb-icon">👤</span> Mi Perfil</a>
+      <a class="sb-link danger" href="cerrarsesion.html"><span class="sb-icon">↩</span> Cerrar sesión</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="pv-main">
+    <!-- Profile Card -->
+    <div class="profile-card">
+
+      <!-- Banner -->
+      <div class="profile-banner">
+        <button class="profile-banner-edit" onclick="changeBanner()">✏️ Cambiar portada</button>
+      </div>
+
+      <!-- Identity row -->
+      <div class="profile-identity">
+        <div class="d-flex align-items-end gap-4">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="profileAvatar" onclick="document.getElementById('avatarFile').click()">
+              <span id="avatarEmoji">👤</span>
+              <img id="avatarImg" src="" alt=""/>
+            </div>
+            <div class="av-upload-badge" onclick="document.getElementById('avatarFile').click()">✏️</div>
+          </div>
+          <div class="profile-info">
+            <div class="pi-name" id="displayName">Juan Pérez</div>
+            <div class="pi-email" id="displayEmail">juan.perez@gmail.com</div>
+          </div>
+        </div>
+        <button class="btn-edit" id="btnEdit" onclick="toggleEdit()">Editar</button>
+        <button class="btn-save" id="btnSave" onclick="guardarPerfil()">💾 Guardar</button>
+      </div>
+      <input type="file" id="avatarFile" accept="image/*" onchange="previewAvatar(event)"/>
+
+      <!-- Tabs -->
+      <div class="profile-tabs">
+        <button class="ptab active" onclick="switchTab('info', this)">Información</button>
+        <button class="ptab" onclick="switchTab('mascotas', this)">Mis Mascotas</button>
+        <button class="ptab" onclick="switchTab('seguridad', this)">Seguridad</button>
+      </div>
+
+      <!-- ── TAB: INFORMACIÓN ── -->
+      <div class="tab-pane active" id="tab-info">
+
+        <div class="fields-grid">
+          <div class="field-group">
+            <label class="field-label">Nombre completo</label>
+            <input class="pv-input" id="fullName" type="text" value="Juan Pérez" placeholder="Tu nombre completo"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Apodo</label>
+            <input class="pv-input" id="nickname" type="text" value="Juanito" placeholder="Tu apodo"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Género</label>
+            <div class="select-wrap">
+              <select class="pv-select" id="gender">
+                <option value="">Seleccionar</option>
+                <option selected>Masculino</option>
+                <option>Femenino</option>
+                <option>Prefiero no decir</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">País</label>
+            <div class="select-wrap">
+              <select class="pv-select" id="country">
+                <option value="">Seleccionar</option>
+                <option selected>Chile</option>
+                <option>Argentina</option>
+                <option>México</option>
+                <option>Colombia</option>
+                <option>Perú</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Idioma</label>
+            <div class="select-wrap">
+              <select class="pv-select" id="language">
+                <option value="">Seleccionar</option>
+                <option selected>Español</option>
+                <option>English</option>
+                <option>Português</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Zona horaria</label>
+            <div class="select-wrap">
+              <select class="pv-select" id="timezone">
+                <option value="">Seleccionar</option>
+                <option selected>América/Santiago (GMT-4)</option>
+                <option>América/Buenos_Aires (GMT-3)</option>
+                <option>América/Mexico_City (GMT-6)</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Teléfono</label>
+            <input class="pv-input" id="phone" type="text" value="+56 9 1234 5678" placeholder="+56 9 XXXX XXXX"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Fecha de nacimiento</label>
+            <input class="pv-input" id="birthdate" type="date" value="1990-03-15"/>
+          </div>
+        </div>
+
+        <hr class="section-divider"/>
+
+        <!-- Email section -->
+        <div class="section-title">📧 Mi dirección de email</div>
+        <div class="email-list" id="emailList">
+          <div class="email-item">
+            <div class="email-icon-wrap">📧</div>
+            <div>
+              <div class="email-addr">juan.perez@gmail.com</div>
+              <div class="email-when">Hace 3 meses</div>
+            </div>
+            <span class="email-primary">Principal</span>
+          </div>
+        </div>
+        <button class="btn-add-email" onclick="addEmail()">+ Agregar dirección de email</button>
+
+      </div><!-- /tab-info -->
+
+      <!-- ── TAB: MASCOTAS ── -->
+      <div class="tab-pane" id="tab-mascotas">
+        <div class="section-title" style="margin-bottom:20px;">🐾 Mis mascotas registradas</div>
+        <div class="pets-grid">
+          <div class="pet-card">
+            <div class="pet-card-av">🐶</div>
+            <div class="pet-card-name">Max</div>
+            <div class="pet-card-meta">Golden Retriever · 3 años</div>
+            <span class="pet-status green">Saludable</span>
+          </div>
+          <div class="pet-card">
+            <div class="pet-card-av">🐱</div>
+            <div class="pet-card-name">Luna</div>
+            <div class="pet-card-meta">Gato Siamés · 2 años</div>
+            <span class="pet-status amber">Vacuna pendiente</span>
+          </div>
+          <div class="pet-card" style="border-style:dashed;cursor:pointer;" onclick="window.location='nuevamascota.html'">
+            <div class="pet-card-av" style="font-size:1.4rem;color:var(--teal);background:none;border-color:var(--teal-mid);">＋</div>
+            <div class="pet-card-name" style="color:var(--teal);">Agregar mascota</div>
+            <div class="pet-card-meta">Registra un nuevo compañero</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: SEGURIDAD ── -->
+      <div class="tab-pane" id="tab-seguridad">
+        <div class="section-title" style="margin-bottom:16px;">🔒 Seguridad de la cuenta</div>
+
+        <div class="security-item">
+          <div class="sec-icon teal">🔑</div>
+          <div>
+            <div class="sec-title">Contraseña</div>
+            <div class="sec-sub">Última actualización hace 2 meses</div>
+          </div>
+          <button class="btn-sec" onclick="showToast('Función de cambio de contraseña próximamente')">Cambiar</button>
+        </div>
+
+        <div class="security-item">
+          <div class="sec-icon amber">📱</div>
+          <div>
+            <div class="sec-title">Autenticación en dos pasos</div>
+            <div class="sec-sub">Protección adicional para tu cuenta</div>
+          </div>
+          <button class="btn-sec" onclick="showToast('2FA próximamente disponible')">Activar</button>
+        </div>
+
+        <div class="security-item">
+          <div class="sec-icon teal">🖥️</div>
+          <div>
+            <div class="sec-title">Sesiones activas</div>
+            <div class="sec-sub">1 dispositivo conectado actualmente</div>
+          </div>
+          <button class="btn-sec" onclick="showToast('Sesión cerrada en otros dispositivos')">Cerrar todas</button>
+        </div>
+
+        <div class="security-item" style="border-color:#fdeaea;">
+          <div class="sec-icon" style="background:#fdeaea;">🗑️</div>
+          <div>
+            <div class="sec-title" style="color:var(--red);">Eliminar cuenta</div>
+            <div class="sec-sub">Esta acción no se puede deshacer</div>
+          </div>
+          <button class="btn-sec" style="border-color:var(--red);color:var(--red);">Eliminar</button>
+        </div>
+      </div>
+
+    </div><!-- /profile-card -->
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="pv-toast" id="pvToast">✅ Cambios guardados</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  /* Today date */
+  const days = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const now = new Date();
+  document.getElementById('todayDate').textContent =
+    `${days[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()]} de ${now.getFullYear()}`;
+
+  /* Tabs */
+  function switchTab(name, btn) {
+    document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  /* Edit toggle */
+  let isEditing = false;
+  function toggleEdit() {
+    isEditing = true;
+    document.body.classList.add('editing');
+    document.getElementById('btnEdit').style.display = 'none';
+    document.getElementById('btnSave').style.display = '';
+  }
+  function guardarPerfil() {
+    isEditing = false;
+    document.body.classList.remove('editing');
+    document.getElementById('btnEdit').style.display = '';
+    document.getElementById('btnSave').style.display = 'none';
+    // update display name
+    document.getElementById('displayName').textContent =
+      document.getElementById('fullName').value || 'Juan Pérez';
+    showToast('✅ Perfil actualizado correctamente');
+  }
+
+  /* Avatar */
+  function previewAvatar(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      document.getElementById('avatarImg').src = ev.target.result;
+      document.getElementById('avatarImg').style.display = 'block';
+      document.getElementById('avatarEmoji').style.display = 'none';
+    };
+    r.readAsDataURL(file);
+  }
+
+  /* Add email */
+  function addEmail() {
+    const addr = prompt('Ingresa la nueva dirección de email:');
+    if (!addr || !addr.includes('@')) return;
+    const item = document.createElement('div');
+    item.className = 'email-item';
+    item.innerHTML = `
+      <div class="email-icon-wrap">📧</div>
+      <div>
+        <div class="email-addr">${addr}</div>
+        <div class="email-when">Recién agregado</div>
+      </div>`;
+    document.getElementById('emailList').appendChild(item);
+    showToast(`✅ Email ${addr} agregado`);
+  }
+
+  /* Banner */
+  function changeBanner() {
+    const colors = [
+      'linear-gradient(120deg,#b2e8e2 0%,#e6f9f7 40%,#fef9e7 100%)',
+      'linear-gradient(120deg,#c7d2fe 0%,#e0f2fe 50%,#f0fdf4 100%)',
+      'linear-gradient(120deg,#fde68a 0%,#fca5a5 50%,#c4b5fd 100%)',
+      'linear-gradient(120deg,#a7f3d0 0%,#6ee7b7 50%,#d1fae5 100%)',
+    ];
+    const banner = document.querySelector('.profile-banner');
+    const curr = colors.indexOf(banner.style.background);
+    banner.style.background = colors[(curr + 1) % colors.length];
+  }
+
+  /* Toast */
+  function showToast(msg) {
+    const t = document.getElementById('pvToast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

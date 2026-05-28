@@ -1,44 +1,426 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PetVission — Dashboard Veterinario</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
-  <link href="../../assets/css/vet.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --teal:        #037389;
+      --teal-dark:   #0e8f80;
+      --teal-light:  #e6f9f7;
+      --teal-mid:    #a8ede7;
+      --gray-bg:     #f4f6f8;
+      --gray-border: #e2e8f0;
+      --text-dark:   #1a2535;
+      --text-mid:    #4a5568;
+      --text-light:  #94a3b8;
+      --white:       #ffffff;
+      --red:         #e05252;
+      --sidebar-bg:  #085e75;
+      --sidebar-w:   260px;
+      --topbar-h:    64px;
+    }
+ 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--text-dark); display: flex; }
+ 
+    /* ══ SIDEBAR ══ */
+    .vet-sidebar {
+      width: var(--sidebar-w); height: 100vh; background: var(--sidebar-bg);
+      display: flex; flex-direction: column;
+      position: fixed; left: 0; top: 0; z-index: 200;
+    }
+    .sb-brand {
+      padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sb-brand-icon {
+      width: 38px; height: 38px; border-radius: 10px; background: var(--teal);
+      display: grid; place-items: center; color: white; font-size: 1.1rem;
+    }
+    .sb-brand-name { font-family:'Nunito',sans-serif; font-weight:900; font-size:.98rem; color:white; line-height:1.1; }
+    .sb-brand-sub  { font-size:.67rem; color:rgba(255,255,255,.45); }
+    .sb-nav { flex:1; padding:16px 12px; display:flex; flex-direction:column; gap:2px; }
+    .sb-link {
+      display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:9px;
+      color:rgba(255,255,255,.6); font-size:.88rem; font-weight:600;
+      text-decoration:none; cursor:pointer; transition:all .18s;
+    }
+    .sb-link:hover  { background:rgba(255,255,255,.08); color:white; }
+    .sb-link.active { background:var(--teal); color:white; }
+    .sb-icon { font-size:1rem; width:20px; text-align:center; flex-shrink:0; }
+    .sb-footer { padding:16px 20px; border-top:1px solid rgba(255,255,255,.08); }
+    .sb-user { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+    .sb-av {
+      width:36px; height:36px; border-radius:50%; background:var(--teal-mid);
+      color:var(--teal-dark); display:grid; place-items:center;
+      font-family:'Nunito',sans-serif; font-weight:900; font-size:.8rem;
+    }
+    .sb-uname  { font-size:.82rem; font-weight:700; color:white; }
+    .sb-uemail { font-size:.67rem; color:rgba(255,255,255,.4); }
+    .sb-logout {
+      display:flex; align-items:center; gap:8px; color:rgba(255,255,255,.5);
+      font-size:.8rem; font-weight:600; background:none; border:none; cursor:pointer; padding:6px 4px; transition:color .15s;
+    }
+    .sb-logout:hover { color:var(--red); }
+ 
+    /* ══ MAIN ══ */
+    .main-wrap { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+ 
+    /* Topbar */
+    .main-topbar {
+      background:var(--white); border-bottom:1.5px solid var(--gray-border);
+      padding:0 32px; height:var(--topbar-h);
+      display:flex; align-items:center; justify-content:space-between;
+      position:sticky; top:0; z-index:100;
+    }
+    .tb-title h5 { font-family:'Nunito',sans-serif; font-weight:900; font-size:1.2rem; margin:0; }
+    .tb-title small { font-size:.78rem; color:var(--text-light); }
+    .tb-right { display:flex; align-items:center; gap:14px; }
+    .tb-search {
+      display:flex; align-items:center; gap:9px; background:var(--gray-bg);
+      border:1.5px solid var(--gray-border); border-radius:50px; padding:8px 18px; width:280px;
+    }
+    .tb-search input { border:none; background:none; outline:none; font-size:.87rem; width:100%; }
+    .notif-btn {
+      position:relative; width:38px; height:38px; border-radius:50%;
+      border:1.5px solid var(--gray-border); background:none;
+      display:grid; place-items:center; font-size:1rem; cursor:pointer;
+    }
+    .notif-badge {
+      position:absolute; top:1px; right:1px; width:18px; height:18px;
+      background:var(--red); border-radius:50%; font-size:.6rem; font-weight:800;
+      color:white; display:grid; place-items:center; border:2px solid white;
+    }
+ 
+    /* Page */
+    .page-body { padding:28px 32px; flex:1; }
+ 
+    /* KPIs */
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:28px; }
+    .kpi-card {
+      background:var(--white); border:1.5px solid var(--gray-border); border-radius:16px;
+      padding:20px 22px; display:flex; align-items:center; gap:18px;
+      transition:box-shadow .18s;
+    }
+    .kpi-card:hover { box-shadow:0 4px 18px rgba(26,181,163,.1); }
+    .kpi-icon {
+      width:52px; height:52px; border-radius:14px;
+      display:grid; place-items:center; font-size:1.4rem; flex-shrink:0;
+    }
+    .kpi-val { font-family:'Nunito',sans-serif; font-weight:900; font-size:1.7rem; line-height:1; }
+    .kpi-lbl { font-size:.78rem; color:var(--text-light); margin-top:3px; }
+ 
+    /* Content row */
+    .content-row { display:grid; grid-template-columns:1fr 300px; gap:22px; }
+ 
+    /* Appointments card */
+    .appts-card {
+      background:var(--white); border:1.5px solid var(--gray-border);
+      border-radius:16px; overflow:hidden;
+    }
+    .appts-hdr {
+      padding:18px 24px; display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1.5px solid var(--gray-border);
+    }
+    .appts-hdr h6 { font-family:'Nunito',sans-serif; font-weight:800; font-size:1.05rem; margin:0; }
+    .btn-cal {
+      display:flex; align-items:center; gap:7px; padding:9px 18px;
+      border:1.5px solid var(--gray-border); border-radius:9px; background:none;
+      font-size:.84rem; font-weight:700; color:var(--text-mid); cursor:pointer; transition:all .15s;
+    }
+    .btn-cal:hover { border-color:var(--teal); color:var(--teal); }
+    .btn-nueva {
+      display:flex; align-items:center; gap:7px; padding:9px 20px;
+      border:none; border-radius:9px; background:var(--teal);
+      font-family:'Nunito',sans-serif; font-size:.88rem; font-weight:800;
+      color:white; cursor:pointer; transition:all .2s;
+    }
+    .btn-nueva:hover { background:var(--teal-dark); }
+ 
+    /* Filters */
+    .filters-bar {
+      padding:16px 24px; background:#fafbfc;
+      border-bottom:1px solid var(--gray-border);
+      display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    }
+    .filters-bar .fl-icon { color:var(--text-light); font-size:.9rem; }
+    .filters-bar label { font-size:.78rem; font-weight:700; color:var(--text-mid); }
+    .filter-input {
+      padding:8px 14px; border:1.5px solid var(--gray-border); border-radius:9px;
+      font-size:.84rem; outline:none; transition:border-color .2s; background:var(--white);
+      color:var(--text-dark);
+    }
+    .filter-input:focus { border-color:var(--teal); }
+ 
+    /* Appointment rows */
+    .appt-row {
+      display:flex; align-items:center; gap:16px; padding:16px 24px;
+      border-bottom:1px solid var(--gray-border); transition:background .15s;
+    }
+    .appt-row:last-child { border-bottom:none; }
+    .appt-row:hover { background:#fafbfc; }
+    .appt-time { font-family:'Nunito',sans-serif; font-weight:900; font-size:1.05rem; min-width:60px; color:var(--text-dark); }
+    .appt-pet-av {
+      width:42px; height:42px; border-radius:50%; background:var(--teal-light);
+      display:grid; place-items:center; font-size:1.3rem; flex-shrink:0;
+      border:2px solid var(--teal-mid);
+    }
+    .appt-info { flex:1; }
+    .appt-name { font-weight:700; font-size:.92rem; }
+    .appt-meta { font-size:.78rem; color:var(--text-light); }
+    .status-badge { font-size:.72rem; font-weight:800; padding:4px 12px; border-radius:50px; white-space:nowrap; }
+    .status-badge.confirmada { background:#dcfce7; color:#16a34a; }
+    .status-badge.pendiente  { background:#fef9c3; color:#a16207; }
+    .status-badge.cancelada  { background:#fdeaea; color:var(--red); }
+    .appt-actions { display:flex; gap:8px; }
+    .btn-iniciar{
+      padding:8px 16px; border-radius:9px; border:none;
+      background:#16a34a; color:white;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:.82rem;
+      cursor:pointer; transition:all .18s;
+    }
+    .btn-reprog {
+      padding:8px 16px; border-radius:9px; border:none;
+      background:var(--teal); color:white;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:.82rem;
+      cursor:pointer; transition:all .18s;
+    }
+    .btn-reprog:hover { background:var(--teal-dark); }
+    .btn-cancel-appt {
+      padding:8px 16px; border-radius:9px; border:none;
+      background:var(--red); color:white;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:.82rem;
+      cursor:pointer; transition:all .18s;
+    }
+    .btn-cancel-appt:hover { background:#c0392b; }
+ 
+    /* Notes sidebar */
+    .notes-card {
+      background:var(--white); border:1.5px solid var(--gray-border);
+      border-radius:16px; padding:22px 20px;
+    }
+    .notes-title {
+      display:flex; align-items:center; gap:9px;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem;
+      margin-bottom:18px;
+    }
+    .note-item {
+      border-radius:10px; padding:14px 16px; margin-bottom:12px;
+      border-left:4px solid transparent;
+    }
+    .note-item.red    { background:#fdeaea; border-left-color:var(--red); }
+    .note-item.yellow { background:#fef9c3; border-left-color:#f5a623; }
+    .note-item.blue   { background:#eff6ff; border-left-color:#3b82f6; }
+    .note-pet  { font-weight:800; font-size:.9rem; margin-bottom:4px; }
+    .note-text { font-size:.8rem; color:var(--text-mid); }
+ 
+    /* ══════════════════════════════
+       MODAL BASE
+    ══════════════════════════════ */
+    .pv-overlay {
+      position:fixed; inset:0; background:rgba(10,18,28,.52);
+      z-index:500; display:none; align-items:center; justify-content:center;
+      padding:24px; backdrop-filter:blur(5px);
+    }
+    .pv-overlay.open { display:flex; }
+    .pv-modal {
+      background:var(--white); border-radius:24px; position:relative;
+      box-shadow:0 28px 72px rgba(0,0,0,.22);
+      animation:mIn .3s cubic-bezier(.34,1.4,.64,1);
+    }
+    @keyframes mIn { from{opacity:0;transform:scale(.94) translateY(16px);} to{opacity:1;transform:scale(1) translateY(0);} }
+    .modal-close-btn {
+      position:absolute; top:14px; right:14px;
+      width:34px; height:34px; border-radius:50%; border:1.5px solid var(--gray-border);
+      background:none; cursor:pointer; display:grid; place-items:center;
+      font-size:.9rem; color:var(--text-mid); transition:all .15s;
+    }
+    .modal-close-btn:hover { background:#fdeaea; border-color:var(--red); color:var(--red); }
+ 
+        /* ══ INICIAR MODAL ══ */
+    #modalIniciar .pv-modal {
+      width:100%; max-width:460px; padding:36px 32px 32px; text-align:center;
+    }
+    .iniciar-warn-icon { font-size:3.2rem; margin-bottom:16px; }
+    .iniciar-title { font-family:'Nunito',sans-serif; font-weight:900; font-size:1.3rem; margin-bottom:6px; }
+    .iniciar-sub   { font-size:.88rem; color:var(--text-light); margin-bottom:22px; }
+    .iniciar-summary {
+      background:var(--gray-bg); border-radius:14px; padding:18px 20px;
+      text-align:left; margin-bottom:26px; border:1.5px solid var(--gray-border);
+    }
+    .cs-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; font-size:.88rem; }
+    .cs-row:not(:last-child) { border-bottom:1px solid var(--gray-border); }s
+    .cs-lbl { color:var(--text-light); font-weight:600; }
+    .cs-val { font-weight:800; color:var(--text-dark); }
+    .iniciar-btns { display:flex; gap:12px; }
+    .btn-no {
+      flex:1; padding:14px; border-radius:14px; border:1.5px solid var(--gray-border);
+      background:none; font-family:'Nunito',sans-serif; font-weight:800; font-size:.95rem;
+      color:var(--text-mid); cursor:pointer; transition:all .18s;
+    }
+    .btn-no:hover { border-color:var(--text-mid); color:var(--text-dark); }
+    .btn-si-open {
+      flex:1; padding:14px; border-radius:14px; border:none;
+       background:#16a34a; color:white;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:.95rem;
+       cursor:pointer; transition:all .18s;
+      display:flex; align-items:center; justify-content:center; gap:7px;
+      }
+    .btn-si-open:hover { background:#15803d; }
+    .btn-si-open:hover { background:#2fff00; }
+ 
+    /* ══ CANCELAR MODAL ══ */
+    #modalCancelar .pv-modal {
+      width:100%; max-width:460px; padding:36px 32px 32px; text-align:center;
+    }
+    .cancel-warn-icon { font-size:3.2rem; margin-bottom:16px; }
+    .cancel-title { font-family:'Nunito',sans-serif; font-weight:900; font-size:1.3rem; margin-bottom:6px; }
+    .cancel-sub   { font-size:.88rem; color:var(--text-light); margin-bottom:22px; }
+    .cancel-summary {
+      background:var(--gray-bg); border-radius:14px; padding:18px 20px;
+      text-align:left; margin-bottom:26px; border:1.5px solid var(--gray-border);
+    }
+    .cs-row { display:flex; justifxy-content:space-between; align-items:center; padding:7px 0; font-size:.88rem; }
+    .cs-row:not(:last-child) { border-bottom:1px solid var(--gray-border); }
+    .cs-lbl { color:var(--text-light); font-weight:600; }
+    .cs-val { font-weight:800; color:var(--text-dark); }
+    .cancel-btns { display:flex; gap:12px; }
+    .btn-no {
+      flex:1; padding:14px; border-radius:14px; border:1.5px solid var(--gray-border);
+      background:none; font-family:'Nunito',sans-serif; font-weight:800; font-size:.95rem;
+      color:var(--text-mid); cursor:pointer; transition:all .18s;
+    }
+    .btn-no:hover { border-color:var(--text-mid); color:var(--text-dark); }
+    .btn-si-cancel {
+      flex:1; padding:14px; border-radius:14px; border:none;
+      background:var(--red); color:white;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:.95rem;
+      cursor:pointer; transition:all .18s; display:flex; align-items:center; justify-content:center; gap:7px;
+    }
+    .btn-si-cancel:hover { background:#c0392b; }
+ 
+    /* ══ REPROGRAMAR MODAL ══ */
+    #modalReprog .pv-modal { width:100%; max-width:540px; padding:32px 32px 28px; }
+    .reprog-title {
+      display:flex; align-items:center; gap:10px;
+      font-family:'Nunito',sans-serif; font-weight:900; font-size:1.2rem; margin-bottom:4px;
+    }
+    .reprog-sub { font-size:.84rem; color:var(--text-light); margin-bottom:24px; }
+    .section-lbl {
+      font-size:.69rem; font-weight:800; color:var(--text-light);
+      letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; display:block;
+    }
+ 
+    /* Mini calendar */
+    .mini-cal { border:1.5px solid var(--gray-border); border-radius:16px; overflow:hidden; margin-bottom:22px; }
+    .cal-head {
+      background:var(--teal); color:white; padding:14px 18px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .cal-head span { font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem; }
+    .cal-nav {
+      background:none; border:none; color:white; font-size:1.1rem;
+      cursor:pointer; padding:4px 10px; border-radius:7px; transition:background .15s;
+    }
+    .cal-nav:hover { background:rgba(255,255,255,.2); }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); padding:8px; gap:2px; }
+    .cal-dow {
+      text-align:center; font-size:.7rem; font-weight:800; color:var(--text-light);
+      padding:6px 0;
+    }
+    .cal-day {
+      text-align:center; padding:8px 4px; font-size:.84rem; font-weight:600;
+      border-radius:8px; cursor:pointer; transition:all .15s; color:var(--text-dark);
+    }
+    .cal-day:hover:not(.empty):not(.past) { background:var(--teal-light); color:var(--teal); }
+    .cal-day.today { color:var(--teal); font-weight:900; }
+    .cal-day.selected { background:var(--teal); color:white; font-weight:800; }
+    .cal-day.empty, .cal-day.past { color:var(--gray-border); cursor:default; }
+ 
+    /* Time slots */
+    .time-slots { display:flex; flex-wrap:wrap; gap:9px; min-height:42px; }
+    .time-slot {
+      padding:8px 16px; border:1.5px solid var(--teal); border-radius:9px;
+      font-weight:700; font-size:.82rem; color:var(--teal);
+      cursor:pointer; transition:all .15s; font-family:'Nunito',sans-serif;
+    }
+    .time-slot:hover, .time-slot.selected { background:var(--teal); color:white; }
+    .slots-placeholder { font-size:.84rem; color:var(--text-light); padding:4px 0; }
+ 
+    /* Reprog buttons */
+    
+    .reprog-btns { display:flex; gap:12px; margin-top:26px; }
+    .btn-reprog-cancel {
+      flex:1; padding:13px; border-radius:14px; border:1.5px solid var(--gray-border);
+      background:none; font-family:'Nunito',sans-serif; font-weight:800; font-size:.92rem;
+      color:var(--text-mid); cursor:pointer; transition:all .18s;
+    }
+    .btn-reprog-cancel:hover { border-color:var(--red); color:var(--red); }
+    .btn-confirm-reprog {
+      flex:2; padding:13px; border-radius:14px; border:none;
+      background:var(--teal); color:white;
+      font-family:'Nunito',sans-serif; font-weight:800; font-size:.92rem;
+      cursor:pointer; transition:all .18s; display:flex; align-items:center; justify-content:center; gap:7px;
+    }
+    .btn-confirm-reprog:hover { background:var(--teal-dark); }
+    .btn-confirm-reprog:disabled { background:var(--teal-mid); cursor:not-allowed; }
+ 
+    /* Toast */
+    .pv-toast {
+      position:fixed; bottom:28px; left:50%;
+      transform:translateX(-50%) translateY(80px);
+      background:var(--text-dark); color:white; padding:12px 24px;
+      border-radius:50px; font-weight:700; font-size:.88rem;
+      box-shadow:0 8px 24px rgba(0,0,0,.18); z-index:600; opacity:0;
+      white-space:nowrap; transition:all .4s cubic-bezier(.34,1.56,.64,1);
+      display:flex; align-items:center; gap:8px;
+    }
+    .pv-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .pv-toast.success { background:var(--teal); }
+    .pv-toast.danger  { background:var(--red); }
+ 
+    @media(max-width:900px) {
+      .vet-sidebar { display:none; }
+      .main-wrap { margin-left:0; }
+      .kpi-grid { grid-template-columns:repeat(2,1fr); }
+      .content-row { grid-template-columns:1fr; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="vet-layout">
-
-  <!-- SIDEBAR -->
-  <aside class="vet-sidebar" id="vetSidebar">
-
-    <div class="vet-sidebar-brand">
-      <div class="d-flex align-items-center gap-2">
-        <div class="brand-icon">
-          <i class="bi bi-heart-pulse-fill"></i>
-        </div>
-        <div>
-          <div class="fw-bold">PetVission</div>
-          <div style="font-size:0.72rem;opacity:0.7;">Gestión Veterinaria</div>
-        </div>
-      </div>
+ 
+<!-- ══ SIDEBAR ══ -->
+<aside class="vet-sidebar">
+  <div class="sb-brand">
+    <div class="sb-brand-icon">🏥</div>
+    <div>
+      <div class="sb-brand-name">PetVission</div>
+      <div class="sb-brand-sub">Gestión Veterinaria</div>
     </div>
 
     <nav class="vet-nav">
-      <a href="dashboard.html" class="vet-nav-link active">
-        <i class="bi bi-calendar3"></i>
-        <span>Citas</span>
+      <a href="dashboard.html" class="vet-nav-link">
+        <i class="bi bi-calendar3"></i><span>Citas</span>
       </a>
-      <a href="pacientes.html" class="vet-nav-link">
-        <i class="bi bi-people-fill"></i>
-        <span>Pacientes</span>
+      <a href="calendario.html" class="vet-nav-link">
+        <i class="bi bi-person-fill"></i><span>Calendario</span>
+      </a>
+      <a href="pacientes.html" class="vet-nav-link active">
+        <i class="bi bi-people-fill"></i><span>Pacientes</span>
       </a>
       <a href="historial.html" class="vet-nav-link">
-        <i class="bi bi-clipboard2-pulse-fill"></i>
-        <span>Historial Clínico</span>
+        <i class="bi bi-clipboard2-pulse-fill"></i><span>Historial Clínico</span>
+      </a>
+      <a href="inventario.html" class="vet-nav-link">
+        <i class="bi bi-box-seam-fill"></i><span>Inventario</span>
+      </a>
+        <a href="inventario.html" class="vet-nav-link">
+        <i class="bi bi-box-seam-fill"></i><span>Inventario</span>
       </a>
     </nav>
 
@@ -50,307 +432,403 @@
           <div style="font-size:0.72rem;opacity:0.7;">veterinario@petvission.cl</div>
         </div>
       </div>
-      <a href="../../index.html" class="vet-nav-link px-0">
+      
+    </div>
+    <button class="sb-logout">↩ Cerrar Sesión</button><a href="../../index.html" class="vet-nav-link px-0">
         <i class="bi bi-box-arrow-right"></i>
         <span>Cerrar Sesión</span>
       </a>
-    </div>
-
-  </aside>
+  </div>
+</aside>
 
   <!-- Overlay mobile -->
   <div class="vet-sidebar-overlay" id="vetOverlay" onclick="toggleSidebar()"></div>
-
-  <!-- CONTENIDO PRINCIPAL -->
-  <div class="vet-main">
-
-    <!-- TOPBAR -->
-    <div class="vet-topbar">
-      <button class="btn btn-sm border-0 d-lg-none me-2" onclick="toggleSidebar()">
-        <i class="bi bi-list fs-4"></i>
-      </button>
-      <div>
-        <h5 class="fw-bold mb-0">Dashboard del Veterinario</h5>
-        <small class="text-muted" id="fechaHoy"></small>
-      </div>
-      <div class="vet-search d-none d-md-block">
-        <i class="bi bi-search"></i>
-        <input type="text" placeholder="Buscar paciente..." />
-      </div>
-      <button class="btn btn-light rounded-circle position-relative p-2">
-        <i class="bi bi-bell fs-5"></i>
-        <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger"
-              style="font-size:0.6rem;">3</span>
-      </button>
+ 
+<!-- ══ MAIN ══ -->
+<div class="main-wrap">
+ 
+  <div class="main-topbar">
+    <div class="tb-title">
+      <h5>Dashboard del Veterinario</h5>
+      <small id="todayLabel"></small>
     </div>
-
-    <!-- CONTENIDO -->
-    <div class="vet-content">
-
-      <!-- KPIs -->
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3">
-          <div class="vet-kpi-card">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <div class="vet-kpi-label">Citas Hoy</div>
-                <div class="vet-kpi-number">12</div>
-              </div>
-              <div class="vet-kpi-icon" style="background:#eff6ff;">
-                <i class="bi bi-calendar3" style="color:#3b82f6;"></i>
-              </div>
-            </div>
+    <div class="tb-right">
+      <div class="tb-search">
+        <span style="color:var(--text-light)">🔍</span>
+        <input type="text" placeholder="Buscar paciente..."/>
+      </div>
+      <button class="notif-btn">🔔<span class="notif-badge">3</span></button>
+    </div>
+  </div>
+ 
+  <div class="page-body">
+ 
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#e0f2fe;">📅</div>
+        <div><div class="kpi-val">12</div><div class="kpi-lbl">Reserva Hoy</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#dcfce7;">👥</div>
+        <div><div class="kpi-val">248</div><div class="kpi-lbl">Pacientes Activos</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#f3e8ff;">💉</div>
+        <div><div class="kpi-val">18</div><div class="kpi-lbl">Cirugías Mes</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fff7ed;">📈</div>
+        <div><div class="kpi-val">$2.4M</div><div class="kpi-lbl">Ingresos Mes</div></div>      </div>
+    </div>
+ 
+    <!-- Content row -->
+    <div class="content-row">
+ 
+      <!-- Appointments -->
+      <div class="appts-card">
+        <div class="appts-hdr">
+          <h6>Reserva del Día</h6>
+          <div class="d-flex gap-2">
+            <button class="btn-cal">📅 Vista Calendario</button>
           </div>
         </div>
-        <div class="col-6 col-lg-3">
-          <div class="vet-kpi-card">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <div class="vet-kpi-label">Pacientes Activos</div>
-                <div class="vet-kpi-number">248</div>
-              </div>
-              <div class="vet-kpi-icon" style="background:#f0fdf4;">
-                <i class="bi bi-people-fill" style="color:#22c55e;"></i>
-              </div>
-            </div>
+ 
+        <!-- Filters -->
+        <div class="filters-bar">
+          <span class="fl-icon">⊿</span>
+          <strong style="font-size:.84rem;color:var(--text-mid);">Filtros</strong>
+          <div class="d-flex flex-column gap-1">
+            <label>Buscar por usuario</label>
+            <input class="filter-input" type="text" id="filterName" placeholder="Nombre del dueño..." oninput="filtrarReserva()"/>
+          </div>
+          <div class="d-flex flex-column gap-1">
+            <label>Filtrar por estado</label>
+            <select class="filter-input" id="filterStatus" onchange="filtrarReserva()">
+              <option value="">Todos</option>
+              <option value="confirmada"><emoji>☑</emoji> Confirmada</option>
+              <option value="pendiente"><emoji>⚠</emoji> Pendiente</option>
+              <option value="cancelada"><emoji>❌</emoji> Cancelada</option>
+            </select>
           </div>
         </div>
-        <div class="col-6 col-lg-3">
-          <div class="vet-kpi-card">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <div class="vet-kpi-label">Cirugías Mes</div>
-                <div class="vet-kpi-number">18</div>
-              </div>
-              <div class="vet-kpi-icon" style="background:#fdf4ff;">
-                <i class="bi bi-activity" style="color:#a855f7;"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="vet-kpi-card">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <div class="vet-kpi-label">Ingresos Mes</div>
-                <div class="vet-kpi-number">$2.4M</div>
-              </div>
-              <div class="vet-kpi-icon" style="background:#fff7ed;">
-                <i class="bi bi-graph-up-arrow" style="color:#f97316;"></i>
-              </div>
-            </div>
-          </div>
+ 
+        <!-- Rows -->
+        <div id="reservaContainer">
+          <!-- Populated by JS -->
         </div>
       </div>
-
-      <!-- CITAS Y NOTAS -->
-      <div class="row g-4">
-
-        <!-- Citas del día -->
-        <div class="col-lg-8">
-          <div class="vet-card h-100">
-            <div class="vet-card-header">
-              <h6 class="fw-bold mb-0">Citas del Día</h6>
-              <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-outline-secondary">
-                  <i class="bi bi-calendar3 me-1"></i>Vista Calendario
-                </button>
-                <button class="btn btn-sm vet-btn-primary px-3">
-                  + Nueva Cita
-                </button>
-              </div>
-            </div>
-            <div class="vet-card-body">
-
-              <!-- Filtros -->
-              <div class="p-3 rounded-3 mb-3" style="background:#f8fafc;">
-                <div class="small fw-semibold mb-2">
-                  <i class="bi bi-funnel me-1"></i>Filtros
-                </div>
-                <div class="row g-2">
-                  <div class="col-sm-6">
-                    <label class="form-label small text-muted mb-1">
-                      Buscar por usuario
-                    </label>
-                    <input type="text"
-                           class="form-control form-control-sm"
-                           placeholder="Nombre del dueño..."
-                           id="filtroDueno"
-                           oninput="filtrarCitas()" />
-                  </div>
-                  <div class="col-sm-6">
-                    <label class="form-label small text-muted mb-1">
-                      Filtrar por fecha
-                    </label>
-                    <input type="date"
-                           class="form-control form-control-sm"
-                           id="filtroFecha"
-                           oninput="filtrarCitas()" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Lista de citas -->
-              <div id="listaCitas">
-
-                <div class="cita-item d-flex align-items-center gap-3 py-3 border-bottom"
-                     data-dueno="maría garcía">
-                  <div class="text-center" style="min-width:50px;">
-                    <div class="fw-bold fs-5">09:00</div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <div class="fw-semibold">Luna</div>
-                    <div class="text-muted small">
-                      María García · Consulta General
-                    </div>
-                  </div>
-                  <span class="badge-confirmada">Confirmada</span>
-                  <div class="d-flex gap-2">
-                    <button class="btn btn-sm vet-btn-primary px-3">
-                      Reprogramar
-                    </button>
-                    <button class="btn btn-sm btn-danger px-3">
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-
-                <div class="cita-item d-flex align-items-center gap-3 py-3 border-bottom"
-                     data-dueno="carlos ruiz">
-                  <div class="text-center" style="min-width:50px;">
-                    <div class="fw-bold fs-5">10:30</div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <div class="fw-semibold">Max</div>
-                    <div class="text-muted small">
-                      Carlos Ruiz · Vacunación
-                    </div>
-                  </div>
-                  <span class="badge-confirmada">Confirmada</span>
-                  <div class="d-flex gap-2">
-                    <button class="btn btn-sm vet-btn-primary px-3">
-                      Reprogramar
-                    </button>
-                    <button class="btn btn-sm btn-danger px-3">
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-
-                <div class="cita-item d-flex align-items-center gap-3 py-3 border-bottom"
-                     data-dueno="ana torres">
-                  <div class="text-center" style="min-width:50px;">
-                    <div class="fw-bold fs-5">11:00</div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <div class="fw-semibold">Bella</div>
-                    <div class="text-muted small">
-                      Ana Torres · Control Post-operatorio
-                    </div>
-                  </div>
-                  <span class="badge-pendiente">Pendiente</span>
-                  <div class="d-flex gap-2">
-                    <button class="btn btn-sm vet-btn-primary px-3">
-                      Reprogramar
-                    </button>
-                    <button class="btn btn-sm btn-danger px-3">
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-
-                <div class="cita-item d-flex align-items-center gap-3 py-3"
-                     data-dueno="pedro soto">
-                  <div class="text-center" style="min-width:50px;">
-                    <div class="fw-bold fs-5">12:00</div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <div class="fw-semibold">Rocky</div>
-                    <div class="text-muted small">
-                      Pedro Soto · Consulta General
-                    </div>
-                  </div>
-                  <span class="badge-confirmada">Confirmada</span>
-                  <div class="d-flex gap-2">
-                    <button class="btn btn-sm vet-btn-primary px-3">
-                      Reprogramar
-                    </button>
-                    <button class="btn btn-sm btn-danger px-3">
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
+ 
+      <!-- Notes -->
+      <div class="notes-card">
+        <div class="notes-title">💡 Notas Internas</div>
+        <div class="note-item red">
+          <div class="note-pet">Bella</div>
+          <div class="note-text">Requiere revisión post-operatoria urgente</div>
         </div>
-
-        <!-- Notas Internas -->
-        <div class="col-lg-4">
-          <div class="vet-card h-100">
-            <div class="vet-card-header">
-              <h6 class="fw-bold mb-0">
-                <i class="bi bi-exclamation-circle text-warning me-2"></i>
-                Notas Internas
-              </h6>
-            </div>
-            <div class="vet-card-body">
-
-              <div class="nota-card nota-roja">
-                <div class="fw-semibold small mb-1">Bella</div>
-                <div class="text-muted small">
-                  Requiere revisión post-operatoria urgente
-                </div>
-              </div>
-
-              <div class="nota-card nota-amarilla">
-                <div class="fw-semibold small mb-1">Toby</div>
-                <div class="text-muted small">
-                  Medicación pendiente — Control de dolor
-                </div>
-              </div>
-
-              <div class="nota-card nota-azul">
-                <div class="fw-semibold small mb-1">Nala</div>
-                <div class="text-muted small">
-                  Recordatorio: Exámenes de laboratorio listos
-                </div>
-              </div>
-
-            </div>
-          </div>
+        <div class="note-item yellow">
+          <div class="note-pet">Toby</div>
+          <div class="note-text">Medicación pendiente — Control de dolor</div>
         </div>
-
+        <div class="note-item blue">
+          <div class="note-pet">Nala</div>
+          <div class="note-text">Recordatorio: Exámenes de laboratorio listos</div>
+        </div>
       </div>
+ 
+    </div><!-- /content-row -->
+  </div>
+</div><!-- /main-wrap -->
+ 
+ <!-- ════════════════════════════════════
+     MODAL: INICIAR CITA
+════════════════════════════════════ -->
+<div class="pv-overlay" id="modalIniciar" onclick="closeOnOverlay(event,'modalIniciar')">
+  <div class="pv-modal">
+    <button class="modal-close-btn" onclick="cerrarModal('modalIniciar')">✕</button>
+    <div class="open-registry">📋</div>
+    <div class="open-title">Iniciar Registro</div>
+    <div class="open-sub">Esta acción lo redirigira a la página de nuevo registro.</div>
+    <div class="open-summary">
+      <div class="cs-row"><span class="cs-lbl">Mascota</span><span class="cs-val" id="i-pet">—</span></div>
+      <div class="cs-row"><span class="cs-lbl">Doctor</span><span class="cs-val" id="i-doc">—</span></div>
+      <div class="cs-row"><span class="cs-lbl">Fecha</span><span class="cs-val" id="i-fecha">—</span></div>
+      <div class="cs-row"><span class="cs-lbl">Servicio</span><span class="cs-val" id="i-serv">—</span></div>
+    </div>
+    <div class="open-btns">
+       <button class="btn-no" onclick="cerrarModal('modalIniciar')">No, volver</button>
+       <button class="btn-si-open" onclick="confirmarIniciacion()"> Sí, iniciar</button>
     </div>
   </div>
 </div>
-
+ 
+<!-- ════════════════════════════════════
+     MODAL: CANCELAR CITA
+════════════════════════════════════ -->
+<div class="pv-overlay" id="modalCancelar" onclick="closeOnOverlay(event,'modalCancelar')">
+  <div class="pv-modal">
+    <button class="modal-close-btn" onclick="cerrarModal('modalCancelar')">✕</button>
+    <div class="cancel-warn-icon">⚠️</div>
+    <div class="cancel-title">¿Cancelar esta cita?</div>
+    <div class="cancel-sub">Esta acción no se puede deshacer.</div>
+    <div class="cancel-summary">
+      <div class="cs-row"><span class="cs-lbl">Mascota</span><span class="cs-val" id="c-pet">—</span></div>
+      <div class="cs-row"><span class="cs-lbl">Doctor</span><span class="cs-val" id="c-doc">—</span></div>
+      <div class="cs-row"><span class="cs-lbl">Fecha</span><span class="cs-val" id="c-fecha">—</span></div>
+      <div class="cs-row"><span class="cs-lbl">Servicio</span><span class="cs-val" id="c-serv">—</span></div>
+    </div>
+    <div class="cancel-btns">
+      <button class="btn-no" onclick="cerrarModal('modalCancelar')">No, mantener</button>
+      <button class="btn-si-cancel" onclick="confirmarCancelacion()">🗑️ Sí, cancelar</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- ════════════════════════════════════
+     MODAL: REPROGRAMAR CITA
+════════════════════════════════════ -->
+<div class="pv-overlay" id="modalReprog" onclick="closeOnOverlay(event,'modalReprog')">
+  <div class="pv-modal">
+    <button class="modal-close-btn" onclick="cerrarModal('modalReprog')">✕</button>
+    <div class="reprog-title">📅 Reprogramar Cita</div>
+    <div class="reprog-sub" id="r-sub">—</div>
+ 
+    <span class="section-lbl">Selecciona Fecha</span>
+    <div class="mini-cal">
+      <div class="cal-head">
+        <button class="cal-nav" onclick="navMes(-1)">‹</button>
+        <span id="calMonthLabel">—</span>
+        <button class="cal-nav" onclick="navMes(1)">›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+ 
+    <span class="section-lbl">Selecciona Hora Disponible</span>
+    <div class="time-slots" id="timeSlots">
+      <span class="slots-placeholder">Primero selecciona una fecha</span>
+    </div>
+ 
+    <div class="reprog-btns">
+      <button class="btn-reprog-cancel" onclick="cerrarModal('modalReprog')">Cancelar</button>
+      <button class="btn-confirm-reprog" id="btnConfirmReprog" disabled onclick="confirmarReprog()">
+        ✔ Confirmar cambio
+      </button>
+    </div>
+  </div>
+</div>
+ 
+<!-- Toast -->
+<div class="pv-toast" id="pvToast">—</div>
+ 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Fecha de hoy
-  document.getElementById('fechaHoy').textContent =
-    new Date().toLocaleDateString('es-CL', {
-      weekday: 'long', year: 'numeric',
-      month: 'long', day: 'numeric'
-    });
-
-  // Toggle sidebar mobile
-  function toggleSidebar() {
-    document.getElementById('vetSidebar').classList.toggle('open');
-    document.getElementById('vetOverlay').classList.toggle('show');
+/* ══ DATA ══ */
+const RESERVA = [
+  { id:1, hora:'09:00', emoji:'🐱', nombre:'Luna',  dueno:'María García', servicio:'Consulta General', doctor:'Dr. Ramírez', status:'confirmada' },
+  { id:2, hora:'10:30', emoji:'🐶', nombre:'Max',   dueno:'Carlos Ruiz',  servicio:'Vacunación',       doctor:'Dr. Ramírez', status:'confirmada' },
+  { id:3, hora:'11:00', emoji:'🐶', nombre:'Bella', dueno:'Ana Torres',   servicio:'Control Post-operatorio', doctor:'Dra. Rojas', status:'pendiente' },
+  { id:4, hora:'12:15', emoji:'🐹', nombre:'Toby',  dueno:'Luis Mora',    servicio:'Medicina General', doctor:'Dr. Ramírez', status:'confirmada' },
+  { id:5, hora:'14:00', emoji:'🐱', nombre:'Nala',  dueno:'Paula Vega',   servicio:'Exámenes Lab',     doctor:'Dra. Rojas',  status:'pendiente' },
+];
+ 
+let currentCitaId = null;
+let selectedDay   = null;
+let selectedSlot  = null;
+let calYear, calMonth;
+ 
+const hoy = new Date();
+calYear  = hoy.getFullYear();
+calMonth = hoy.getMonth();
+ 
+/* ── Today label ── */
+const DIAS   = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MESES  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+document.getElementById('todayLabel').textContent =
+  `${DIAS[hoy.getDay()]}, ${hoy.getDate()} de ${MESES[hoy.getMonth()]} de ${hoy.getFullYear()}`;
+ 
+/* ── Render reserva ── */
+function renderReserva(list) {
+  const c = document.getElementById('reservaContainer');
+  if (!list.length) {
+    c.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-light);">Sin reserva para los filtros seleccionados.</div>';
+    return;
   }
-
-  // Filtro de citas por dueño
-  function filtrarCitas() {
-    const texto = document.getElementById('filtroDueno')
-                           .value.toLowerCase();
-    document.querySelectorAll('.cita-item').forEach(item => {
-      const dueno = item.dataset.dueno || '';
-      item.style.display = dueno.includes(texto) ? '' : 'none';
-    });
+  c.innerHTML = list.map(a => `
+    <div class="appt-row" id="appt-${a.id}">
+      <div class="appt-time">${a.hora}</div>
+      <div class="appt-pet-av">${a.emoji}</div>
+      <div class="appt-info">
+        <div class="appt-name">${a.nombre}</div>
+        <div class="appt-meta">${a.dueno} · ${a.servicio}</div>
+      </div>
+      <span class="status-badge ${a.status}">${a.status.charAt(0).toUpperCase()+a.status.slice(1)}</span>
+      <div class="appt-actions">
+        <button class="btn-iniciar" onclick="abrirIniciar(${a.id})">Iniciar</button>
+        <button class="btn-reprog" onclick="abrirReprog(${a.id})">Reprogramar</button>
+        <button class="btn-cancel-appt" onclick="abrirCancelar(${a.id})">Cancelar</button>
+      </div>
+    </div>`).join('');
+}
+renderReserva(RESERVA);
+ 
+function filtrarReserva() {
+  const txt = document.getElementById('filterName').value.toLowerCase();
+  const st  = document.getElementById('filterStatus').value;
+  renderReserva(RESERVA.filter(c => {
+    const mN = !txt || c.dueno.toLowerCase().includes(txt) || c.nombre.toLowerCase().includes(txt);
+    const mS = !st  || c.status === st;
+    return mN && mS;
+  }));
+}
+ /* ══ INICIAR ══ */
+function abrirIniciar(id) {
+  const c = RESERVA.find(x => x.id === id); if (!c) return;
+  currentCitaId = id;
+  document.getElementById('i-pet').textContent   = `${c.emoji} ${c.nombre}`;
+  document.getElementById('i-doc').textContent   = c.doctor;
+  document.getElementById('i-fecha').textContent = `${hoy.getDate()} de ${MESES[hoy.getMonth()]} · ${c.hora}`;
+  document.getElementById('i-serv').textContent  = c.servicio;
+  abrirModal('modalIniciar');
+}
+function confirmarIniciacion() {
+  const idx = RESERVA.findIndex(x => x.id === currentCitaId);
+  if (idx !== -1) RESERVA[idx].status = 'iniciada';
+  
+  filtrarReserva();
+  cerrarModal('modalIniciar');
+  
+  // Redirecciona en la misma pestaña usando template literals correctos
+  window.location.href = `nuevoregistro.html?citaId=${currentCitaId}`;
+}
+/* ══ CANCELAR ══ */
+function abrirCancelar(id) {
+  const c = RESERVA.find(x => x.id === id); if (!c) return;
+  currentCitaId = id;
+  document.getElementById('c-pet').textContent   = `${c.emoji} ${c.nombre}`;
+  document.getElementById('c-doc').textContent   = c.doctor;
+  document.getElementById('c-fecha').textContent = `${hoy.getDate()} de ${MESES[hoy.getMonth()]} · ${c.hora}`;
+  document.getElementById('c-serv').textContent  = c.servicio;
+  abrirModal('modalCancelar');
+}
+function confirmarCancelacion() {
+  const idx = RESERVA.findIndex(x => x.id === currentCitaId);
+  if (idx !== -1) RESERVA[idx].status = 'cancelada';
+  filtrarReserva();
+  cerrarModal('modalCancelar');
+  toast('🗑️ Cita cancelada correctamente', 'danger');
+}
+ 
+/* ══ REPROGRAMAR ══ */
+function abrirReprog(id) {
+  const c = RESERVA.find(x => x.id === id); if (!c) return;
+  currentCitaId = id;
+  selectedDay = null; selectedSlot = null;
+  document.getElementById('r-sub').textContent =
+    `${c.nombre} · ${c.doctor} · actual: ${hoy.getDate()} ${MESES[hoy.getMonth()].slice(0,3)} a las ${c.hora}`;
+  document.getElementById('btnConfirmReprog').disabled = true;
+  calYear = hoy.getFullYear(); calMonth = hoy.getMonth();
+  buildCal();
+  document.getElementById('timeSlots').innerHTML =
+    '<span class="slots-placeholder">Primero selecciona una fecha</span>';
+  abrirModal('modalReprog');
+}
+ 
+function buildCal() {
+  const lbl = document.getElementById('calMonthLabel');
+  lbl.textContent = `${MESES[calMonth].charAt(0).toUpperCase()+MESES[calMonth].slice(1)} ${calYear}`;
+ 
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+ 
+  // Day-of-week headers
+  ['L','M','M','J','V','S','D'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-dow'; el.textContent = d; grid.appendChild(el);
+  });
+ 
+  const firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=Sun
+  const offset   = (firstDay === 0) ? 6 : firstDay - 1;    // Monday-first
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+ 
+  for (let i = 0; i < offset; i++) {
+    const el = document.createElement('div'); el.className = 'cal-day empty'; grid.appendChild(el);
   }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day'; el.textContent = d;
+    const isPast = (calYear < hoy.getFullYear()) ||
+                   (calYear === hoy.getFullYear() && calMonth < hoy.getMonth()) ||
+                   (calYear === hoy.getFullYear() && calMonth === hoy.getMonth() && d < hoy.getDate());
+    if (isPast) { el.classList.add('past'); }
+    else {
+      if (calYear === hoy.getFullYear() && calMonth === hoy.getMonth() && d === hoy.getDate())
+        el.classList.add('today');
+      if (selectedDay === d) el.classList.add('selected');
+      el.onclick = () => selectDay(d, el);
+    }
+    grid.appendChild(el);
+  }
+}
+ 
+function navMes(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  selectedDay = null; selectedSlot = null;
+  document.getElementById('btnConfirmReprog').disabled = true;
+  buildCal();
+  document.getElementById('timeSlots').innerHTML =
+    '<span class="slots-placeholder">Primero selecciona una fecha</span>';
+}
+ 
+function selectDay(d, el) {
+  document.querySelectorAll('.cal-day.selected').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedDay = d; selectedSlot = null;
+  document.getElementById('btnConfirmReprog').disabled = true;
+  renderSlots();
+}
+ 
+const SLOTS = ['08:30','09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00'];
+function renderSlots() {
+  const wrap = document.getElementById('timeSlots');
+  const dow  = new Date(calYear, calMonth, selectedDay).getDay();
+  const available = (dow === 0 || dow === 6) ? SLOTS.slice(0,4) : SLOTS;
+  wrap.innerHTML = available.map(s => `
+    <div class="time-slot ${selectedSlot===s?'selected':''}" onclick="selectSlot('${s}',this)">${s}</div>
+  `).join('');
+}
+function selectSlot(s, el) {
+  document.querySelectorAll('.time-slot.selected').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSlot = s;
+  document.getElementById('btnConfirmReprog').disabled = false;
+}
+function confirmarReprog() {
+  if (!selectedDay || !selectedSlot) return;
+  const idx = RESERVA.findIndex(x => x.id === currentCitaId);
+  if (idx !== -1) {
+    RESERVA[idx].hora   = selectedSlot;
+    RESERVA[idx].status = 'confirmada';
+  }
+  filtrarReserva();
+  cerrarModal('modalReprog');
+  toast(`✅ Cita reprogramada para el ${selectedDay} ${MESES[calMonth].slice(0,3)} a las ${selectedSlot}`, 'success');
+}
+ 
+/* ══ MODAL HELPERS ══ */
+function abrirModal(id)  { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function cerrarModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+function closeOnOverlay(e,id) { if(e.target===document.getElementById(id)) cerrarModal(id); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') { cerrarModal('modalCancelar'); cerrarModal('modalReprog'); }});
+ 
+/* ══ TOAST ══ */
+function toast(msg, type='success') {
+  const t = document.getElementById('pvToast');
+  t.textContent = msg; t.className = `pv-toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3400);
+}
 </script>
 </body>
 </html>
+ 

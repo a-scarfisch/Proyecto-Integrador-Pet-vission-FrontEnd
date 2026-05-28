@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PetVission — Mis Mascotas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+        --teal:       #1a9e8f;
+      --teal-dark:  #137a6e;
+      --teal-light: #e6f7f5;
+      --teal-mid:   #b2e8e2;
+      --amber:      #f5a623;
+      --amber-light:#fff8ed;
+      --green:      #4caf7d;
+      --green-light:#e8f8ef;
+      --red:        #e05252;
+      --red-light:  #fdeaea;
+      --gray-bg:    #f4f6f8;
+      --gray-border:#dde3ea;
+      --text-dark:  #1a2535;
+      --text-mid:   #4a5568;
+      --text-light: #8a97a8;
+      --white:      #ffffff;
+      --radius-sm:  8px;
+      --radius-md:  14px;
+      --radius-lg:  22px;
+      --shadow-sm:  0 2px 8px rgba(26,158,143,.10);
+      --shadow-md:  0 4px 20px rgba(26,158,143,.14);
+      /* Screenshot palette overrides */
+      --primary-blue: #2563eb;
+      --primary-blue-dark: #1d4ed8;
+      --primary-blue-light: #eff6ff;
+      --filter-active-bg: #eff6ff;
+      --filter-active-border: #3b82f6;
+      --filter-active-color: #1d4ed8;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── TOPBAR ── */
+    .pv-topbar {
+      height: 64px; background: var(--white); border-bottom: 1px solid var(--gray-border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; position: sticky; top: 0; z-index: 90;
+    }
+    .pv-logo { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.3rem; color: var(--teal); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .pv-logo span { color: var(--text-dark); }
+    .pv-logo-icon { width: 34px; height: 34px; background: var(--teal); border-radius: 10px; display: grid; place-items: center; color: white; font-size: 1rem; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .notif-btn { position: relative; width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--gray-border); background: none; display: grid; place-items: center; font-size: 1.1rem; cursor: pointer; transition: background .2s; }
+    .notif-btn:hover { background: var(--teal-light); }
+    .notif-badge { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; background: var(--red); border-radius: 50%; font-size: .6rem; font-weight: 800; color: white; display: grid; place-items: center; border: 2px solid white; }
+    .user-chip { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 6px 12px; border-radius: 50px; transition: background .2s; }
+    .user-chip:hover { background: var(--teal-light); }
+    .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--teal); color: white; font-weight: 800; font-size: .85rem; display: grid; place-items: center; font-family: 'Nunito', sans-serif; }
+    .user-name { font-weight: 600; font-size: .9rem; }
+    .search-bar { display: flex; align-items: center; gap: 8px; background: var(--gray-bg); border: 1.5px solid var(--gray-border); border-radius: 50px; padding: 7px 16px; width: 240px; }
+    .search-bar input { border: none; background: none; outline: none; font-size: .88rem; color: var(--text-dark); width: 100%; }
+    .search-bar span { color: var(--text-light); font-size: .95rem; }
+
+    /* ── LAYOUT ── */
+    .pv-layout { display: flex; flex: 1; }
+
+    /* ── SIDEBAR ── */
+    .pv-sidebar {
+      width: var(--sidebar-w); min-height: calc(100vh - 64px);
+      background: var(--white); border-right: 1px solid var(--gray-border);
+      padding: 24px 16px; display: flex; flex-direction: column; gap: 4px;
+      position: sticky; top: 64px; align-self: flex-start;
+    }
+    .sidebar-section { font-size: .68rem; font-weight: 800; color: var(--text-light); letter-spacing: .08em; text-transform: uppercase; padding: 4px 12px 8px; margin-top: 8px; }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+      border-radius: var(--radius-sm); font-size: .9rem; font-weight: 600;
+      color: var(--text-mid); text-decoration: none; cursor: pointer;
+      transition: all .18s; position: relative;
+    }
+    .sidebar-link:hover { background: var(--teal-light); color: var(--teal-dark); }
+    .sidebar-link.active { background: var(--teal-light); color: var(--teal); font-weight: 700; }
+    .sidebar-link .s-icon { font-size: 1.1rem; width: 22px; text-align: center; }
+    .sidebar-badge { margin-left: auto; background: var(--amber); color: white; font-size: .65rem; font-weight: 800; padding: 2px 7px; border-radius: 50px; }
+    .sidebar-badge.teal { background: var(--teal); }
+    .sidebar-link.danger { color: var(--red); }
+    .sidebar-link.danger:hover { background: var(--red-light); }
+
+    /* ── CONTENT ── */
+    .pv-content { flex: 1; padding: 32px 28px; max-width: 1100px; }
+
+    
+
+    /* ── MASCOTAS CARD ── */
+    .mascotas-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    /* Card header — matches screenshot: title left, buttons right */
+    .mascotas-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px 16px;
+    }
+    .mascotas-card-header h6 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text-dark);
+    }
+    .mascotas-header-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* Filtrar button — outlined, rounded */
+    .btn-filtrar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 18px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      color: var(--text-mid);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .btn-filtrar:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+
+    /* Añadir Nuevo Paciente — solid blue, matches screenshot */
+    .btn-add-patient {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--primary-blue);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: .88rem;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-add-patient:hover { background: var(--primary-blue-dark); transform: translateY(-1px); }
+
+    /* Quick filter pills — matches screenshot style */
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      padding: 0 28px 16px;
+    }
+    .fpill {
+      padding: 6px 18px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: 50px;
+      font-size: .8rem;
+      font-weight: 600;
+      background: var(--white);
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .fpill:hover { border-color: var(--filter-active-border); color: var(--filter-active-color); background: var(--filter-active-bg); }
+    .fpill.active { background: var(--filter-active-bg); border-color: var(--filter-active-border); color: var(--filter-active-color); }
+
+    /* Table — matches screenshot: clean lines, no bg on header */
+    .pac-table { width: 100%; border-collapse: collapse; }
+    .pac-table thead tr {
+      border-top: 1.5px solid var(--gray-border);
+      border-bottom: 1.5px solid var(--gray-border);
+    }
+    .pac-table th {
+      padding: 12px 16px;
+      font-size: .72rem;
+      font-weight: 800;
+      color: var(--text-light);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      background: transparent;
+      text-align: left;
+    }
+    .pac-table tbody tr {
+      border-bottom: 1px solid var(--gray-border);
+      transition: background .15s;
+    }
+    .pac-table tbody tr:last-child { border-bottom: none; }
+    .pac-table tbody tr:hover { background: #fafbfc; }
+    .pac-table td {
+      padding: 16px 16px;
+      font-size: .88rem;
+      color: var(--text-mid);
+      vertical-align: middle;
+    }
+
+    /* Patient avatar — colored circle with initial, matches screenshot */
+    .pat-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: .95rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .pat-name { font-weight: 700; font-size: .9rem; color: var(--text-dark); }
+
+    /* Action buttons — icon-only outline, matches screenshot */
+    .btn-action {
+      width: 34px; height: 34px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      display: grid; place-items: center;
+      cursor: pointer;
+      color: var(--text-mid);
+      font-size: .9rem;
+      transition: all .15s;
+      text-decoration: none;
+    }
+    .btn-action:hover { border-color: var(--primary-blue); color: var(--primary-blue); background: var(--primary-blue-light); }
+
+    @media(max-width:768px){
+      .pv-sidebar { display: none; }
+      .pv-content { padding: 20px 14px; }
+      .search-bar { display: none; }
+      .pac-table th:nth-child(4), .pac-table td:nth-child(4),
+      .pac-table th:nth-child(5), .pac-table td:nth-child(5) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetVission — Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="../../assets/css/styles.css" rel="stylesheet" />
+</head>
+<body class="dashboard-body">
+  <html lang="es">
+
+  <!-- NAVBAR SUPERIOR -->
+  <nav class="navbar navbar-expand-lg bg-white shadow-sm px-3 sticky-top">
+    <div class="container-fluid">
+
+      <!-- Hamburger (mobile) -->
+      <button class="btn btn-sm me-2 d-lg-none border-0"
+              onclick="toggleSidebar()">
+        <i class="bi bi-list fs-4 text-teal"></i>
+      </button>
+
+      <!-- Brand -->
+      <a class="navbar-brand fw-bold text-teal d-flex align-items-center gap-2" href="#">
+        <i class="bi bi-heart-pulse-fill"></i>
+        PetVission
+      </a>
+
+      <!-- Buscador desktop -->
+      <div class="d-none d-md-flex flex-grow-1 mx-4">
+        <div class="input-group" style="max-width:380px;">
+          <span class="input-group-text bg-light border-end-0">
+            <i class="bi bi-search text-muted"></i>
+          </span>
+          <input type="text"
+                 class="form-control bg-light border-start-0"
+                 placeholder="Buscar..." />
+        </div>
+      </div>
+
+      <!-- Acciones navbar -->
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <!-- Notificaciones -->
+        <div class="position-relative">
+          <button class="btn btn-light rounded-circle p-2">
+            <i class="bi bi-bell fs-5 text-muted"></i>
+          </button>
+          <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger"
+                style="font-size:0.6rem;">2</span>
+        </div>
+
+        <!-- Avatar usuario -->
+       <div class="dropdown">
+          <button class="btn d-flex align-items-center gap-2 p-0 border-0"
+                  data-bs-toggle="dropdown">
+            <div class="avatar-circle bg-teal text-white fw-bold">JP</div>
+            <span class="d-none d-md-inline fw-medium small">Juan Pérez</span>
+            <i class="bi bi-chevron-down small text-muted"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+            <li><a class="dropdown-item" href="miperfil.html"><i class="bi bi-person me-2 text-teal"></i>Mi perfil</a></li>
+            <li><a class="dropdown-item" href="configuracion.html"><i class="bi bi-gear me-2 text-teal"></i>Configuración</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger" href="../auth/login.html">
+                <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+              </a>
+            </li>
+          </ul>
+        </div>
+
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+
+        <!-- Nav items -->
+        <ul class="sidebar-nav">
+          <li class="sidebar-label">Principal</li>
+
+          <li>
+            <a href="dashboard.html" class="sidebar-link active">
+              <i class="bi bi-grid-fill"></i>
+              <span>Inicio</span>
+            </a>
+          </li>
+          <li>
+            <a href="mascotas.html" class="sidebar-link">
+              <i class="bi bi-heart-fill"></i>
+              <span>Mis Mascotas</span>
+              <span class="badge bg-teal-light text-teal ms-auto">2</span>
+            </a>
+          </li>
+          <li>
+            <a href="misreserva.html" class="sidebar-link">
+              <i class="bi bi-calendar2-check-fill"></i>
+              <span>Mis Reserva</span>
+              <span class="badge bg-warning text-dark ms-auto">1</span>
+            </a>
+          </li>
+  
+          <li class="sidebar-label mt-3">Cuenta</li>
+          <li> 
+            <a href="miperfil.html" class="sidebar-link">
+              <i class="bi bi-person-fill"></i>
+              <span>Mi Perfil</span>
+            </a>
+          </li>
+          <li>
+            <a href="../auth/login.html" class="sidebar-link text-danger">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Cerrar sesión</span>
+            </a>
+          </li>
+        </ul>
+
+      
+      </div>
+    </aside>
+
+    <!-- OVERLAY mobile -->
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="dashboard-main">
+      <!-- HEADER -->
+    <div class="page-hdr">
+      <div>
+        <h1>🐾 Mis Mascotas</h1>
+        <p class="demo-sub">Toda la información de tus mascotas. Haz clic en 📋 para abrir el Historial Clínico</p>
+      </div>
+      <div class="col-auto d-none d-sm-block">
+            <a href="nuevamascota.html" class="btn btn-teal text-white px-4" onclick="goFoward()">
+            <i class="bi bi-plus"></i>Agregar mascota
+            </a>
+
+          </div>
+    </div>
+
+    <style>
+    :root {
+      --teal:         #1ab5a3;
+      --teal-dark:    #0e8f80;
+      --teal-light:   #e6f9f7;
+      --teal-mid:     #a8ede7;
+      --teal-btn:     #2dcfc0;
+      --red:          #e05252;
+      --red-light:    #fdeaea;
+      --green:        #27ae60;
+      --amber:        #f5a623;
+      --amber-light:  #fff8ed;
+      --gray-bg:      #f4f6f8;
+      --gray-border:  #e2e8f0;
+      --text-dark:    #1a2535;
+      --text-mid:     #4a5568;
+      --text-light:   #94a3b8;
+      --white:        #ffffff;
+      --sidebar-dark: #1e2d3d;
+      --sidebar-mid:  #243447;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--text-dark); min-height: 100vh; }
+
+    /* ── DEMO TRIGGER PAGE ── */
+    /* ── PAGE HEADER ── */
+    .page-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .page-hdr h1 { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.6rem; }
+    .page-hdr p { font-size: .88rem; color: var(--text-mid); margin-top: 3px; }
+    .btn-nueva-mascota {
+      background: var(--teal); color: white; border: none;
+      border-radius: var(--radius-md); padding: 12px 22px;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .9rem;
+      cursor: pointer; display: flex; align-items: center; gap: 7px;
+      transition: all .2s; text-decoration: none;
+    }
+    .btn-nueva-mascota:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); color: white; }
+
+    /* Patient row trigger */
+    .pac-table-wrap { background: var(--white); border-radius: 16px; border: 1.5px solid var(--gray-border); overflow: hidden; width: 780px; max-width: 95vw; }
+    .pac-table-hdr { padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--gray-border); }
+    .pac-table-hdr h6 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; }
+    table.demo-table { width: 100%; border-collapse: collapse; }
+    table.demo-table th { padding: 10px 20px; font-size: .7rem; font-weight: 800; color: var(--text-light); letter-spacing: .07em; text-transform: uppercase; border-bottom: 1.5px solid var(--gray-border); }
+    table.demo-table td { padding: 14px 20px; font-size: .88rem; color: var(--text-mid); border-bottom: 1px solid var(--gray-border); vertical-align: middle; }
+    table.demo-table tr:last-child td { border-bottom: none; }
+    table.demo-table tr:hover td { background: #fafbfd; }
+    .pat-av { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: .9rem; color: white; }
+    .pat-nm { font-weight: 700; color: var(--text-dark); }
+    .btn-hist {
+      width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid var(--gray-border);
+      background: var(--white); cursor: pointer; display: grid; place-items: center; font-size: .88rem;
+      transition: all .15s; color: var(--text-mid);
+    }
+    .btn-hist:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
+
+    /* ══════════════════════════════════════
+       MODAL OVERLAY
+    ══════════════════════════════════════ */
+    .hc-overlay {
+      position: fixed; inset: 0; background: rgba(10,18,28,.55);
+      z-index: 500; display: none; align-items: flex-start; justify-content: center;
+      padding: 20px; overflow-y: auto; backdrop-filter: blur(4px);
+    }
+    .hc-overlay.open { display: flex; }
+
+    .hc-modal {
+      background: var(--gray-bg); width: 100%; max-width: 1160px;
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,.22);
+      animation: modalIn .3s cubic-bezier(.34,1.4,.64,1);
+      min-height: 90vh; display: flex; flex-direction: column;
+    }
+    @keyframes modalIn { from { opacity:0; transform: scale(.95) translateY(20px); } to { opacity:1; transform: scale(1) translateY(0); } }
+
+    /* ── MODAL TOPBAR ── */
+    .hc-topbar {
+      background: var(--white); border-bottom: 1px solid var(--gray-border);
+      padding: 0 28px; height: 58px; display: flex; align-items: center;
+      justify-content: space-between; flex-shrink: 0;
+    }
+    .hc-clinic { font-size: .82rem; color: var(--text-light); font-weight: 600; letter-spacing: .02em; }
+    .hc-topbar-right { display: flex; align-items: center; gap: 20px; }
+    .hc-vet { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: .88rem; }
+    .hc-vet-av { width: 34px; height: 34px; border-radius: 50%; background: var(--teal-mid); display: grid; place-items: center; font-size: 1.1rem; }
+    .btn-modal-close {
+      width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--gray-border);
+      background: none; cursor: pointer; display: grid; place-items: center;
+      font-size: .9rem; color: var(--text-mid); transition: all .15s;
+    }
+    .btn-modal-close:hover { background: var(--red-light); border-color: var(--red); color: var(--red); }
+
+    /* Patient sub-topbar */
+    .hc-patient-bar {
+      background: var(--white); border-bottom: 1px solid var(--gray-border);
+      padding: 10px 28px; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    }
+    .hc-patient-av { width: 36px; height: 36px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; font-size: 1.3rem; }
+    .hc-patient-name { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; }
+    .btn-nueva-consulta {
+      margin-left: auto; background: var(--teal-btn); color: white;
+      border: none; border-radius: 10px; padding: 10px 22px;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .85rem;
+      cursor: pointer; transition: all .2s; letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    .btn-nueva-consulta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    /* ── 3-COLUMN BODY ── */
+    .hc-body { display: grid; grid-template-columns: 280px 1fr 320px; flex: 1; min-height: 0; }
+
+    /* ── COL 1: PROFILE ── */
+    .col-profile {
+      background: var(--white); border-right: 1px solid var(--gray-border);
+      padding: 24px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 0;
+    }
+
+    /* Profile card */
+    .profile-card {
+      border: 1.5px solid var(--gray-border); border-radius: 14px;
+      padding: 20px 16px; margin-bottom: 20px; text-align: center;
+    }
+    .profile-main-av {
+      width: 72px; height: 72px; border-radius: 50%; background: var(--teal-light);
+      display: grid; place-items: center; font-size: 2.2rem; margin: 0 auto 10px;
+      border: 3px solid var(--teal-mid);
+    }
+    .profile-name { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.1rem; }
+    .profile-meta { font-size: .8rem; color: var(--text-mid); margin-top: 4px; }
+    .profile-links { margin-top: 10px; display: flex; justify-content: center; gap: 12px; }
+    .profile-link { font-size: .8rem; color: var(--teal); font-weight: 600; cursor: pointer; text-decoration: none; }
+    .profile-link:hover { text-decoration: underline; }
+
+    /* Vitals section */
+    .sec-label {
+      font-size: .65rem; font-weight: 800; color: var(--text-light);
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 0 10px; display: block;
+      border-bottom: 1.5px solid var(--gray-border); margin-bottom: 4px;
+    }
+    .vital-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 4px; border-bottom: 1px solid var(--gray-border);
+      transition: background .15s; border-radius: 6px;
+    }
+    .vital-row:last-child { border-bottom: none; }
+    .vital-icon { font-size: 1.2rem; width: 28px; text-align: center; flex-shrink: 0; }
+    .vital-name { font-size: .85rem; color: var(--text-mid); font-weight: 500; flex: 1; }
+    .vital-val { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .9rem; color: var(--text-dark); }
+    .vital-unit { font-size: .75rem; color: var(--text-light); margin-left: 3px; }
+    .vital-expand { color: var(--text-light); font-size: .75rem; cursor: pointer; }
+
+    /* Archivos */
+    .archivo-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 8px; border-radius: 10px; transition: background .15s;
+    }
+    .archivo-item:hover { background: var(--gray-bg); }
+    .archivo-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .archivo-info { flex: 1; }
+    .archivo-name { font-size: .82rem; font-weight: 600; color: var(--teal); cursor: pointer; }
+    .archivo-name:hover { text-decoration: underline; }
+    .archivo-meta { font-size: .72rem; color: var(--text-light); }
+    .archivo-actions { display: flex; gap: 4px; }
+    .btn-arch { width: 28px; height: 28px; border: 1.5px solid var(--gray-border); border-radius: 6px; background: none; cursor: pointer; display: grid; place-items: center; font-size: .75rem; color: var(--text-mid); transition: all .15s; }
+    .btn-arch:hover { border-color: var(--teal); color: var(--teal); }
+    .btn-arch.del:hover { border-color: var(--red); color: var(--red); }
+    .btn-subir {
+      width: 100%; margin-top: 14px; background: var(--teal-btn); color: white;
+      border: none; border-radius: 10px; padding: 11px;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .85rem;
+      cursor: pointer; transition: all .2s; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .btn-subir:hover { background: var(--teal-dark); }
+
+    /* ── COL 2: ANTECEDENTES ── */
+    .col-antecedentes {
+      overflow-y: auto; padding: 28px 32px; background: var(--gray-bg);
+    }
+    .ante-card {
+      background: var(--white); border: 1.5px solid var(--gray-border);
+      border-radius: 14px; padding: 24px 28px; margin-bottom: 20px;
+    }
+
+    /* Section heading with teal + icon */
+    .ante-heading {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .88rem;
+      color: var(--teal); letter-spacing: .05em; text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .ante-heading .ah-icon {
+      width: 22px; height: 22px; border-radius: 6px; background: var(--teal);
+      display: grid; place-items: center; color: white; font-size: .75rem;
+      flex-shrink: 0;
+    }
+
+    /* Allergy box */
+    .allergy-box {
+      background: var(--red-light); border: 1.5px solid #f5c6c6;
+      border-radius: 10px; padding: 14px 18px;
+    }
+    .allergy-warning { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: .88rem; color: var(--red); margin-bottom: 10px; }
+    .allergy-list { list-style: none; padding-left: 16px; }
+    .allergy-list li { font-size: .85rem; color: var(--red); padding: 2px 0; }
+    .allergy-list li::before { content: "- "; }
+    .otras-label { font-size: .82rem; font-weight: 700; color: var(--red); margin-top: 10px; margin-bottom: 4px; }
+
+    /* Antecedente rows */
+    .ante-row {
+      display: grid; grid-template-columns: 200px 1fr;
+      align-items: flex-start; gap: 12px; padding: 12px 0;
+      border-bottom: 1px solid var(--gray-border); font-size: .88rem;
+    }
+    .ante-row:last-child { border-bottom: none; }
+    .ante-key { font-weight: 700; color: var(--text-dark); }
+    .ante-val { color: var(--text-mid); display: flex; align-items: flex-start; gap: 8px; }
+    .ante-val.positive::before { content: "✔"; color: var(--green); font-size: .85rem; flex-shrink: 0; margin-top: 1px; }
+    .ante-val.negative::before { content: "✖"; color: var(--red); font-size: .85rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* Collapsible section trigger */
+    .ante-expand {
+      display: flex; align-items: center; gap: 12px;
+      border: 2px dashed var(--teal-mid); border-radius: 12px;
+      padding: 14px 18px; cursor: pointer; margin-bottom: 14px;
+      transition: all .18s;
+    }
+    .ante-expand:hover { border-color: var(--teal); background: var(--teal-light); }
+    .ante-expand-icon {
+      width: 28px; height: 28px; border-radius: 8px; background: var(--teal-light);
+      display: grid; place-items: center; color: var(--teal); font-size: 1rem;
+      font-weight: 900; border: 1.5px solid var(--teal-mid);
+    }
+    .ante-expand-label { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .85rem; color: var(--teal); letter-spacing: .06em; text-transform: uppercase; }
+
+    /* Medicamentos search */
+    .med-search {
+      display: flex; align-items: center; gap: 10px;
+      border: 1.5px solid var(--gray-border); border-radius: 10px;
+      padding: 10px 16px; background: var(--white); margin-top: 4px;
+    }
+    .med-search input { border: none; outline: none; flex: 1; font-size: .9rem; background: none; }
+    .med-search span { color: var(--text-light); }
+
+    /* ── COL 3: CONSULTAS ── */
+    .col-consultas {
+      background: var(--white); border-left: 1px solid var(--gray-border);
+      overflow-y: auto; padding: 24px 20px; display: flex; flex-direction: column;
+    }
+    .consultas-agendadas-label {
+      font-size: .65rem; font-weight: 800; color: var(--text-light);
+      letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .no-reserva { font-size: .82rem; color: var(--text-mid); line-height: 1.5; margin-bottom: 20px; }
+    .no-reserva a { color: var(--teal); font-weight: 600; }
+
+    .consultas-iniciadas-label {
+      font-size: .65rem; font-weight: 800; color: var(--text-light);
+      letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px;
+    }
+
+    /* Consulta card */
+    .consulta-card {
+      display: flex; gap: 0; border-left: 3px solid var(--teal);
+      background: var(--white); margin-bottom: 14px; border-radius: 0 10px 10px 0;
+      overflow: hidden; transition: box-shadow .18s; cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .consulta-card:hover { box-shadow: 0 4px 16px rgba(26,181,163,.15); }
+    .cc-date {
+      min-width: 62px; background: var(--gray-bg); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 12px 8px;
+      border-right: 1px solid var(--gray-border);
+    }
+    .cc-day { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--teal); line-height: 1; }
+    .cc-mon { font-size: .65rem; font-weight: 800; color: var(--teal-dark); text-transform: uppercase; letter-spacing: .06em; }
+    .cc-year { font-size: .65rem; color: var(--text-light); margin-top: 2px; }
+    .cc-body { padding: 12px 14px; flex: 1; }
+    .cc-title { font-weight: 700; font-size: .92rem; color: var(--text-dark); margin-bottom: 4px; }
+    .cc-diag { font-size: .78rem; color: var(--text-light); font-style: italic; margin-bottom: 6px; }
+    .cc-meds { font-size: .75rem; color: var(--text-mid); line-height: 1.5; }
+    .cc-meds span { color: var(--teal-dark); font-weight: 600; }
+
+    .btn-ver-mas { background: none; border: none; color: var(--teal); font-size: .85rem; font-weight: 700; cursor: pointer; padding: 4px 0; display: block; margin-top: 8px; }
+    .btn-ver-mas:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media(max-width: 900px) {
+      .hc-body { grid-template-columns: 1fr; }
+      .col-profile, .col-consultas { border: none; border-top: 1px solid var(--gray-border); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     DEMO PAGE: Lista de mascotas
+═══════════════════════════════════ -->
+<div class="demo-page">
+
+  <div class="pac-table-wrap">
+    <div class="pac-table-hdr">
+      <h6>Mis Mascotas</h6>
+      
+    </div>
+    <table class="demo-table">
+      <thead>
+        <tr>
+          <th>Nombre</th><th>Especie</th><th>Raza</th><th>Dueño</th><th>Última Visita</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="d-flex align-items-center gap-2"><div class="pat-av" style="background:#0ea5e9;">L</div><span class="pat-nm">Luna</span></div></td>
+          <td>Gato</td><td>Persa</td><td>María García</td><td>2026-05-05</td>
+          <td>
+            <div class="d-flex gap-1">
+              <button class="btn-hist" onclick="abrirHistorial('luna')" title="Historial Clínico">📋</button>
+              <button class="btn-hist" title="Descargar">📥</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><div class="d-flex align-items-center gap-2"><div class="pat-av" style="background:#22c55e;">M</div><span class="pat-nm">Max</span></div></td>
+          <td>Perro</td><td>Golden Retriever</td><td>Carlos Ruiz</td><td>2026-05-03</td>
+          <td>
+            <div class="d-flex gap-1">
+              <button class="btn-hist" onclick="abrirHistorial('max')" title="Historial Clínico">📋</button>
+              <button class="btn-hist" title="Descargar">📥</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><div class="d-flex align-items-center gap-2"><div class="pat-av" style="background:#f97316;">B</div><span class="pat-nm">Bella</span></div></td>
+          <td>Perro</td><td>Bulldog Francés</td><td>Ana Torres</td><td>2026-05-08</td>
+          <td>
+            <div class="d-flex gap-1">
+              <button class="btn-hist" onclick="abrirHistorial('bella')" title="Historial Clínico">📋</button>
+              <button class="btn-hist" title="Descargar">📥</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><div class="d-flex align-items-center gap-2"><div class="pat-av" style="background:#8b5cf6;">R</div><span class="pat-nm">Rocky</span></div></td>
+          <td>Perro</td><td>Pastor Alemán</td><td>Pedro Soto</td><td>2026-04-28</td>
+          <td>
+            <div class="d-flex gap-1">
+              <button class="btn-hist" onclick="abrirHistorial('rocky')" title="Historial Clínico">📋</button>
+              <button class="btn-hist" title="Descargar">📥</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════
+     HISTORIAL CLÍNICO MODAL
+═══════════════════════════════════ -->
+<div class="hc-overlay" id="hcOverlay" onclick="cerrarHistorial(event)">
+<div class="hc-modal" id="hcModal">
+
+  <!-- Topbar -->
+  <div class="hc-topbar">
+    <span class="hc-clinic">Consultorio PetVission</span>
+    <div class="hc-topbar-right">
+      <div class="hc-vet">
+        <div class="hc-vet-av">👨‍⚕️</div>
+        Dr. Veterinario
+      </div>
+      <button class="btn-modal-close" onclick="cerrarHistorial(null, true)" title="Cerrar">✕</button>
+    </div>
+  </div>
+
+  <!-- Patient bar -->
+  <div class="hc-patient-bar">
+    <div class="hc-patient-av" id="hcPatientAv">🐱</div>
+    <span class="hc-patient-name" id="hcPatientName">Luna</span>
+  </div>
+
+  <!-- 3-col body -->
+  <div class="hc-body">
+
+    <!-- ── COL 1 ── -->
+    <div class="col-profile" id="colProfile">
+
+      <!-- Profile card -->
+      <div class="profile-card">
+        <div class="profile-main-av" id="profileAv">🐱</div>
+        <div class="profile-name" id="profileName">Luna</div>
+        <div class="profile-meta" id="profileMeta">Gato · Persa · 3 años</div>
+        <div class="profile-links">
+          <a class="profile-link">Editar</a>
+          <span style="color:var(--gray-border);">|</span>
+          <a class="profile-link">Mostrar datos</a>
+        </div>
+      </div>
+
+      <!-- Vitales -->
+      <span class="sec-label">Últimos Signos Vitales</span>
+      <div id="vitalesContainer"></div>
+
+      <!-- Archivos -->
+      <span class="sec-label" style="margin-top:20px;">Archivos</span>
+      <div id="archivosContainer"></div>
+  
+
+    </div>
+
+    <!-- ── COL 2 ── -->
+    <div class="col-antecedentes">
+
+      <!-- ALERGIAS -->
+      <div class="ante-card">
+        <div class="ante-heading"><div class="ah-icon">＋</div>Alergias</div>
+        <div class="allergy-box" id="alergiasBox"></div>
+      </div>
+
+      <!-- ANTECEDENTES PATOLÓGICOS -->
+      <div class="ante-card">
+        <div class="ante-heading"><div class="ah-icon">＋</div>Antecedentes Patológicos</div>
+        <div id="patologicosContainer"></div>
+      </div>
+
+      <!-- ANTECEDENTES PSIQUIÁTRICOS -->
+      <div class="ante-card">
+        <div class="ante-heading"><div class="ah-icon">＋</div>Antecedentes Psiquiátricos</div>
+        <div id="psiquiatricosContainer"></div>
+      </div>
+
+      <!-- DIETA NUTRIOLÓGICA -->
+      <div class="ante-card">
+        <div class="ante-heading"><div class="ah-icon">＋</div>Dieta Nutriológica</div>
+        <div id="dietaContainer"></div>
+      </div>
+
+      <!-- EXPANDIBLES -->
+      <div class="ante-expand" onclick="toggleExpand('vacunas')">
+        <div class="ante-expand-icon">＋</div>
+        <span class="ante-expand-label">Esquema de Vacunación</span>
+      </div>
+      <div id="vacunas" style="display:none;" class="ante-card">
+        <div id="vacunasContainer"></div>
+      </div>
+
+      <div class="ante-expand" onclick="toggleExpand('gineco')">
+        <div class="ante-expand-icon">＋</div>
+        <span class="ante-expand-label">Antecedentes Gineco-Obstétricos</span>
+      </div>
+      <div id="gineco" style="display:none;" class="ante-card">
+        <p style="font-size:.85rem;color:var(--text-light);">Sin antecedentes registrados.</p>
+      </div>
+
+      <!-- MEDICAMENTOS ACTIVOS -->
+      <div class="ante-card" style="margin-top:6px;">
+        <div class="ante-heading"><div class="ah-icon">💊</div>Medicamentos Activos</div>
+        <div class="med-search">
+          <input type="text" placeholder="Buscar medicamento…"/>
+          <span>🔍</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── COL 3 ── -->
+    <div class="col-consultas">
+      <div class="consultas-agendadas-label">Consultas Agendadas</div>
+      <p class="no-reserva">Aun no hay reserva agendadas.<br>Utiliza la <a href="#">agenda</a> para calendarizarla.</p>
+
+      <div class="consultas-iniciadas-label">Consultas Iniciadas</div>
+      <div id="consultasContainer"></div>
+      <button class="btn-ver-mas">Ver más →</button>
+    </div>
+
+  </div><!-- /hc-body -->
+</div><!-- /hc-modal -->
+</div><!-- /hc-overlay -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ══════════════════════════════════════
+   DATA PER PATIENT
+══════════════════════════════════════ */
+const PACIENTES = {
+  luna: {
+    nombre: 'Luna', av: '🐱', avColor: '#0ea5e9',
+    meta: 'Gato · Persa · 3 años · 4.2 kg',
+    vitales: [
+      { icon:'📏', name:'Altura/Largo', val:'45', unit:'cm' },
+      { icon:'⚖️', name:'Peso',         val:'4.2', unit:'kg' },
+      { icon:'🌡️', name:'Temperatura', val:'38.5', unit:'°C' },
+      { icon:'💓', name:'Frec. Cardíaca', val:'160', unit:'l/m' },
+      { icon:'🫁', name:'Frec. Respiratoria', val:'24', unit:'r/m' },
+    ],
+    archivos: [
+      { icon:'🖼️', name:'Rx_torax_2026.jpg', size:'1.8 MB', fecha:'May 05, 2026 · 10:14 AM' },
+      { icon:'📄', name:'Analisis_sangre.pdf', size:'340 KB', fecha:'Abr 20, 2026 · 03:40 PM' },
+    ],
+    alergias: {
+      medicamentos: ['Penicilina', 'Amoxicilina'],
+      otras: ['Pescado de agua dulce'],
+    },
+    patologicos: [
+      { key:'Antecedentes Negados', val:'Tuberculosis, Transfusiones', tipo:'negative' },
+      { key:'Hospitalización Previa', val:'Bronquitis en Marzo 2025.', tipo:'positive' },
+      { key:'Cirugías Previas', val:'Esterilización en 2024.', tipo:'positive' },
+      { key:'Diabetes', val:'No registrado', tipo:'negative' },
+      { key:'Cardiopatías', val:'No registrado', tipo:'negative' },
+    ],
+    psiquiatricos: [
+      { key:'Antecedentes Negados', val:'Historia Familiar', tipo:'negative' },
+      { key:'Estrés', val:'Leve por cambios de ambiente', tipo:'positive' },
+    ],
+    dieta: [
+      { key:'Apetito normal', val:'Sí', tipo:'positive' },
+      { key:'Peso ideal', val:'Dentro del rango', tipo:'positive' },
+      { key:'Dieta especial', val:'Alimento renal húmedo', tipo:'positive' },
+    ],
+    vacunas: [
+      { name:'Triple Felina', fecha:'2026-03-15', prox:'2027-03-15', estado:'vigente' },
+      { name:'Rabia',         fecha:'2026-03-15', prox:'2027-03-15', estado:'vigente' },
+      { name:'Leucemia Felina', fecha:'2025-11-20', prox:'2026-11-20', estado:'proxima' },
+    ],
+    consultas: [
+      { dia:'05', mes:'MAY', anio:'2026', titulo:'Consulta General', diag:'Control de rutina', meds:'Vitaminas Omega-3 · 1 cápsula diaria.' },
+      { dia:'15', mes:'MAR', anio:'2026', titulo:'Vacunación', diag:'Triple Felina + Rabia', meds:'Sin medicación recetada.' },
+      { dia:'10', mes:'DIC', anio:'2025', titulo:'Control Digestivo', diag:'Gastritis leve', meds:'Omeprazol 2.5mg/día · 7 días. Dieta blanda.' },
+    ],
+  },
+  max: {
+    nombre: 'Max', av: '🐶', avColor: '#22c55e',
+    meta: 'Perro · Golden Retriever · 4 años · 28 kg',
+    vitales: [
+      { icon:'📏', name:'Altura', val:'58', unit:'cm' },
+      { icon:'⚖️', name:'Peso',   val:'28', unit:'kg' },
+      { icon:'🌡️', name:'Temperatura', val:'38.8', unit:'°C' },
+      { icon:'💓', name:'Frec. Cardíaca', val:'90', unit:'l/m' },
+      { icon:'🫁', name:'Frec. Respiratoria', val:'18', unit:'r/m' },
+    ],
+    archivos: [
+      { icon:'📄', name:'Examen_sangre_Max.pdf', size:'512 KB', fecha:'May 03, 2026 · 11:00 AM' },
+    ],
+    alergias: {
+      medicamentos: ['Sulfonamidas'],
+      otras: ['Polen (rinitis estacional)'],
+    },
+    patologicos: [
+      { key:'Antecedentes Negados', val:'Transfusiones', tipo:'negative' },
+      { key:'Hospitalización Previa', val:'Parvovirus en 2023, recuperación completa.', tipo:'positive' },
+      { key:'Cirugías Previas', val:'Castración en 2022.', tipo:'positive' },
+      { key:'Displasia de cadera', val:'Grado leve diagnosticado 2025.', tipo:'positive' },
+      { key:'Cardiopatías', val:'No registrado', tipo:'negative' },
+    ],
+    psiquiatricos: [
+      { key:'Antecedentes Negados', val:'Historia Familiar', tipo:'negative' },
+      { key:'Ansiedad por separación', val:'Moderada, en tratamiento conductual', tipo:'positive' },
+    ],
+    dieta: [
+      { key:'Apetito normal', val:'Sí', tipo:'positive' },
+      { key:'Peso ideal', val:'Ligeramente elevado', tipo:'negative' },
+      { key:'Dieta especial', val:'Alimento bajo en calorías', tipo:'positive' },
+    ],
+    vacunas: [
+      { name:'Sextuple', fecha:'2026-01-10', prox:'2027-01-10', estado:'vigente' },
+      { name:'Rabia',    fecha:'2025-12-01', prox:'2026-12-01', estado:'vigente' },
+      { name:'Bordetella', fecha:'2025-06-15', prox:'2026-06-15', estado:'proxima' },
+    ],
+    consultas: [
+      { dia:'03', mes:'MAY', anio:'2026', titulo:'Control Displasia', diag:'Seguimiento cadera', meds:'Meloxicam 7.5mg · 1 comprimido/día.' },
+      { dia:'01', mes:'ENE', anio:'2026', titulo:'Vacunación Anual', diag:'Sextuple + Rabia', meds:'Sin medicación adicional.' },
+      { dia:'20', mes:'OCT', anio:'2025', titulo:'Consulta Dermatológica', diag:'Dermatitis atópica', meds:'Apoquel 16mg · 1 comp/día. Shampoo medicado.' },
+    ],
+  },
+  bella: {
+    nombre: 'Bella', av: '🐶', avColor: '#f97316',
+    meta: 'Perro · Bulldog Francés · 2 años · 10 kg',
+    vitales: [
+      { icon:'📏', name:'Altura', val:'30', unit:'cm' },
+      { icon:'⚖️', name:'Peso',   val:'10', unit:'kg' },
+      { icon:'🌡️', name:'Temperatura', val:'38.6', unit:'°C' },
+      { icon:'💓', name:'Frec. Cardíaca', val:'100', unit:'l/m' },
+      { icon:'🫁', name:'Frec. Respiratoria', val:'22', unit:'r/m' },
+    ],
+    archivos: [
+      { icon:'🖼️', name:'Radiografia_columna.jpg', size:'2.1 MB', fecha:'May 08, 2026 · 09:30 AM' },
+    ],
+    alergias: {
+      medicamentos: ['AINEs'],
+      otras: ['Gluten (intolerancia leve)'],
+    },
+    patologicos: [
+      { key:'Antecedentes Negados', val:'Tuberculosis', tipo:'negative' },
+      { key:'Hospitalización Previa', val:'Síndrome braquicefálico 2025.', tipo:'positive' },
+      { key:'Cirugías Previas', val:'Corrección nares estenóticas 2025.', tipo:'positive' },
+      { key:'Cardiopatías', val:'Soplo cardíaco grado I', tipo:'positive' },
+      { key:'Displasia', val:'No registrado', tipo:'negative' },
+    ],
+    psiquiatricos: [
+      { key:'Antecedentes Negados', val:'Historia Familiar', tipo:'negative' },
+    ],
+    dieta: [
+      { key:'Apetito normal', val:'Aumentado', tipo:'positive' },
+      { key:'Peso ideal', val:'Dentro del rango', tipo:'positive' },
+      { key:'Dieta especial', val:'Alimento sin gluten', tipo:'positive' },
+    ],
+    vacunas: [
+      { name:'Sextuple',   fecha:'2025-09-10', prox:'2026-09-10', estado:'vigente' },
+      { name:'Rabia',      fecha:'2025-09-10', prox:'2026-09-10', estado:'vigente' },
+    ],
+    consultas: [
+      { dia:'08', mes:'MAY', anio:'2026', titulo:'Control Cardíaco', diag:'Soplo grado I estable', meds:'Enalapril 2.5mg · 1 comp/día.' },
+      { dia:'14', mes:'FEB', anio:'2026', titulo:'Control Post-Cirugía', diag:'Evolución favorable', meds:'Sin medicación.' },
+      { dia:'03', mes:'NOV', anio:'2025', titulo:'Cirugía Nares', diag:'Corrección estenótica', meds:'Amoxicilina 250mg · 7 días. Meloxicam 3 días.' },
+    ],
+  },
+  rocky: {
+    nombre: 'Rocky', av: '🐶', avColor: '#8b5cf6',
+    meta: 'Perro · Pastor Alemán · 5 años · 35 kg',
+    vitales: [
+      { icon:'📏', name:'Altura', val:'62', unit:'cm' },
+      { icon:'⚖️', name:'Peso',   val:'35', unit:'kg' },
+      { icon:'🌡️', name:'Temperatura', val:'39.0', unit:'°C' },
+      { icon:'💓', name:'Frec. Cardíaca', val:'78', unit:'l/m' },
+      { icon:'🫁', name:'Frec. Respiratoria', val:'16', unit:'r/m' },
+    ],
+    archivos: [
+      { icon:'📄', name:'Analisis_orina_Rocky.pdf', size:'220 KB', fecha:'Abr 28, 2026 · 02:15 PM' },
+      { icon:'🖼️', name:'Eco_abdominal.jpg', size:'3.4 MB', fecha:'Abr 28, 2026 · 02:20 PM' },
+    ],
+    alergias: {
+      medicamentos: [],
+      otras: ['Maíz (intolerancia digestiva)'],
+    },
+    patologicos: [
+      { key:'Antecedentes Negados', val:'Transfusiones, Tuberculosis', tipo:'negative' },
+      { key:'Hospitalización Previa', val:'Torsión gástrica 2024, cirugía de urgencia.', tipo:'positive' },
+      { key:'Cirugías Previas', val:'Gastropexia profiláctica 2024.', tipo:'positive' },
+      { key:'Displasia de cadera', val:'Grado moderado.', tipo:'positive' },
+      { key:'Cardiopatías', val:'No registrado', tipo:'negative' },
+    ],
+    psiquiatricos: [
+      { key:'Antecedentes Negados', val:'Historia Familiar', tipo:'negative' },
+      { key:'Comportamiento', val:'Tendencia a la guarda, bien socializado', tipo:'positive' },
+    ],
+    dieta: [
+      { key:'Apetito normal', val:'Sí', tipo:'positive' },
+      { key:'Peso ideal', val:'Dentro del rango', tipo:'positive' },
+      { key:'Dieta especial', val:'Sin cereales (grain-free)', tipo:'positive' },
+    ],
+    vacunas: [
+      { name:'Sextuple',  fecha:'2026-02-20', prox:'2027-02-20', estado:'vigente' },
+      { name:'Rabia',     fecha:'2026-02-20', prox:'2027-02-20', estado:'vigente' },
+      { name:'Leptospira', fecha:'2025-08-10', prox:'2026-08-10', estado:'proxima' },
+    ],
+    consultas: [
+      { dia:'28', mes:'ABR', anio:'2026', titulo:'Control Displasia', diag:'Seguimiento cadera moderada', meds:'Carprofen 50mg · 1 comp/día con comida.' },
+      { dia:'10', mes:'ENE', anio:'2026', titulo:'Revisión Anual', diag:'Paciente en buen estado general', meds:'Antiparasitario Milbemax · 1 comprimido.' },
+      { dia:'05', mes:'JUN', anio:'2025', titulo:'Post-operatorio', diag:'Gastropexia, evolución normal', meds:'Amoxicilina 500mg · 10 días. Omeprazol 10 días.' },
+    ],
+  },
+};
+
+/* ══════════════════════════════════════
+   RENDER HELPERS
+══════════════════════════════════════ */
+function renderVitales(vitales) {
+  return vitales.map(v => `
+    <div class="vital-row">
+      <span class="vital-icon">${v.icon}</span>
+      <span class="vital-name">${v.name}</span>
+      <span class="vital-val">${v.val}<span class="vital-unit">${v.unit}</span></span>
+      <span class="vital-expand">∨</span>
+    </div>
+  `).join('');
+}
+
+function renderArchivos(archivos) {
+  return archivos.map(a => `
+    <div class="archivo-item">
+      <span class="archivo-icon">${a.icon}</span>
+      <div class="archivo-info">
+        <div class="archivo-name">${a.name}</div>
+        <div class="archivo-meta">${a.size} | ${a.fecha}</div>
+      </div>
+      <div class="archivo-actions">
+        <button class="btn-arch" title="Descargar">📥</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAlergias(alergias) {
+  const meds = alergias.medicamentos.length
+    ? `<div class="allergy-warning">⚠️ Alergias a Medicamentos:</div>
+       <ul class="allergy-list">${alergias.medicamentos.map(m=>`<li>${m}</li>`).join('')}</ul>`
+    : '';
+  const otras = alergias.otras.length
+    ? `<div class="otras-label">Otras alergias:</div>
+       <ul class="allergy-list">${alergias.otras.map(o=>`<li>${o}</li>`).join('')}</ul>`
+    : '';
+  return meds + otras || '<p style="font-size:.85rem;color:var(--text-light);">Sin alergias registradas.</p>';
+}
+
+function renderAntecedentes(rows) {
+  return rows.map(r => `
+    <div class="ante-row">
+      <span class="ante-key">${r.key}</span>
+      <span class="ante-val ${r.tipo}">${r.val}</span>
+    </div>
+  `).join('');
+}
+
+function renderVacunas(vacunas) {
+  const colores = { vigente:'#dcfce7;color:#16a34a', proxima:'#fef9c3;color:#a16207', vencida:'#fee2e2;color:#dc2626' };
+  return vacunas.map(v => `
+    <div class="ante-row" style="grid-template-columns:1fr;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <strong style="font-size:.88rem;">${v.name}</strong>
+        <span style="font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:50px;background:${colores[v.estado] || '#e2e8f0;color:#64748b'}">
+          ${v.estado === 'vigente' ? 'Vigente' : v.estado === 'proxima' ? 'Próxima a vencer' : 'Vencida'}
+        </span>
+      </div>
+      <div style="font-size:.78rem;color:var(--text-light);margin-top:4px;">
+        Aplicada: ${v.fecha} · Próxima: ${v.prox}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderConsultas(consultas) {
+  return consultas.map(c => `
+    <div class="consulta-card">
+      <div class="cc-date">
+        <span class="cc-day">${c.dia}</span>
+        <span class="cc-mon">${c.mes}</span>
+        <span class="cc-year">${c.anio}</span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-title">${c.titulo}</div>
+        <div class="cc-diag">${c.diag}.</div>
+        <div class="cc-meds">${c.meds}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ══════════════════════════════════════
+   OPEN / CLOSE MODAL
+══════════════════════════════════════ */
+function abrirHistorial(id) {
+  const p = PACIENTES[id];
+  if (!p) return;
+
+  // topbar + patient bar
+  document.getElementById('hcPatientAv').textContent   = p.av;
+  document.getElementById('hcPatientName').textContent = p.nombre;
+
+  // col 1
+  document.getElementById('profileAv').textContent   = p.av;
+  document.getElementById('profileName').textContent  = p.nombre;
+  document.getElementById('profileMeta').textContent  = p.meta;
+  document.getElementById('vitalesContainer').innerHTML  = renderVitales(p.vitales);
+  document.getElementById('archivosContainer').innerHTML = renderArchivos(p.archivos);
+
+  // col 2
+  document.getElementById('alergiasBox').innerHTML         = renderAlergias(p.alergias);
+  document.getElementById('patologicosContainer').innerHTML = renderAntecedentes(p.patologicos);
+  document.getElementById('psiquiatricosContainer').innerHTML = renderAntecedentes(p.psiquiatricos);
+  document.getElementById('dietaContainer').innerHTML      = renderAntecedentes(p.dieta);
+  document.getElementById('vacunasContainer').innerHTML    = renderVacunas(p.vacunas);
+
+  // col 3
+  document.getElementById('consultasContainer').innerHTML = renderConsultas(p.consultas);
+
+  // show
+  const overlay = document.getElementById('hcOverlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarHistorial(event, force) {
+  if (force || (event && event.target === document.getElementById('hcOverlay'))) {
+    document.getElementById('hcOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function toggleExpand(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// Close on ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') cerrarHistorial(null, true);
+});
+</script>
+</body>
+</html>

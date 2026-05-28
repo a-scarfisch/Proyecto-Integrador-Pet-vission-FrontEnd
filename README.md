@@ -36,7 +36,7 @@ petvission-frontend/
 │   ├── client/
 │   │   ├── dashboard.html
 │   │   ├── mascotas.html
-│   │   └── citas.html
+│   │   └── reserva.html
 │   ├── shop/
 │   │   ├── catalogo.html
 │   │   ├── carrito.html
@@ -58,7 +58,7 @@ petvission-frontend/
 | Registro | `pages/auth/register.html` | 
 | Dashboard cliente | `pages/client/dashboard.html` |
 | Mis mascotas | `pages/client/mascotas.html` | 
-| Mis citas | `pages/client/citas.html` |
+| Mis reserva | `pages/client/reserva.html` |
 | Catálogo | `pages/shop/catalogo.html` | 
 | Carrito | `pages/shop/carrito.html` | 
 | Agenda veterinario | `pages/vet/agenda.html` | 
